@@ -10,6 +10,7 @@ class Advert {
     public $expiryDate; // expiry date as timestamp
     public $activationDate; // activation date as timestamp
     public $author; // ID of user placing ad
+    public $authorHumanName; // Humain readable author (company) name
 
     // Create a new WP Post
     public function create() {
@@ -71,6 +72,7 @@ class Advert {
         $this->activationDate = get_post_meta($id, 'cja_ad_activation_date', true);
         $this->humanActivationDate = $this->getHumanActivationDate();
         $this->author = get_post_field( 'post_author', $id );
+        $this->authorHumanName = $this->getHumanName();
     }
 
     // Delete ad (not delete post but set status to deleted)
@@ -96,6 +98,11 @@ class Advert {
     // Return human friendly activation date
     private function getHumanActivationDate() {
         return date("j F Y", $this->activationDate);
+    }
+
+    // Return human friendly author (company) name 
+    private function getHumanName() {
+        return get_user_meta($this->author, 'companyname', true);
     }
 }
 

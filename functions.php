@@ -6,6 +6,7 @@
 
 include('inc/class-advert.php');
 include('inc/class-cja-current-user.php');
+include('inc/class-application.php');
 
 /**
  * ENQUEUE STYLESHEET
@@ -36,6 +37,18 @@ function register_custom_post_types() {
      )
     );
 
+    // Application
+    register_post_type( 'application',
+        array(
+            'labels' => array(
+                'name' => 'Applications',
+                'singular_name' => 'Application'
+            ),
+            'public' => true,
+            'has_archive' => false,
+            'rewrite' => array('slug' => 'applications')
+        )
+    );
 }
 
 /**
