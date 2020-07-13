@@ -1,0 +1,64 @@
+/* 
+Theme Name: Courses and Jobs
+Version: 1.0 
+Description: Child theme of Storefront for Courses and Jobs 
+Author: Chris Dann
+Template: storefront 
+*/  
+
+/* JOBS ARCHIVE PAGE */
+
+.jobs-archive-item {
+    padding: 20px 0;
+    border-bottom: 1px solid #ccc;
+}
+
+.jai-title,
+.jai-content {
+    margin-bottom: 0;
+}
+
+/* MY JOB ADS PAGE */
+
+.cja_alert {
+    font-weight: 700;
+    background-color: lightgreen;
+    border: 1px solid green;
+    padding: 10px;
+}
+
+.job-ads-header {
+    display: flex;
+    padding: 20px 0px;
+    border-bottom: 2px solid #ccc;
+}
+
+.job-ads-header p {
+    margin-right: auto;
+}
+
+.job-ads-header a {
+    margin-left: 20px;
+}
+
+.my-account-job-advert {
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.maja_title_row {
+    display: flex;
+}
+
+.maja_title {
+    margin-right: auto;
+}
+
+.maja_delete {
+    margin-left: 20px;
+}
+
+.maja_edit {
+    margin-left: 20px;
+}
