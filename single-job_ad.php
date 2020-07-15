@@ -1,11 +1,4 @@
-<?php
-/**
- * The template for displaying all single posts.
- *
- * @package storefront
- */
-
-get_header(); ?>
+<?php get_header(); ?>
 
 	<?php			
 	// Set up current user object
@@ -42,13 +35,9 @@ get_header(); ?>
 
 			if ($_POST['doapplication'] == 'true') {
 				$newApplication = new Application;
-				$newApplication->advertID = $currentAd->id;
-				$newApplication->applicantID = $cja_current_user_obj->id;
-				$newApplication->advertiserID = $currentAd->author;
-				$newApplication->applicantName = $cja_current_user_obj->fullname;
-				$newApplication->applicantLetter = $cja_current_user_obj->applicantLetter;
-				$newApplication->cvurl = $cja_current_user_obj->cvurl;
-				print_r($newApplication);
+				$newApplication->populateFromForm($currentAd, $cja_current_user_obj);
+				$newApplication->createPost();
+				?><p class="cja_alert">You Applied to <?php echo $currentAd->title; ?></p><?php
 			}
 			?>
 
@@ -65,8 +54,6 @@ get_header(); ?>
 				if ($cja_current_user_obj->role == 'jobseeker' || $cja_current_user_obj->role == 'administrator') {
 					?><a href="<?php echo get_the_permalink(); ?>?action=apply">APPLY</a><?php
 				}
-
-
 
 			?>
 

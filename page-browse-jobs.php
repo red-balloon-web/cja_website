@@ -20,12 +20,12 @@ get_header(); ?>
 						'compare' => '!='
 					),
 					'order-clause' => array(
-						'key' => 'cja_ad_expiry_date',
+						'key' => 'cja_ad_activation_date',
 						'type' => 'NUMERIC'
 					)
 				),
 				'orderby' => 'order-clause', 
-				'order' => 'ASC', 
+				'order' => 'DSC', 
 			);
 			$the_query = new WP_Query( $args );
 
@@ -39,9 +39,10 @@ get_header(); ?>
 				echo ($currentadvert->populate(get_the_ID()));
 				?>
 				<div class="jobs-archive-item">
-					<p class="jai-title"><strong><?php echo ($currentadvert->title); ?></strong></p>
+					<p class="jai-title"><strong><?php echo ($currentadvert->title); ?></strong> at <?php echo ($currentadvert->authorHumanName); ?></p>
 					<p class="jai-content"><?php echo ($currentadvert->content); ?></p>
-					<a href="<?php echo get_site_url(); ?>/jobs/<?php echo $currentadvert->id; ?>">VIEW</a>
+					<p>Posted on <?php echo ($currentadvert->humanActivationDate); ?></p>
+					<a href="<?php echo get_the_permalink($currentadvert->id); ?>">VIEW</a>
 				</div>
 				<?php
 

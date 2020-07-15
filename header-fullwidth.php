@@ -33,7 +33,6 @@
 	
 
 	<header id="masthead" class="site-header" role="banner" style="<?php storefront_header_styles(); ?>">
-		<div class="col-full">
 
 		<?php
 		/**
@@ -51,12 +50,8 @@
 		 * @hooked storefront_header_cart                      - 60
 		 * @hooked storefront_primary_navigation_wrapper_close - 68
 		 */
-		// do_action( 'storefront_header' );
-
-		storefront_primary_navigation();
+		do_action( 'storefront_header' );
 		?>
-
-</div>
 
 	</header><!-- #masthead -->
 
@@ -67,11 +62,14 @@
 	 * @hooked storefront_header_widget_region - 10
 	 * @hooked woocommerce_breadcrumb - 10
 	 */
-	// do_action( 'storefront_before_content' );
+	do_action( 'storefront_before_content' );
 	?>
 
-	<div id="content" class="site-content" tabindex="-1">
-		<div class="col-full">
+	<!--<div id="content" class="site-content" tabindex="-1">
+		<div class="col-full">-->
+
+		<div>
+		<div>
 
 		<?php
 		do_action( 'storefront_content_top' );

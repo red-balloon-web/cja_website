@@ -24,7 +24,7 @@ class Cja_current_user {
             $this->nicename = wp_get_current_user()->data->user_nicename;
             $this->firstname = wp_get_current_user()->first_name;
             $this->surname = wp_get_current_user()->last_name;
-            $this->fullname = $this->firstname . ' ' . $this->lastname;
+            $this->fullname = $this->firstname . ' ' . $this->surname;
             $this->companyname = get_user_meta($this->id, 'companyname', true);
             $this->statement = get_user_meta($this->id, 'statement', true);
             $this->cvfilename = get_user_meta($this->id, 'cvfilename', true);

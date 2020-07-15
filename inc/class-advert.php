@@ -9,6 +9,7 @@ class Advert {
     public $status; // active, expired, etc.
     public $expiryDate; // expiry date as timestamp
     public $activationDate; // activation date as timestamp
+    public $humanActivationDate; // human readable
     public $author; // ID of user placing ad
     public $authorHumanName; // Humain readable author (company) name
 
@@ -43,6 +44,7 @@ class Advert {
 
         update_post_meta($this->id, 'cja_ad_status', $this->status);
         update_post_meta($this->id, 'cja_ad_expiry_date', $this->expiryDate);
+        update_post_meta($this->id, 'cja_ad_activation_date', $this->activationDate);
     }
 
     // Activate the advert
@@ -97,7 +99,11 @@ class Advert {
 
     // Return human friendly activation date
     private function getHumanActivationDate() {
-        return date("j F Y", $this->activationDate);
+        if (is_numeric($this->activationDate)) {
+            return date("j F Y", $this->activationDate);
+        } else {
+            return "Not activated";
+        }
     }
 
     // Return human friendly author (company) name 
