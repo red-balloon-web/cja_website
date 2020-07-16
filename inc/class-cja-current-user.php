@@ -4,6 +4,7 @@ class Cja_current_user {
 
     public $is_logged_in = 0;
     public $id;
+    public $loginname;
     public $role;
     public $nicename;
     public $firstname;
@@ -20,6 +21,7 @@ class Cja_current_user {
         
         if ($this->is_logged_in) {
             $this->id = get_current_user_id();
+            $this->loginname = wp_get_current_user()->data->user_login;
             $this->role = $this->cja_get_user_role();
             $this->nicename = wp_get_current_user()->data->user_nicename;
             $this->firstname = wp_get_current_user()->first_name;

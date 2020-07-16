@@ -1,11 +1,5 @@
 <?php get_header(); ?>
 
-	<?php			
-	// Set up current user object
-	$cja_current_user_obj = new Cja_current_user;
-	$cja_current_user_obj->populate(); 
-	?>
-
 	<div id="primary" class="content-area">
 		<main id="main" class="site-main" role="main">
 
@@ -14,7 +8,8 @@
 		while ( have_posts() ) :
 			the_post();
 
-			
+			$cja_current_user_obj = new Cja_current_user;
+			$cja_current_user_obj->populate();
 			$currentAd = new Advert;
 			$currentAd->populate(get_the_ID());
 						
@@ -41,9 +36,17 @@
 			}
 			?>
 
+			<?php
+			if ($currentAd->adCreatedByCurrentUser) {
+				?><p>THIS ADVERT BELONGS TO YOU</p><?php
+			}
+			?>
+
 			<h1><?php echo $currentAd->title; ?></h1>
 			<p>Posted by <?php echo ($currentAd->authorHumanName); ?> on <?php echo ($currentAd->humanActivationDate); ?></p>
 			<p><?php echo $currentAd->content; ?></p>
+
+			
 
 			<?php
 
@@ -66,5 +69,5 @@
 	</div><!-- #primary -->
 
 <?php
-do_action( 'storefront_sidebar' );
+//do_action( 'storefront_sidebar' );
 get_footer();

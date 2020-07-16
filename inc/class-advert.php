@@ -12,6 +12,8 @@ class Advert {
     public $humanActivationDate; // human readable
     public $author; // ID of user placing ad
     public $authorHumanName; // Humain readable author (company) name
+    public $adCreatedByCurrentUser; // Boolean
+    public $adAppliedToByCurrentUser; // Boolean
 
     // Create a new WP Post
     public function create() {
@@ -75,6 +77,7 @@ class Advert {
         $this->humanActivationDate = $this->getHumanActivationDate();
         $this->author = get_post_field( 'post_author', $id );
         $this->authorHumanName = $this->getHumanName();
+        $this->adCreatedByCurrentUser = $this->isCurrentUserAd();
     }
 
     // Delete ad (not delete post but set status to deleted)
@@ -109,6 +112,15 @@ class Advert {
     // Return human friendly author (company) name 
     private function getHumanName() {
         return get_user_meta($this->author, 'companyname', true);
+    }
+
+    // Is the ad by the current user
+    private function isCurrentUserAd() {
+        if ($this->author == get_current_user_id()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
 

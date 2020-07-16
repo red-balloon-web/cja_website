@@ -9,6 +9,17 @@ include('inc/class-cja-current-user.php');
 include('inc/class-application.php');
 
 /**
+ * REMOVE SIDEBAR
+ */
+
+add_action( 'get_header', 'remove_storefront_sidebar' );
+function remove_storefront_sidebar() {
+	if ( is_woocommerce() ) {
+		remove_action( 'storefront_sidebar', 'storefront_get_sidebar', 10 );
+	}
+}
+
+/**
  * ENQUEUE STYLESHEET
  */
 
@@ -74,6 +85,19 @@ function add_custom_user_roles() {
     );
 
 }
+
+/**
+ * LOG OUT USER
+ */
+
+function logoutUser(){
+    if ( $_GET["cja-logout"] == 'true' ){ 
+        wp_logout();
+        //header("refresh:0.5;url=".$_SERVER['REQUEST_URI']."");
+        //header("refresh:0.5;url=".get_page_link()."");
+    }
+}
+add_action('init', 'logoutUser');
 
 /**
  * ADD PURCHASED CREDITS

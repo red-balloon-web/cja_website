@@ -137,6 +137,7 @@ get_header(); ?>
 										echo (" ({$currentad->daysLeft()} days remaining)");
 									} ?>
 								</div>
+								<div class="maja_view"><a href="<?php echo get_the_permalink($currentad->id); ?>">VIEW</a></div>
 								<div class="maja_option">
 									<?php if ($currentad->status == 'active') { ?>
 										<a href="<?php echo ($pageaddress . '?extend-ad=' . get_the_ID()); ?>">EXTEND</a>

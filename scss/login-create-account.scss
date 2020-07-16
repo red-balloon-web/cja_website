@@ -1,0 +1,35 @@
+.cja-login-screen {
+
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+
+    h4 {
+        text-align: center;
+    }
+
+    .existing-user-login {
+        border: 1px solid #aaa;
+        border-radius: 20px;
+        width: 48%;
+        padding: 20px;
+
+        &.highlight {
+            border: 2px solid green;
+        }
+    }
+
+    .new-user-account {
+        border: 1px solid #aaa;
+        border-radius: 20px;
+        width: 48%;
+        padding: 20px;
+
+        p.account-choice {
+            border: 1px solid #aaa;
+            padding: 20px 0px 20px 30px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+    }
+}
