@@ -7,8 +7,6 @@ get_header(); ?>
 
 		<?php
 
-		$pageaddress = get_page_link();
-
 			?>
 
 			<h2>Applications I Have Made</h2>
@@ -16,8 +14,7 @@ get_header(); ?>
 
             <?php
             
-            $cja_current_user_obj = new Cja_current_user;
-	        $cja_current_user_obj->populate(); 
+            $cja_current_user_obj = new CJA_User;
 
 			// Query Arguments
 			$args = array(  
@@ -31,31 +28,35 @@ get_header(); ?>
 			if ( $the_query->have_posts() ) {
 
 				while ( $the_query->have_posts() ) : $the_query->the_post(); 
-                    
-                    $currentApplication = new Application;
-                    $currentApplication->populate(get_the_ID());
-                    //print_r($currentApplication);
+					
+				?>
+				<!--<p>Application</p><?php
+                    $cja_current_application = new CJA_Application(get_the_ID());
+                    print_r($cja_current_application);
 
-                    $currentAd = new Advert;
-                    $currentAd->populate($currentApplication->advertID);
-                    //print_r($currentAd);
+				?><p>Advert</p><?php
+                    $cja_current_advert = new CJA_Advert($cja_current_application->advert_ID);
+                    print_r($cja_current_advert);
 
-                    $currentAdvertiser = new Cja_current_user;
-                    $currentAdvertiser->populate($currentApplication->advertiserID);
-                    //print_r($currentAdvertiser);
+				?><p>Advertiser</p><?php
+                    $cja_current_advertiser = new CJA_User($cja_current_application->advertiser_ID);
+					print_r($cja_current_advertiser);
+					
+				?><p>Applicant</p><?php 
+					$cja_current_applicant = new CJA_User($cja_current_application->applicant_ID);
+					print_r($cja_current_applicant);
                     
-                    ?>
+                    ?>-->
                         
 						<div class="my-account-job-advert">
 							<div class="maja_title_row">
 								<div class="maja_title">
-                                    <h3><?php echo $currentAd->title; ?></h3>
-                                    <p>At: <?php echo $currentAdvertiser->companyname; ?></p>
-                                    <p>Applied on: <?php echo $currentApplication->humanApplicationDate; ?></p>
+                                    <h3><?php echo $cja_current_advert->title; ?></h3>
+                                    <p>At: <?php echo $cja_current_advertiser->company_name; ?></p>
+                                    <p>Applied on: <?php echo $cja_current_application->human_application_date; ?></p>
                                     <p>My Application Letter:</p>
-                                    <p><?php echo $currentApplication->applicantLetter; ?></p>
-                                    <a href="<?php echo get_the_permalink($currentApplication->id); ?>">VIEW</a>
-									<?php echo $currentApplication->id ?>
+                                    <p><?php echo $cja_current_application->applicant_letter; ?></p>
+                                    <a href="<?php echo get_the_permalink($cja_current_application->id); ?>">VIEW</a>
 								</div>
 							</div>
 						</div>

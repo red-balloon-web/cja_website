@@ -2,8 +2,7 @@
 
 	<?php			
 	// Set up current user object
-	$cja_current_user_obj = new Cja_current_user;
-	$cja_current_user_obj->populate(); 
+	$cja_current_user_obj = new CJA_User;
 	?>
 
 	<div id="primary" class="content-area">
@@ -14,38 +13,36 @@
 		while ( have_posts() ) :
 			the_post();
 			
-			$currentApplication = new Application;
-			$currentApplication->populate(get_the_ID());
+			
+			?><p>Application</p><?php
+			$cja_current_application = new CJA_Application(get_the_ID());
+			print_r($cja_current_application);
 
-			?><!--<p>Application</p>--><?php
-			//print_r($currentApplication);
+			?><p>Advert / Job</p><?php
+			$cja_current_application_advert = new CJA_Advert($cja_current_application->advert_ID);
+			print_r($cja_current_application_advert);
 
-			?><!--<p>Advert / Job</p>--><?php
-			$currentAd = new Advert;
-			$currentAd->populate($currentApplication->advertID);
-			//print_r($currentAd);
+			?><p>Advertiser</p><?php
+			$cja_current_advertiser = new CJA_User($cja_current_application->advertiser_ID);
+			print_r($cja_current_advertiser);
 
-			?><!--<p>Advertiser</p>--><?php
-			$currentAdvertiser = new Cja_current_user;
-			$currentAdvertiser->populate($currentApplication->advertiserID);
-			//print_r($currentAdvertiser);
-
-			?><!--<p>Applicant</p>--><?php
-			$currentApplicant = new Cja_current_user;
-			$currentApplicant->populate($currentApplication->applicantID);
-			//print_r($currentApplicant);
+			?><p>Applicant</p><?php
+			$cja_current_applicant = new CJA_User($cja_current_application->applicant_ID);
+			print_r($cja_current_applicant);
 
 			?>
+			
 			<h1>View Application</h1>
 			<h2>Job Information</h2>
-			<p>Job Title: <?php echo $currentAd->title; ?></p>
-			<p>Posted on: <?php echo $currentAd->humanActivationDate; ?></p>
-			<p>Company Name: <?php echo $currentAdvertiser->companyname; ?></p>
+			<p>Job Title: <?php echo $cja_current_application_advert->title; ?></p>
+			<p>Posted on: <?php echo $cja_current_application_advert->human_activation_date; ?></p>
+			<p>Company Name: <?php echo $cja_current_advertiser->company_name; ?></p>
 			<h2>Application Information</h2>
-			<p>Name of Applicant: <?php echo $currentApplicant->fullname; ?></p>
-			<p>Date of Application: <?php echo $currentApplication->applicationHumanDate; ?></p>
-			<p>Covering Letter: <?php echo $currentApplication->applicantLetter; ?></p>
-			<p>CV: <?php echo $currentApplication->cvurl; ?></p>
+			<p>Name of Applicant: <?php echo $cja_current_applicant->full_name; ?></p>
+			<p>Date of Application: <?php echo $cja_current_application->human_application_date; ?></p>
+			<p>Covering Letter: <?php echo $cja_current_application->applicant_letter; ?></p>
+			<p>CV: <?php echo $cja_current_application->cv_url; ?></p>
+		
 			<?php
 
 

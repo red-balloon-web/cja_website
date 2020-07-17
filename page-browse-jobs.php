@@ -8,8 +8,7 @@ get_header(); ?>
 		
 		<?php
 
-		$cja_current_user_obj = new Cja_current_user;
-		$cja_current_user_obj->populate();
+		$cja_current_user_obj = new CJA_User;
 
 		$args = array(  
 				'post_type' => 'job_ad',
@@ -33,16 +32,14 @@ get_header(); ?>
 
 				while ( $the_query->have_posts() ) : $the_query->the_post();
 
-				$currentadvert = new Advert;
+				$cja_current_advert = new CJA_Advert(get_the_ID());
 
-
-				echo ($currentadvert->populate(get_the_ID()));
 				?>
 				<div class="jobs-archive-item">
-					<p class="jai-title"><strong><?php echo ($currentadvert->title); ?></strong> at <?php echo ($currentadvert->authorHumanName); ?></p>
-					<p class="jai-content"><?php echo ($currentadvert->content); ?></p>
-					<p>Posted on <?php echo ($currentadvert->humanActivationDate); ?></p>
-					<a href="<?php echo get_the_permalink($currentadvert->id); ?>">VIEW</a>
+					<p class="jai-title"><strong><?php echo ($cja_current_advert->title); ?></strong> at <?php echo ($cja_current_advert->author_human_name); ?></p>
+					<p class="jai-content"><?php echo ($cja_current_advert->content); ?></p>
+					<p>Posted on <?php echo ($cja_current_advert->human_activation_date); ?></p>
+					<a href="<?php echo get_the_permalink($cja_current_advert->id); ?>">VIEW<?php if ($cja_current_user_obj->role == 'jobseeker') { echo (' / APPLY'); } ?></a>
 				</div>
 				<?php
 
@@ -59,5 +56,5 @@ get_header(); ?>
 	</div><!-- #primary -->
 
 <?php
-do_action( 'storefront_sidebar' );
+//do_action( 'storefront_sidebar' );
 get_footer();

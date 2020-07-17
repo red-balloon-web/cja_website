@@ -1,12 +1,13 @@
 <?php
 
 /**
- * INCLUDE OBJECTS
+ * INCLUDE CONFIG AND OBJECTS
  */
 
-include('inc/class-advert.php');
-include('inc/class-cja-current-user.php');
-include('inc/class-application.php');
+include('config.php');
+include('inc/class-cja-advert.php');
+include('inc/class-cja-user.php');
+include('inc/class-cja-application.php');
 
 /**
  * REMOVE SIDEBAR

@@ -3,11 +3,10 @@
 	<?php			
 
 	// Set up current user object
-	$cja_current_user_obj = new Cja_current_user;
-	$cja_current_user_obj->populate(); 
+	$cja_current_user_obj = new CJA_User;
 
 	// Get page URL
-	$pageaddress = get_page_link();
+	$cja_page_address = get_page_link();
 
 	// Has user just created account (for highlighted login section)
 	$freshaccountcreation = false;
@@ -25,13 +24,6 @@
 			$email = $_POST['email'];
 			$password = $_POST['password'];
 			$role = $_POST['role'];
-			
-			/*
-			echo ('<p>username: ' . $username . '</p>');
-			echo ('<p>email: ' . $email . '</p>');
-			echo ('<p>password: ' . $password . '</p>');
-			echo ('<p>role: ' . $role . '</p>');
-			*/
 			
 			$userdata = array(
 				'user_login' => $username,
@@ -55,32 +47,11 @@
 		if ($_POST['form-update']) {
 			$cja_current_user_obj->updateFromForm();
 			//print_r($cja_current_user_obj);
-			$cja_current_user_obj->saveToDatabase();
+			$cja_current_user_obj->save();
 			?><p class="cja_alert">Your Details Were Updated!</p><?php
+			$cja_current_user_obj = new CJA_User;
 		}
 		
-		/*
-		if ($_GET['action']) {
-			if ($_GET['action'] == 'edit') {
-				?>
-					Edit Account Form
-
-					<form action="<?php echo $pageaddress; ?>" method="post" enctype="multipart/form-data">
-						<p>Company Name: <input type="text" name="companyname" value="<?php echo $cja_current_user_obj->companyname; ?>"></p>
-						<p>Nicename: <input type="text" name="nicename" value="<?php echo $cja_current_user_obj->nicename; ?>"></p>
-						<p>First Name: <input type="text" name="firstname" value="<?php echo $cja_current_user_obj->firstname; ?>"></p>
-						<p>Last Name: <input type="text" name="surname" value="<?php echo $cja_current_user_obj->surname; ?>"></p>
-						<p>My Statement:</p>
-						<textarea name="statement" id="" cols="30" rows="10"><?php echo $cja_current_user_obj->statement; ?></textarea>
-						<p>My CV</p>
-						<input type="file" name="cv-file">
-						<input type="submit" value="Update Details">
-					</form>
-				<?php
-			}
-		}
-		*/
-
 		?>
 
 		<!-- IF USER IS LOGGED IN DISPLAY THEIR DETAILS -->
@@ -89,28 +60,28 @@
 			<!-- IF USER IS ADVERTISER DISPLAY ADVERTISER DETAILS -->
 			<?php if($cja_current_user_obj->role == 'advertiser') { ?>
 				
-				<h1>My Organisation Details - <?php echo $cja_current_user_obj->companyname; ?></h1>
+				<h1>My Organisation Details - <?php echo stripslashes($cja_current_user_obj->company_name); ?></h1>
 				<p><a href="<?php echo get_page_link(); ?>?cja-logout=true">LOG OUT</a></p>
-				<form action="<?php echo $pageaddress; ?>" method="post" enctype="multipart/form-data">
-					<p>Username: <?php echo $cja_current_user_obj->loginname; ?></p>
-					<p>Organisation Name<br><input type="text" name="companyname" value="<?php echo stripslashes($cja_current_user_obj->companyname); ?>"></p>
+				<form action="<?php echo $cja_page_address; ?>" method="post" enctype="multipart/form-data">
+					<p>Username: <?php echo $cja_current_user_obj->login_name; ?></p>
+					<p>Organisation Name<br><input type="text" name="company_name" value="<?php echo stripslashes($cja_current_user_obj->company_name); ?>"></p>
 					<p>Short Description of Your Organisation<br>
-					<textarea name="statement" id="" cols="30" rows="10"><?php echo stripslashes($cja_current_user_obj->statement); ?></textarea></p>
+					<textarea name="company_description" id="" cols="30" rows="10"><?php echo stripslashes($cja_current_user_obj->company_description); ?></textarea></p>
 					<input type="hidden" name="form-update" value="advertiser">
 					<p><input type="submit" value="Update"></p>
 				</form>
 
 			<!-- AND IF THEY ARE AN APPLICANT DISPLAY APPLICANT DETAILS -->	
 			<?php } else if ($cja_current_user_obj->role == 'jobseeker') { ?>
-				<h1>My Details - <?php echo $cja_current_user_obj->fullname; ?></h1>
+				<h1>My Details - <?php echo $cja_current_user_obj->full_name; ?></h1>
 				<p><a href="<?php echo get_page_link(); ?>?cja-logout=true">LOG OUT</a></p>
-				<form action="<?php echo $pageaddress; ?>" method="post" enctype="multipart/form-data">
-					<p>Username: <?php echo $cja_current_user_obj->loginname; ?><br><em>Your username cannot be changed</em></p>
-					<p>First Name<br><input type="text" name="firstname" value="<?php echo $cja_current_user_obj->firstname; ?>"></p>
-					<p>Last Name<br><input type="text" name="surname" value="<?php echo $cja_current_user_obj->surname; ?>"></p>
-					<?php if ($cja_current_user_obj->cvurl) { ?>
+				<form action="<?php echo $cja_page_address; ?>" method="post" enctype="multipart/form-data">
+					<p>Username: <?php echo $cja_current_user_obj->login_name; ?><br><em>Your username cannot be changed</em></p>
+					<p>First Name<br><input type="text" name="first_name" value="<?php echo $cja_current_user_obj->first_name; ?>"></p>
+					<p>Last Name<br><input type="text" name="last_name" value="<?php echo $cja_current_user_obj->last_name; ?>"></p>
+					<?php if ($cja_current_user_obj->cv_url) { ?>
 						<p>Upload New CV<br><input type="file" name="cv-file"></p>
-						<p><em>Current CV: <?php echo $cja_current_user_obj->cvfilename; ?></em><br><a href="<?php echo $cja_current_user_obj->cvurl; ?>" target="_blank">VIEW / DOWNLOAD CV</a></p>
+						<p><em>Current CV: <?php echo $cja_current_user_obj->cv_filename; ?></em><br><a href="<?php echo $cja_current_user_obj->cvurl; ?>" target="_blank">VIEW / DOWNLOAD CV</a></p>
 					<?php } else { ?>
 						Upload CV<br><input type="file" name="cv-file"></p>
 					<?php } ?>
@@ -139,7 +110,7 @@
 
 				<div class="new-user-account">
 					<h4>CREATE ACCOUNT</h4>
-					<form action="<?php echo $pageaddress; ?>" method="POST">
+					<form action="<?php echo $cja_page_address; ?>" method="POST">
 						<p>Username<br>
 						<input type="text" name="username">
 						</p>
@@ -159,14 +130,6 @@
 			</div>
 			
 		<?php } ?>
-
-
-		<?php
-		/*
-		print_r(wp_get_current_user());
-		$get_user = wp_get_current_user();
-		*/
-		?>
 
 		</main><!-- #main -->
 	</div><!-- #primary -->
