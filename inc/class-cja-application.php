@@ -14,7 +14,9 @@ class CJA_Application {
     public $applicant_letter; // Covering letter
     public $cv_url; // Applicant CV
     public $application_date; // Timestamp
-    public $human_activation_date; // Human readable date
+    public $human_application_date; // Human readable date
+    public $applicant_archived; // Timestamp
+    public $advertiser_archived; // Timestamp
 
     /**
      * CONSTRUCTOR
@@ -31,6 +33,8 @@ class CJA_Application {
             $this->cv_url = get_post_meta($this->id, 'cvurl', true);
             $this->application_date = get_post_meta($this->id, 'applicationDate', true);
             $this->human_application_date = $this->get_human_application_date();
+            $this->applicant_archived = get_post_meta($this->id, 'applicant_archived', true);
+            $this->advertiser_archived = get_post_meta($this->id, 'advertiser_archived', true);
         }
     }
 
@@ -46,6 +50,8 @@ class CJA_Application {
         $this->applicant_name = $cja_current_user_obj->full_name;
         $this->applicant_letter = $_POST['letter'];
         $this->cv_url = $cja_current_user_obj->cv_url;
+        $this->applicant_archived = 0;
+        $this->advertiser_archived = 0;
     }
 
     // When a user submits an application, create new Application WP Post
@@ -74,6 +80,18 @@ class CJA_Application {
         update_post_meta($this->id, 'applicantLetter', $this->applicant_letter);
         update_post_meta($this->id, 'cvurl', $this->cv_url);
         update_post_meta($this->id, 'applicationDate', strtotime(date('j F Y')));
+        update_post_meta($this->id, 'applicant_archived', $this->applicant_archived);
+        update_post_meta($this->id, 'advertiser_archived', $this->advertiser_archived);
+    }
+
+    // Archive application for applicant
+    public function applicant_archive() {
+        $this->applicant_archived = strtotime(date('j F Y'));
+    }
+
+    // Archive function for advertiser
+    public function advertiser_archive() {
+        $this->advertiser_archived = strtotime(date('j F Y'));
     }
 
     /**

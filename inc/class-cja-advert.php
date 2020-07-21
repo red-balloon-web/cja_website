@@ -38,6 +38,7 @@ class CJA_Advert {
             $this->author = get_post_field( 'post_author', $id );
             $this->author_human_name = $this->get_human_name();
             $this->created_by_current_user = $this->is_current_user_ad();
+            $this->applied_to_by_current_user = $this->is_applied_to_by_current_user();
         }
     }
 
@@ -132,6 +133,38 @@ class CJA_Advert {
         } else {
             return 0;
         }
+    }
+    
+    // Has the ad been applied to by the current user?
+    private function is_applied_to_by_current_user() {
+
+        $newargs = array(
+            'post_type' => 'application',
+            'meta_query' => array(
+                array(
+                    'key' => 'advertID',
+                    'value' => $this->id
+                )
+            )
+        );
+
+        $the_new_query = new WP_Query( $newargs );
+
+        if ( $the_new_query->have_posts() ) {
+            while ( $the_new_query->have_posts() ) : $the_new_query->the_post();
+
+                $check_application = new CJA_Application(get_the_ID());
+                print_r($check_application);
+                if ($check_application->applicant_ID == get_current_user_id()) {
+                    $the_new_query->reset_postdata();
+                    return 1;
+                }
+
+            endwhile;
+        }
+
+        $the_new_query->reset_postdata();
+        return 0;
     }
 }
 

@@ -53,7 +53,7 @@
 		 */
 		// do_action( 'storefront_header' );
 
-		storefront_primary_navigation();
+		cja_primary_navigation();
 		?>
 
 </div>

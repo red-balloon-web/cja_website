@@ -88,6 +88,68 @@ function add_custom_user_roles() {
 }
 
 /**
+ * NAV MENUS
+ */
+
+function cja_custom_menus($menus) {
+    $menus['loggedout-primary'] = 'Main Menu Logged Out';
+    $menus['jobseeker-primary'] = 'Main Menu Applicant';
+    $menus['advertiser-primary'] = 'Main Menu Advertiser';
+    return $menus;
+}
+
+add_filter( 'storefront_register_nav_menus', 'cja_custom_menus');
+
+function cja_primary_navigation() {
+    ?>
+    <nav id="site-navigation" class="main-navigation" role="navigation" aria-label="<?php esc_html_e( 'Primary Navigation', 'storefront' ); ?>">
+    <button class="menu-toggle" aria-controls="site-navigation" aria-expanded="false"><span><?php echo esc_attr( apply_filters( 'storefront_menu_toggle_text', __( 'Menu', 'storefront' ) ) ); ?></span></button>
+        <?php
+
+        $cja_current_user_obj = new CJA_User;
+
+        if (!$cja_current_user_obj->is_logged_in) {
+            wp_nav_menu(
+                array(
+                    'theme_location' => 'loggedout-primary',
+                    'container_class' => 'primary-navigation',
+                )
+            );
+        } else if ($cja_current_user_obj->role == 'advertiser') {
+            wp_nav_menu(
+                array(
+                    'theme_location' => 'advertiser-primary',
+                    'container_class' => 'primary-navigation',
+                )
+            );
+        } else if ($cja_current_user_obj->role == 'jobseeker') {
+            wp_nav_menu(
+                array(
+                    'theme_location' => 'jobseeker-primary',
+                    'container_class' => 'primary-navigation',
+                )
+            );
+        }
+        
+        /*wp_nav_menu(
+            array(
+                'theme_location'  => 'primary',
+                'container_class' => 'primary-navigation',
+            )
+        );
+
+        wp_nav_menu(
+            array(
+                'theme_location'  => 'handheld',
+                'container_class' => 'handheld-navigation',
+            )
+        );*/
+        ?>
+    </nav><!-- #site-navigation -->
+    <?php
+}
+
+/**
  * LOG OUT USER
  */
 

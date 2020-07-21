@@ -10,9 +10,10 @@
 
 			$cja_current_user_obj = new CJA_User();
 			$cja_current_ad = new CJA_Advert(get_the_ID());
+			print_r ($cja_current_ad);
 
 			// Do this stuff for jobseekers
-			if ($cja_current_user_obj->role = 'jobseeker') {
+			if ($cja_current_user_obj->role == 'jobseeker') {
 						
 				// Display form to apply
 				if ($_GET['action'] == 'apply') {
@@ -96,11 +97,12 @@
 			<?php
 
 				if ($cja_current_user_obj->is_logged_in == false) {
-					?><a href="">LOG IN OR CREATE ACCOUNT TO APPLY</a><?php
+					?><a href="<?php echo get_site_url(); ?>/my-details" class="button">LOG IN OR CREATE ACCOUNT TO APPLY</a><?php
 				}
 
-				if ($cja_current_user_obj->role == 'jobseeker' || $cja_current_user_obj->role == 'administrator') {
-					?><a href="<?php echo get_the_permalink(); ?>?action=apply">APPLY FOR THIS JOB</a><?php
+				// show apply button if user is jobseeker and if we are not on the application page already
+				if ($cja_current_user_obj->role == 'jobseeker' && $_GET['action'] != 'apply') {
+					?><a class="button" href="<?php echo get_the_permalink(); ?>?action=apply">APPLY FOR THIS JOB</a><?php
 				}
 
 			?>

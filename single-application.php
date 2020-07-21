@@ -14,7 +14,7 @@
 			the_post();
 			
 			
-			?><p>Application</p><?php
+			?><!--<p>Application</p><?php
 			$cja_current_application = new CJA_Application(get_the_ID());
 			print_r($cja_current_application);
 
@@ -31,6 +31,7 @@
 			print_r($cja_current_applicant);
 
 			?>
+			-->
 			
 			<h1>View Application</h1>
 			<h2>Job Information</h2>
