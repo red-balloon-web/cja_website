@@ -17,7 +17,17 @@ get_header(); ?>
 					$cja_new_ad->create(); // create a new post in the database
 					$cja_new_ad->update_from_form(); 
 					$cja_new_ad->save(); 
+					
+					if (!$_GET['draft']) {
+						$cja_new_ad->activate();
+						$cja_new_ad->save();
+						spend_credits();
+						?><p class="cja_alert">Your Advert "<?php echo $cja_new_ad->title; ?>" Was Created for 1 Credit!</p><?php
+					} else {
+					
 					?><p class="cja_alert">Your Advert "<?php echo $cja_new_ad->title; ?>" Was Created!</p><?php
+
+					}
 				}
 
 				if ($_POST['update-ad']) {
@@ -62,7 +72,8 @@ get_header(); ?>
 						<p>Advert Text</p>
 						<textarea name="ad-content" id="" cols="30" rows="10"></textarea>
 						<input type="hidden" name="process-create-ad" value="true">
-						<input type="submit" value="Create Advert">
+						<input type="submit" value="Create Advert (1 Credit)">
+						<input type="submit" formaction="<?php echo $cja_page_address; ?>?draft=true" value="Save as Draft">
 					</form>
 				<?php }
 
@@ -88,9 +99,13 @@ get_header(); ?>
 			<h2>My Job Ads</h2>
 			<div class="job-ads-header">
 				<p>You have <?php echo (get_user_meta( get_current_user_id(), "cja_credits", true)); ?> advert credits remaining</p>
-				<a href="<?php echo $cja_page_address . '?create-ad=true'; ?>">CREATE AD</a>
-				<a href="">BUY CREDITS</a>
+				<a href="<?php echo get_page_link(); ?>?add-to-cart=8">1 Credit £30</a>
+				<a href="<?php echo get_page_link(); ?>?add-to-cart=8">10 Credits £150</a>
 			</div>
+
+			<div class="products">
+			</div>
+			<a href="<?php echo $cja_page_address . '?create-ad=true'; ?>">CREATE NEW ADVERT</a>
 
 			<?php
 
@@ -120,7 +135,7 @@ get_header(); ?>
 				while ( $the_query->have_posts() ) : $the_query->the_post(); 
 
 					$currentad = new CJA_Advert(get_the_ID());
-					// print_r($currentad); // testing
+					$the_query->reset_postdata();
 
 					?>
 						<div class="my-account-job-advert">

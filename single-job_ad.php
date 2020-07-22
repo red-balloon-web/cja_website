@@ -10,7 +10,6 @@
 
 			$cja_current_user_obj = new CJA_User();
 			$cja_current_ad = new CJA_Advert(get_the_ID());
-			print_r ($cja_current_ad);
 
 			// Do this stuff for jobseekers
 			if ($cja_current_user_obj->role == 'jobseeker') {
@@ -39,6 +38,14 @@
 					$cja_new_application->save();
 					?><p class="cja_alert">You Applied to <?php echo $cja_current_ad->title; ?></p><?php
 				}
+
+				// Display message if they already applied
+				$cja_current_ad = new CJA_Advert(get_the_ID());
+				if ($cja_current_ad->applied_to_by_current_user) {
+					$cja_user_application = new CJA_Application($cja_current_ad->applied_to_by_current_user);
+	
+					?><p><strong>You applied to this job on <?php echo $cja_user_application->human_application_date; ?></strong></p><?php
+				}
 			}
 			?>
 
@@ -53,6 +60,16 @@
 					$cja_extend_ad->save();
 					spend_credits();
 					?><p class="cja_alert">Your advert for "<?php echo ($cja_extend_ad->title); ?>" has been extended for 1 credit.</p><?php
+					$cja_current_ad = new CJA_Advert(get_the_ID());
+				}
+
+				// Activate this ad
+				if ($_GET['activate-ad']) {
+					$cja_activate_ad = new CJA_Advert(get_the_ID());
+					$cja_activate_ad->activate();
+					$cja_activate_ad->save();
+					spend_credits();
+					?><p class="cja_alert">Your advert for "<?php echo ($cja_activate_ad->title); ?>" has been activated for 1 credit.</p><?php
 					$cja_current_ad = new CJA_Advert(get_the_ID());
 				}
 
@@ -80,13 +97,29 @@
 					$cja_current_ad = new CJA_Advert(get_the_ID());
 				}
 
-				?><p><strong>You placed this advert on <?php echo $cja_current_ad->human_activation_date; ?> (<?php echo $cja_current_ad->days_left; ?> days left)</strong></p>
-				<p><a href="<?php echo get_the_permalink(); ?>?edit-ad=true">EDIT</a> <a href="<?php echo get_the_permalink(); ?>/?extend-ad=true">EXTEND</a> <a href="<?php echo get_site_url() . '/' . $cja_config['my-jobs-admin-page-slug'] . '?delete-ad=' . $cja_current_ad->id; ?>">DELETE</a></p><?php
+				// Display appropriate options
+
+				if ($cja_current_ad->status == 'active') {
+					?><p><strong>You placed this advert on <?php echo $cja_current_ad->human_activation_date; ?> (<?php echo $cja_current_ad->days_left; ?> days left)</strong></p>
+					<p><a href="<?php echo get_the_permalink(); ?>?edit-ad=true">EDIT</a> <a href="<?php echo get_the_permalink(); ?>/?extend-ad=true">EXTEND</a> <a href="<?php echo get_site_url() . '/' . $cja_config['my-jobs-admin-page-slug'] . '?delete-ad=' . $cja_current_ad->id; ?>">DELETE</a></p><?php
+				} else if ($cja_current_ad->status == 'inactive') {
+					?><p><strong>This Advert Is a Draft</strong></p>
+					<p><a href="<?php echo get_the_permalink() ?>?activate-ad=true">ACTIVATE (1 credit)</a></p>
+					<?php
+				}
 			}
 			?>
 			<?php $cja_current_advertiser = new CJA_User($cja_current_ad->author); ?>
+			<?php // print_r($cja_current_ad); ?>
 			<h1><?php echo $cja_current_ad->title; ?></h1>
-			<p>Posted by <?php echo ($cja_current_ad->author_human_name); ?> on <?php echo ($cja_current_ad->human_activation_date); ?></p>
+			<?php if ($cja_current_ad->status == 'deleted') {
+				?><p><strong>This advert has been deleted</strong></p>
+			<?php } ?>
+			<p>Posted by <?php echo ($cja_current_ad->author_human_name); 
+				if ($cja_current_ad->status == 'active') {
+					echo ' on ' . ($cja_current_ad->human_activation_date); 
+				}
+			?></p>
 			<h3>About The Job</h3>
 			<p><?php echo $cja_current_ad->content; ?></p>
 			<h3>About <?php echo $cja_current_ad->author_human_name; ?></h3>
@@ -102,7 +135,13 @@
 
 				// show apply button if user is jobseeker and if we are not on the application page already
 				if ($cja_current_user_obj->role == 'jobseeker' && $_GET['action'] != 'apply') {
-					?><a class="button" href="<?php echo get_the_permalink(); ?>?action=apply">APPLY FOR THIS JOB</a><?php
+					if ($cja_current_ad->applied_to_by_current_user) {
+						$cja_user_application = new CJA_Application($cja_current_ad->applied_to_by_current_user);
+
+						?><p><strong>You applied to this job on <?php echo $cja_user_application->human_application_date; ?></strong></p><?php
+					} else {
+						?><a class="button" href="<?php echo get_the_permalink(); ?>?action=apply">APPLY FOR THIS JOB</a><?php
+					}
 				}
 
 			?>

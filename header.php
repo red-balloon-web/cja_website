@@ -54,6 +54,10 @@
 		// do_action( 'storefront_header' );
 
 		cja_primary_navigation();
+		$cja_current_user = new CJA_User;
+		if ($cja_current_user->role == 'advertiser') {
+			storefront_header_cart();
+		}
 		?>
 
 </div>

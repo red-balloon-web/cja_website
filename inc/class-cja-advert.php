@@ -154,16 +154,15 @@ class CJA_Advert {
             while ( $the_new_query->have_posts() ) : $the_new_query->the_post();
 
                 $check_application = new CJA_Application(get_the_ID());
-                print_r($check_application);
                 if ($check_application->applicant_ID == get_current_user_id()) {
-                    $the_new_query->reset_postdata();
-                    return 1;
+                    wp_reset_postdata();
+                    return $check_application->id;
                 }
 
             endwhile;
         }
 
-        $the_new_query->reset_postdata();
+        wp_reset_postdata();
         return 0;
     }
 }

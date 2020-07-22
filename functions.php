@@ -13,12 +13,11 @@ include('inc/class-cja-application.php');
  * REMOVE SIDEBAR
  */
 
-add_action( 'get_header', 'remove_storefront_sidebar' );
-function remove_storefront_sidebar() {
-	if ( is_woocommerce() ) {
-		remove_action( 'storefront_sidebar', 'storefront_get_sidebar', 10 );
-	}
+function dano_remove_sidebar() {
+    return false;
 }
+
+add_filter( 'is_active_sidebar', 'dano_remove_sidebar', 10, 2 );
 
 /**
  * ENQUEUE STYLESHEET
