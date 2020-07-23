@@ -4,7 +4,7 @@ get_header(); ?>
 
 	<div id="primary" class="content-area">
 		<main id="main" class="site-main" role="main">
-		<h1>Browse Job Adverts</h1>
+		<h1>Browse Jobs</h1>
 		
 		<?php
 
@@ -15,8 +15,7 @@ get_header(); ?>
 				'meta_query' => array(
 					array(
 						'key' => 'cja_ad_status',
-						'value' => 'deleted',
-						'compare' => '!='
+						'value' => 'active'
 					),
 					'order-clause' => array(
 						'key' => 'cja_ad_activation_date',
@@ -35,17 +34,20 @@ get_header(); ?>
 				$cja_current_advert = new CJA_Advert(get_the_ID());
 
 				?>
-				<div class="jobs-archive-item">
-					<p class="jai-title"><strong><?php echo ($cja_current_advert->title); ?></strong> at <?php echo ($cja_current_advert->author_human_name); ?></p>
+				<div class="cja_list_item">
+					<a class="cja_button" href="<?php echo get_the_permalink($cja_current_advert->id); ?>">View Job<?php if ($cja_current_user_obj->role == 'jobseeker') { echo (' and Apply'); } ?></a>
+					<h4 class="item-title"><?php echo ($cja_current_advert->title); ?></h4>
+					<p class="item-meta"><?php echo ($cja_current_advert->author_human_name); ?></p>
+					<p class="item-meta"><em>Posted <?php echo ($cja_current_advert->days_old); ?> days ago</em></p>
+					<!--<p class="jai-title"><strong><?php echo ($cja_current_advert->title); ?></strong> at <?php echo ($cja_current_advert->author_human_name); ?></p>
 					<p class="jai-content"><?php echo ($cja_current_advert->content); ?></p>
-					<p>Posted on <?php echo ($cja_current_advert->human_activation_date); ?></p>
+					<p>Posted on <?php echo ($cja_current_advert->human_activation_date); ?></p>-->
 					<?php if ($cja_current_advert->applied_to_by_current_user) {
 						$cja_user_application = new CJA_Application($cja_current_advert->applied_to_by_current_user);
 						?><p><strong>You applied on <?php echo $cja_user_application->human_application_date; ?>.</strong></p>
 						<!--<a class="button" href="<?php echo get_the_permalink($cja_current_advert->id); ?>">View Job</a>&nbsp;--><a class="button" href="<?php echo get_the_permalink($cja_current_advert->applied_to_by_current_user); ?>">View My Application</a>	
 						<?php
 					} else { ?>
-					<a class="button" href="<?php echo get_the_permalink($cja_current_advert->id); ?>">View Job<?php if ($cja_current_user_obj->role == 'jobseeker') { echo (' and Apply'); } ?></a>
 					<?php } ?>
 				</div>
 				<?php

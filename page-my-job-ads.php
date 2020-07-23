@@ -96,16 +96,20 @@ get_header(); ?>
 			}
 			?>
 
-			<h2>My Job Ads</h2>
-			<div class="job-ads-header">
+			<?php $cja_current_user = new CJA_User; ?>
+			<p>
+			<span class="credits-large"><?php echo ($cja_current_user->credits); ?></span>&nbsp;&nbsp;advert credits remaining
+			<a href="" class="cja_button create-ad-button">Create Advert</a>
+			<a href="" class="cja_button create-ad-button">Buy Credits</a>
+			</p>
+			<h1>My Job Adverts</h1>
+			<!--<div class="job-ads-header">
 				<p>You have <?php echo (get_user_meta( get_current_user_id(), "cja_credits", true)); ?> advert credits remaining</p>
 				<a href="<?php echo get_page_link(); ?>?add-to-cart=8">1 Credit £30</a>
 				<a href="<?php echo get_page_link(); ?>?add-to-cart=8">10 Credits £150</a>
-			</div>
-
-			<div class="products">
-			</div>
-			<a href="<?php echo $cja_page_address . '?create-ad=true'; ?>">CREATE NEW ADVERT</a>
+			</div>-->
+			
+			<!--<a href="<?php echo $cja_page_address . '?create-ad=true'; ?>">CREATE NEW ADVERT</a>-->
 
 			<?php
 
@@ -138,28 +142,24 @@ get_header(); ?>
 					$the_query->reset_postdata();
 
 					?>
-						<div class="my-account-job-advert">
-							<div class="maja_title_row">
-								<div class="maja_title">
-									<strong><?php echo $currentad->title; ?></strong><br>
-									<?php echo strtoupper($currentad->status); 
-									if ($currentad->status == 'active') {
-										echo (" ({$currentad->days_left} days remaining)");
-									} ?>
-								</div>
-								<div class="maja_view"><a href="<?php echo get_the_permalink($currentad->id); ?>">VIEW</a></div>
-								<div class="maja_option">
-									<?php if ($currentad->status == 'active') { ?>
-										<a href="<?php echo ($cja_page_address . '?extend-ad=' . get_the_ID()); ?>">EXTEND</a>
-									<?php } else if ($currentad->status == 'inactive') { ?>
-										<a href="<?php echo ($cja_page_address . '?activate-ad=' . get_the_ID()); ?>">ACTIVATE</a>
-									<?php } else if ($currentad->status == 'expired') { ?>
-										<a href="<?php echo ($cja_page_address . '?activate-ad=' . get_the_ID()); ?>">REACTIVATE</a>
-									<?php } ?>
-								</div>
-								<div class="maja_edit"><a href="<?php echo $cja_page_address; ?>?edit-ad=<?php echo get_the_ID(); ?>">EDIT</a></div>
-								<div class="maja_delete"><a href="<?php echo $cja_page_address; ?>?delete-ad=<?php echo get_the_ID(); ?>">DELETE</a></div>
-							</div>
+						<div class="cja_list_item">
+							<a class="cja_button" href="<?php echo $cja_page_address; ?>?delete-ad=<?php echo get_the_ID(); ?>">DELETE</a>
+							<a class="cja_button" href="<?php echo $cja_page_address; ?>?edit-ad=<?php echo get_the_ID(); ?>">EDIT</a>
+							<?php if ($currentad->status == 'active') { ?>
+								<a class="cja_button" href="<?php echo ($cja_page_address . '?extend-ad=' . get_the_ID()); ?>">EXTEND</a>
+							<?php } else if ($currentad->status == 'inactive') { ?>
+								<a class="cja_button" href="<?php echo ($cja_page_address . '?activate-ad=' . get_the_ID()); ?>">ACTIVATE</a>
+							<?php } else if ($currentad->status == 'expired') { ?>
+								<a class="cja_button" href="<?php echo ($cja_page_address . '?activate-ad=' . get_the_ID()); ?>">REACTIVATE</a>
+							<?php } ?>
+							<a class="cja_button" href="<?php echo get_the_permalink($currentad->id); ?>">VIEW</a>
+							<h4 class="item-title"><?php echo $currentad->title; ?></h4>
+							<p class="item-meta">
+								<?php echo strtoupper($currentad->status); 
+								if ($currentad->status == 'active') {
+									echo (" ({$currentad->days_left} days remaining)");
+								} ?>
+							</p>
 						</div>
 					<?php
 

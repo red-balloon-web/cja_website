@@ -25,7 +25,8 @@ add_filter( 'is_active_sidebar', 'dano_remove_sidebar', 10, 2 );
 
  add_action( 'wp_enqueue_scripts', 'enqueue_child_scripts');
  function enqueue_child_scripts() {
-     wp_enqueue_style( 'child_stylesheet', get_stylesheet_uri() );
+     // wp_enqueue_style( 'child_stylesheet', get_stylesheet_uri() );
+     // commented out because it was loading it twice
  }
 
 

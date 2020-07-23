@@ -14,6 +14,7 @@ class CJA_Advert {
     public $expiry_date; // expiry date as timestamp
     public $activation_date; // activation date as timestamp
     public $human_activation_date; // human readable
+    public $days_old;
     public $days_left;
     public $author; // ID of user placing ad
     public $author_human_name; // Humain readable author (company) name
@@ -35,6 +36,7 @@ class CJA_Advert {
             $this->activation_date = get_post_meta($id, 'cja_ad_activation_date', true);
             $this->human_activation_date = $this->get_human_activation_date();
             $this->days_left = $this->days_left();
+            $this->days_old = $this->get_days_old();
             $this->author = get_post_field( 'post_author', $id );
             $this->author_human_name = $this->get_human_name();
             $this->created_by_current_user = $this->is_current_user_ad();
@@ -119,6 +121,12 @@ class CJA_Advert {
         } else {
             return "Not activated";
         }
+    }
+
+    // Return number of days since the ad was activated
+    private function get_days_old() {
+        $diff = strtotime(date("j F Y")) - $this->activation_date;
+        return abs(round($diff / 86400));
     }
 
     // Return human friendly author (company) name 

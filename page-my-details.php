@@ -33,7 +33,6 @@
 			);
 
 			$result = wp_insert_user($userdata);
-			//print_r($result);
 
 			if (is_int($result)) {
 				?><p class="cja_alert"><?php echo $username; ?>, Your Account Has Been Created!<br>Please use your password to login!</p><?php
@@ -46,7 +45,6 @@
 		// UPDATE USER INFORMATION IF POST DATA SENT
 		if ($_POST['form-update']) {
 			$cja_current_user_obj->updateFromForm();
-			//print_r($cja_current_user_obj);
 			$cja_current_user_obj->save();
 			?><p class="cja_alert">Your Details Were Updated!</p><?php
 			$cja_current_user_obj = new CJA_User;
@@ -135,5 +133,4 @@
 	</div><!-- #primary -->
 
 <?php
-// do_action( 'storefront_sidebar' );
 get_footer();

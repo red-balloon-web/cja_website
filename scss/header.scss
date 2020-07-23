@@ -1,0 +1,33 @@
+#masthead.site-header {
+    background-color: #a2d0e6;
+
+    @media (min-width: 768px) {
+        border-bottom-color: #555;
+        padding-top: 30px;
+        margin-bottom: 50px;
+    }
+
+    .header-top {
+
+        .logged-in-message {
+            float: right;
+        }
+
+        h2 {
+            font-size: 2rem;
+            text-align: left;
+            margin-bottom: 0;
+            display: inline-block;
+        }
+    }
+
+    ul.menu {
+        li.current-menu-item > a {
+            color: #ff4343;
+        }
+    }
+}
+
+.site-footer {
+    background-color: #a2d0e6;
+}

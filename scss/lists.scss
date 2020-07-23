@@ -1,0 +1,20 @@
+.cja_list_item {
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+
+    .cja_button {
+        float: right;
+        margin-left: 15px;
+    }
+
+    .item-title {
+        display: inline-block;
+        margin-bottom: 0;
+        font-weight: 600;
+    }
+
+    .item-meta {
+        margin-bottom: 0;
+    }
+}

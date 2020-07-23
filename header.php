@@ -33,6 +33,25 @@
 	
 
 	<header id="masthead" class="site-header" role="banner" style="<?php storefront_header_styles(); ?>">
+		<div class="col-full header-top">
+			<div class="logged-in-message">
+				<?php
+					$cja_current_user = new CJA_User;
+					if ($cja_current_user->is_logged_in) {
+						if ($cja_current_user->company_name) {
+						?><p>Logged in as <?php echo $cja_current_user->company_name; ?></p><?php
+						} else if ($cja_current_user->full_name) {
+							?><p>Logged in as <?php echo $cja_current_user->full_name; ?></p><?php
+						} else {
+							?><p>Logged in as <?php echo $cja_current_user->login_name; ?></p><?php
+						}
+					} else {
+						?><p><a href="<?php echo get_site_url(); ?>/my-details">Create Account / Log In</a></p><?php
+					}
+				?>
+			</div>
+			<h2>Courses and Jobs Advertiser</h2>
+		</div>
 		<div class="col-full">
 
 		<?php

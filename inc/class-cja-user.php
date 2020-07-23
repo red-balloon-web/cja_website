@@ -16,7 +16,7 @@ class CJA_User {
     public $company_description;
     public $cv_filename;
     public $cv_url;
-    // number of credits
+    public $credits;
 
     
     /**
@@ -46,6 +46,7 @@ class CJA_User {
         $this->company_description = get_user_meta($this->id, 'company_description', true);
         $this->cv_filename = get_user_meta($this->id, 'cv_filename', true);
         $this->cv_url = get_user_meta($this->id, 'cv_url', true);
+        $this->credits = get_user_meta($this->id, 'cja_credits', true);
         
     }
 
