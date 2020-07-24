@@ -3,9 +3,40 @@
     border-bottom: 1px solid #ddd;
     padding-bottom: 10px;
 
-    .cja_button {
+    .cja_button,
+    .cja_icon,
+    .cja_spend_button {
         float: right;
         margin-left: 15px;
+    }
+
+    .cja_icon {
+        font-size: 1.5rem;
+
+        .fa-trash {
+            color: #800;
+            &:hover {
+                color: #52527b;
+            }
+        }
+        .fa-edit {
+            color: #8181c7;
+            &:hover {
+                color: #52527b;
+            }
+        }
+        .fa-eye {
+            color: #8181c7;
+            &:hover {
+                color: #52527b;
+            }
+        }
+        .fa-clock {
+            color: #8181c7;
+            &:hover {
+                color: #52527b;
+            }
+        }
     }
 
     .item-title {
@@ -16,5 +47,13 @@
 
     .item-meta {
         margin-bottom: 0;
+
+        &.inactive span {
+            color: #800;
+        }
+
+        &.active span {
+            color: #506f50;
+        }
     }
 }

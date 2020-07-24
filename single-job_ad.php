@@ -10,124 +10,82 @@
 
 			$cja_current_user_obj = new CJA_User();
 			$cja_current_ad = new CJA_Advert(get_the_ID());
+			$display_advert = true;
 
-			// Do this stuff for jobseekers
-			if ($cja_current_user_obj->role == 'jobseeker') {
-						
-				// Display form to apply
-				if ($_GET['action'] == 'apply') {
-					?>
+			/**
+			 * JOBSEEKER FUNCTIONS
+			 * 
+			 *  - Display application form
+			 *  - Create new application from POST
+			 *  - Display message if already applied
+			 */
+			include ('inc/single-ad/jobseeker-get-post-functions.php');
 
-					<h2>Apply for Job: <?php echo $cja_current_ad->title; ?></h2>
-					<form action="<?php echo get_the_permalink(); ?>" method="post">
-						<input type="hidden" name="do-application" value="true">
-						<p>Covering letter:</p>
-						<textarea name="letter" id="" cols="30" rows="10"></textarea>
-						<p></p>
-						<p><input type="submit" value="Send Application"></p>
-					</form>
+			/**
+			 * ADVERTISER FUNCTIONS
+			 * 
+			 *  $_GET
+			 *  - Extend ad
+			 *  - Activate ad
+			 *  - Display edit ad form
+			 * 
+			 *  $_POST
+			 *  - Update advert if submitted
+			 */
+			include ('inc/single-ad/advertiser-get-post-functions.php');
 
-					<?php
-				}
-
-				// Create new application
-				if ($_POST['do-application']) {
-					$cja_new_application = new CJA_Application;
-					$cja_new_application->create(get_the_ID());
-					$cja_new_application->update_from_form($cja_current_ad, $cja_current_user_obj);
-					$cja_new_application->save();
-					?><p class="cja_alert">You Applied to <?php echo $cja_current_ad->title; ?></p><?php
-				}
-
-				// Display message if they already applied
-				$cja_current_ad = new CJA_Advert(get_the_ID());
-				if ($cja_current_ad->applied_to_by_current_user) {
-					$cja_user_application = new CJA_Application($cja_current_ad->applied_to_by_current_user);
-	
-					?><p><strong>You applied to this job on <?php echo $cja_user_application->human_application_date; ?></strong></p><?php
-				}
-			}
 			?>
 
 			<?php
-			// Does this ad belong to the current user
-			if ($cja_current_ad->created_by_current_user) {
-
-				// Extend this ad
-				if ($_GET['extend-ad']) {
-					$cja_extend_ad = new CJA_Advert(get_the_ID());
-					$cja_extend_ad->extend();
-					$cja_extend_ad->save();
-					spend_credits();
-					?><p class="cja_alert">Your advert for "<?php echo ($cja_extend_ad->title); ?>" has been extended for 1 credit.</p><?php
-					$cja_current_ad = new CJA_Advert(get_the_ID());
-				}
-
-				// Activate this ad
-				if ($_GET['activate-ad']) {
-					$cja_activate_ad = new CJA_Advert(get_the_ID());
-					$cja_activate_ad->activate();
-					$cja_activate_ad->save();
-					spend_credits();
-					?><p class="cja_alert">Your advert for "<?php echo ($cja_activate_ad->title); ?>" has been activated for 1 credit.</p><?php
-					$cja_current_ad = new CJA_Advert(get_the_ID());
-				}
-
-				// Display edit ad form
-				if ($_GET['edit-ad']) { 
-					$cja_edit_ad = new CJA_Advert(get_the_ID()); ?>
-					<form action="<?php echo get_the_permalink() ?>" method="POST">
-						<p>Advert Title</p>
-						<input type="text" name="ad-title" value="<?php echo ($cja_edit_ad->title); ?>">
-						<p>Advert Text</p>
-						<textarea name="ad-content" id="" cols="30" rows="10"><?php echo ($cja_edit_ad->content); ?></textarea>
-						<input type="hidden" name="update-ad" value="true" >
-						<input type="hidden" name="advert-id" value="<?php echo ($cja_edit_ad->id); ?>">
-						<input type="submit" value="Update Advert">
-					</form>
-				<?php }
-
-				// Update advert if form submitted
-				if ($_POST['update-ad']) {
-
-					$cja_update_ad = new CJA_Advert($_POST['advert-id']);
-					$cja_update_ad->update_from_form(); 
-					$cja_update_ad->save(); 
-					?><p class="cja_alert">Your advert for "<?php echo ($cja_update_ad->title); ?>" has been updated.</p><?php
-					$cja_current_ad = new CJA_Advert(get_the_ID());
-				}
-
-				// Display appropriate options
-
-				if ($cja_current_ad->status == 'active') {
-					?><p><strong>You placed this advert on <?php echo $cja_current_ad->human_activation_date; ?> (<?php echo $cja_current_ad->days_left; ?> days left)</strong></p>
-					<p><a href="<?php echo get_the_permalink(); ?>?edit-ad=true">EDIT</a> <a href="<?php echo get_the_permalink(); ?>/?extend-ad=true">EXTEND</a> <a href="<?php echo get_site_url() . '/' . $cja_config['my-jobs-admin-page-slug'] . '?delete-ad=' . $cja_current_ad->id; ?>">DELETE</a></p><?php
-				} else if ($cja_current_ad->status == 'inactive') {
-					?><p><strong>This Advert Is a Draft</strong></p>
-					<p><a href="<?php echo get_the_permalink() ?>?activate-ad=true">ACTIVATE (1 credit)</a></p>
-					<?php
-				}
-			}
-			?>
-			<?php $cja_current_advertiser = new CJA_User($cja_current_ad->author); ?>
-			<?php // print_r($cja_current_ad); ?>
-			<h1><?php echo $cja_current_ad->title; ?></h1>
-			<?php if ($cja_current_ad->status == 'deleted') {
-				?><p><strong>This advert has been deleted</strong></p>
-			<?php } ?>
-			<p>Posted by <?php echo ($cja_current_ad->author_human_name); 
-				if ($cja_current_ad->status == 'active') {
-					echo ' on ' . ($cja_current_ad->human_activation_date); 
-				}
-			?></p>
-			<h3>About The Job</h3>
-			<p><?php echo $cja_current_ad->content; ?></p>
-			<h3>About <?php echo $cja_current_ad->author_human_name; ?></h3>
-			<p><?php echo $cja_current_advertiser->company_description; ?></p>
-
+			if ($display_advert) {
 			
+				// Display user messages
+				if ($cja_current_ad->created_by_current_user) {
+					/*if ($cja_current_ad->status == 'active') {
+						?><p class="cja_alert_success">You Placed this Advert on <?php echo $cja_current_ad->human_activation_date; ?> (<?php echo $cja_current_ad->days_left; ?> days left)</p><?php
+					}*/
+					if ($cja_current_ad->status == 'inactive') {
+						?><p class="cja_alert cja_alert--amber">This Advert Is a Draft</p><?php
+					}
+					if ($cja_current_ad->status == 'deleted') {
+						?><p class="cja_alert cja_alert--red">This Advert Has Been Deleted</p><?php
+					}
+				}
 
-			<?php
+
+				/**
+				 * DISPLAY USER OPTIONS
+				 * 
+				 * ADVERTISER
+				 *  - Activate
+				 *  - Edit
+				 *  - Extend
+				 *  - Delete
+				 */
+				include('inc/single-ad/display-user-options.php');
+				
+				?>
+
+				<hr>
+				<?php $cja_current_advertiser = new CJA_User($cja_current_ad->author); ?>
+				<?php // print_r($cja_current_ad); ?>
+				<h1><?php echo $cja_current_ad->title; ?></h1>
+				<?php if ($cja_current_ad->status == 'deleted') {
+					?><p><strong>This advert has been deleted</strong></p>
+				<?php } ?>
+				<p>Posted by <?php echo ($cja_current_ad->author_human_name); 
+					if ($cja_current_ad->status == 'active') {
+						echo ' on ' . ($cja_current_ad->human_activation_date); 
+					}
+				?></p>
+				<h3>About The Job</h3>
+				<p><?php echo $cja_current_ad->content; ?></p>
+				<h3>About <?php echo $cja_current_ad->author_human_name; ?></h3>
+				<p><?php echo $cja_current_advertiser->company_description; ?></p>
+
+				<hr>
+
+				<?php
 
 				if ($cja_current_user_obj->is_logged_in == false) {
 					?><a href="<?php echo get_site_url(); ?>/my-details" class="button">LOG IN OR CREATE ACCOUNT TO APPLY</a><?php
@@ -144,9 +102,10 @@
 					}
 				}
 
-			?>
+				include('inc/single-ad/display-user-options.php');
 
-			<?php
+			
+			}
 
 		endwhile; // End of the loop.
 		?>

@@ -59,20 +59,19 @@
 			<?php if($cja_current_user_obj->role == 'advertiser') { ?>
 				
 				<h1>My Organisation Details - <?php echo stripslashes($cja_current_user_obj->company_name); ?></h1>
-				<p><a href="<?php echo get_page_link(); ?>?cja-logout=true">LOG OUT</a></p>
 				<form action="<?php echo $cja_page_address; ?>" method="post" enctype="multipart/form-data">
-					<p>Username: <?php echo $cja_current_user_obj->login_name; ?></p>
+					<p>Username: <?php echo $cja_current_user_obj->login_name; ?><br><em>Your username cannot be changed</em></p>
 					<p>Organisation Name<br><input type="text" name="company_name" value="<?php echo stripslashes($cja_current_user_obj->company_name); ?>"></p>
 					<p>Short Description of Your Organisation<br>
 					<textarea name="company_description" id="" cols="30" rows="10"><?php echo stripslashes($cja_current_user_obj->company_description); ?></textarea></p>
 					<input type="hidden" name="form-update" value="advertiser">
-					<p><input type="submit" value="Update"></p>
+					<p><input class="cja_button cja_button--2" type="submit" value="Update Details">&nbsp;&nbsp;<a class="cja_button" href="<?php echo wp_logout_url( home_url() ); ?>">LOG OUT</a></p>
 				</form>
 
 			<!-- AND IF THEY ARE AN APPLICANT DISPLAY APPLICANT DETAILS -->	
 			<?php } else if ($cja_current_user_obj->role == 'jobseeker') { ?>
 				<h1>My Details - <?php echo $cja_current_user_obj->full_name; ?></h1>
-				<p><a href="<?php echo get_page_link(); ?>?cja-logout=true">LOG OUT</a></p>
+				<p><a href="<?php echo wp_logout_url( home_url() ); ?>">LOG OUT</a></p>
 				<form action="<?php echo $cja_page_address; ?>" method="post" enctype="multipart/form-data">
 					<p>Username: <?php echo $cja_current_user_obj->login_name; ?><br><em>Your username cannot be changed</em></p>
 					<p>First Name<br><input type="text" name="first_name" value="<?php echo $cja_current_user_obj->first_name; ?>"></p>

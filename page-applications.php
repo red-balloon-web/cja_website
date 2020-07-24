@@ -7,8 +7,11 @@ get_header(); ?>
 
 		<?php
 			$cja_current_page_url = get_the_permalink();
-
-            $cja_current_user_obj = new CJA_User;
+			$cja_current_user_obj = new CJA_User;
+			
+			/**
+			 * JOBSEEKER SECTION
+			 */
 			if ($cja_current_user_obj->role == 'jobseeker') {
 				
 				if ($_GET['applicant_archive']) {
@@ -77,24 +80,23 @@ get_header(); ?>
 
 				wp_reset_postdata();
 
-			} // End if (role == 'jobseeker')
+			}
+			/**
+			 * ADVERTISER SECTION
+			 */
 			else if ($cja_current_user_obj->role == 'advertiser') {
 
-				if ($_GET['advertiser_archive']) {
-					$cja_archive_application = new CJA_Application($_GET['advertiser_archive']);
-					$cja_archive_application_advert = new CJA_Advert($cja_archive_application->advert_ID);
-					$cja_archive_application->advertiser_archive();
-					$cja_archive_application->save();
-					?><p class="cja_alert">You archived <?php echo $cja_archive_application->applicant_name; ?>'s application for '<?php echo $cja_archive_application_advert->title; ?>'.</p><?php
-				}
-
+				/**
+				 * ADVERTISER GET FUNCTIONS
+				 *  - Archive Application
+				 */
+				include ('inc/applications/advertiser-get-functions.php');
 				?>
             
-				<h2>Applications to My Jobs</h2>
+				<h1>Applications to My Jobs</h1>
 
 				<?php
 
-				// Query Arguments
 				$args = array(  
 					'post_type' => 'application',
 					'meta_query' => array(
@@ -109,44 +111,40 @@ get_header(); ?>
 					),
 					'order' => 'ASC', 
 				);
+
 				$the_query = new WP_Query( $args );
 
-				// The Loop to list job ads
+				// Loop
 				if ( $the_query->have_posts() ) {
-
 					while ( $the_query->have_posts() ) : $the_query->the_post(); 
-						?>
-						<!--
-					<p>Application: <?php
+
+					// Set up objects
 					$cja_current_application = new CJA_Application(get_the_ID());
-					print_r($cja_current_application); ?></p>
-
-					<p>Advert: <?php
 					$cja_current_advert = new CJA_Advert($cja_current_application->advert_ID);
-					print_r($cja_current_advert); ?></p>
-
-					<p>Advertiser: <?php
+					$the_query->reset_postdata();
 					$cja_current_advertiser = new CJA_User($cja_current_application->advertiser_ID);
-					print_r($cja_current_advertiser); ?></p>
-					
-					<p>Applicant: <?php 
 					$cja_current_applicant = new CJA_User($cja_current_application->applicant_ID);
-					print_r($cja_current_applicant); ?></p>-->
+					?>
 							
-							<div class="my-account-job-advert">
-								<div class="maja_title_row">
-									<div class="maja_title">
-										<h3><?php echo $cja_current_advert->title; ?></h3>
-										<p>Application by: <?php echo $cja_current_applicant->full_name; ?></p>
-										<?php if ($cja_current_application->advertiser_archived) {
-										?><p>This application is archived</p><?php
-									} ?>
-										<a href="<?php echo get_the_permalink($cja_current_application->id); ?>">VIEW</a>
-										<a href="<?php echo $cja_current_page_url; ?>?advertiser_archive=<?php echo $cja_current_application->id; ?>">ARCHIVE</a>
-									</div>
-								</div>
-							</div>
-						<?php
+					<div class="cja_list_item">
+						<a href="<?php echo $cja_current_page_url; ?>?advertiser_archive=<?php echo $cja_current_application->id; ?>" class="cja_icon"><i class="fa fa-trash"></i></a>
+						<a href="<?php echo get_the_permalink($cja_current_application->id); ?>" class="cja_icon"><i class="fas fa-eye"></i></a>
+						<h4 class="item-title"><?php echo $cja_current_advert->title; ?></h4>
+						<p class="item-meta"><em><?php echo $cja_current_applicant->full_name; ?> :: <?php echo $cja_current_application->human_application_date; ?></em></p>
+
+						<!--
+						<div class="maja_title">
+							<h3><?php echo $cja_current_advert->title; ?></h3>
+							<p>Application by: <?php echo $cja_current_applicant->full_name; ?></p>
+							<?php if ($cja_current_application->advertiser_archived) {
+							?><p>This application is archived</p><?php
+						} ?>
+							<a href="<?php echo get_the_permalink($cja_current_application->id); ?>">VIEW</a>
+							<a href="<?php echo $cja_current_page_url; ?>?advertiser_archive=<?php echo $cja_current_application->id; ?>">ARCHIVE</a>
+						</div>-->
+					</div>
+
+					<?php
 
 					endwhile;
 

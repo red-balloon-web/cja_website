@@ -39,12 +39,13 @@
 					$cja_current_user = new CJA_User;
 					if ($cja_current_user->is_logged_in) {
 						if ($cja_current_user->company_name) {
-						?><p>Logged in as <?php echo $cja_current_user->company_name; ?></p><?php
+						?><p>Logged in as <?php echo $cja_current_user->company_name;
 						} else if ($cja_current_user->full_name) {
-							?><p>Logged in as <?php echo $cja_current_user->full_name; ?></p><?php
+							?><p>Logged in as <?php echo $cja_current_user->full_name;
 						} else {
-							?><p>Logged in as <?php echo $cja_current_user->login_name; ?></p><?php
+							?><p>Logged in as <?php echo $cja_current_user->login_name; 
 						}
+						?>&nbsp;&nbsp;<a href="<?php echo wp_logout_url( home_url() ); ?>"><i class="fas fa-sign-out-alt"></i></a><?php
 					} else {
 						?><p><a href="<?php echo get_site_url(); ?>/my-details">Create Account / Log In</a></p><?php
 					}

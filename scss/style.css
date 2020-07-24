@@ -11,6 +11,7 @@ Template: storefront
 @import 'header.scss';
 @import 'typography.scss';
 @import 'my-ads.scss';
+@import 'forms.scss';
 
 /* JOBS ARCHIVE PAGE */
 
@@ -25,13 +26,6 @@ Template: storefront
 }
 
 /* MY JOB ADS PAGE */
-
-.cja_alert {
-    font-weight: 700;
-    background-color: lightgreen;
-    border: 1px solid green;
-    padding: 10px;
-}
 
 .job-ads-header {
     display: flex;
