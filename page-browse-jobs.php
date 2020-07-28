@@ -35,17 +35,21 @@ get_header(); ?>
 
 				?>
 				<div class="cja_list_item">
-					<a class="cja_button" href="<?php echo get_the_permalink($cja_current_advert->id); ?>">View Job<?php if ($cja_current_user_obj->role == 'jobseeker') { echo (' and Apply'); } ?></a>
+					<?php 
+					if ($cja_current_advert->applied_to_by_current_user) {
+							$cja_user_application = new CJA_Application($cja_current_advert->applied_to_by_current_user);
+							?><a class="cja_button" href="<?php echo get_the_permalink($cja_current_advert->applied_to_by_current_user); ?>">View My Application</a><?php	
+					} else {
+						?><a class="cja_button" href="<?php echo get_the_permalink($cja_current_advert->id); ?>">View Job<?php if ($cja_current_user_obj->role == 'jobseeker') { echo (' and Apply'); } ?></a><?php
+					}
+					?>
+					
 					<h4 class="item-title"><?php echo ($cja_current_advert->title); ?></h4>
 					<p class="item-meta"><?php echo ($cja_current_advert->author_human_name); ?></p>
 					<p class="item-meta"><em>Posted <?php echo ($cja_current_advert->days_old); ?> days ago</em></p>
-					<!--<p class="jai-title"><strong><?php echo ($cja_current_advert->title); ?></strong> at <?php echo ($cja_current_advert->author_human_name); ?></p>
-					<p class="jai-content"><?php echo ($cja_current_advert->content); ?></p>
-					<p>Posted on <?php echo ($cja_current_advert->human_activation_date); ?></p>-->
 					<?php if ($cja_current_advert->applied_to_by_current_user) {
 						$cja_user_application = new CJA_Application($cja_current_advert->applied_to_by_current_user);
-						?><p><strong>You applied on <?php echo $cja_user_application->human_application_date; ?>.</strong></p>
-						<!--<a class="button" href="<?php echo get_the_permalink($cja_current_advert->id); ?>">View Job</a>&nbsp;--><a class="button" href="<?php echo get_the_permalink($cja_current_advert->applied_to_by_current_user); ?>">View My Application</a>	
+						?><p class="green"><strong>You applied on <?php echo $cja_user_application->human_application_date; ?>.</strong></p>
 						<?php
 					} else { ?>
 					<?php } ?>

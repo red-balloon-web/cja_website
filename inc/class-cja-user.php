@@ -17,6 +17,11 @@ class CJA_User {
     public $cv_filename;
     public $cv_url;
     public $credits;
+    public $phone;
+    public $postcode;
+    public $age_category;
+    public $gcse_maths;
+    public $weekends_availability;
 
     
     /**
@@ -47,6 +52,11 @@ class CJA_User {
         $this->cv_filename = get_user_meta($this->id, 'cv_filename', true);
         $this->cv_url = get_user_meta($this->id, 'cv_url', true);
         $this->credits = get_user_meta($this->id, 'cja_credits', true);
+        $this->phone = get_user_meta($this->id, 'phone', true);
+        $this->postcode = get_user_meta($this->id, 'postcode', true);
+        $this->age_category = get_user_meta($this->id, 'age_category', true);
+        $this->gcse_maths = get_user_meta($this->id, 'gcse_maths', true);
+        $this->weekends_availability = get_user_meta($this->id, 'weekends_availability', true);
         
     }
 
@@ -68,7 +78,25 @@ class CJA_User {
         if ($_POST['company_description']) {
             $this->company_description = $_POST['company_description'];
         }
-        if ($_FILES['cv-file']) {
+
+        // Jobseekers
+
+        if ($_POST['phone']) {
+            $this->phone = $_POST['phone'];
+        }
+        if ($_POST['postcode']) {
+            $this->postcode = $_POST['postcode'];
+        }
+        if ($_POST['age_category']) {
+            $this->age_category = $_POST['age_category'];
+        }
+        if ($_POST['gcse_maths']) {
+            $this->gcse_maths = $_POST['gcse_maths'];
+        }
+        if ($_POST['weekends_availability']) {
+            $this->weekends_availability = $_POST['weekends_availability'];
+        }
+        if ( $_FILES['cv-file']['size'] != 0 ) {
             if ( ! function_exists( 'wp_handle_upload' ) ) {
                 require_once( ABSPATH . 'wp-admin/includes/file.php' );
             }
@@ -93,7 +121,42 @@ class CJA_User {
         wp_update_user($userdata);
         update_user_meta($this->id, 'company_name', $this->company_name);
         update_user_meta($this->id, 'company_description', $this->company_description);
+        
+        // Jobseekers
         update_user_meta($this->id, 'cv_filename', $this->cv_filename);
         update_user_meta($this->id, 'cv_url', $this->cv_url);
+        update_user_meta($this->id, 'phone', $this->phone);
+        update_user_meta($this->id, 'postcode', $this->postcode);
+        update_user_meta($this->id, 'age_category', $this->age_category);
+        update_user_meta($this->id, 'gcse_maths', $this->gcse_maths);
+        update_user_meta($this->id, 'weekends_availability', $this->weekends_availability);
+    }
+
+    // Return human-friendly values
+    public function return_human($field) {
+        if ($field == 'gcse_maths') {
+            if ($this->gcse_maths == 'n') {
+                return 'N/A';
+            } else {
+                return strtoupper($this->gcse_maths);
+            }
+        }
+
+        if ($field == 'weekends_availability') {
+            switch($this->weekends_availability) {
+                case 'none':
+                    return 'None';
+                    break;
+                case 'sat':
+                    return 'Saturdays Only';
+                    break;
+                case 'sun':
+                    return 'Sundays Only';
+                    break;
+                case 'satsun':
+                    return 'Saturdays and Sundays';
+                    break;
+            }
+        }
     }
 }

@@ -32,7 +32,29 @@
 
 	
 
-	<header id="masthead" class="site-header" role="banner" style="<?php storefront_header_styles(); ?>">
+	<header id="masthead" class="site-header homepage" role="banner" style="<?php storefront_header_styles(); ?>">
+
+	<div class="col-full header-top">
+			<div class="logged-in-message">
+				<?php
+					$cja_current_user = new CJA_User;
+					if ($cja_current_user->is_logged_in) {
+						if ($cja_current_user->company_name) {
+						?><p>Logged in as <?php echo $cja_current_user->company_name;
+						} else if ($cja_current_user->full_name) {
+							?><p>Logged in as <?php echo $cja_current_user->full_name;
+						} else {
+							?><p>Logged in as <?php echo $cja_current_user->login_name; 
+						}
+						?>&nbsp;&nbsp;<a href="<?php echo wp_logout_url( home_url() ); ?>"><i class="fas fa-sign-out-alt"></i></a><?php
+					} else {
+						?><p><a href="<?php echo get_site_url(); ?>/my-details">Create Account / Log In</a></p><?php
+					}
+				?>
+			</div>
+			<h2>Courses and Jobs Advertiser</h2>
+		</div>
+		<div class="col-full">
 
 		<?php
 		/**
@@ -50,9 +72,15 @@
 		 * @hooked storefront_header_cart                      - 60
 		 * @hooked storefront_primary_navigation_wrapper_close - 68
 		 */
-		do_action( 'storefront_header' );
-		?>
+		//do_action( 'storefront_header' );
 
+		cja_primary_navigation();
+		$cja_current_user = new CJA_User;
+		if ($cja_current_user->role == 'advertiser') {
+			storefront_header_cart();
+		}
+		?>
+</div>
 	</header><!-- #masthead -->
 
 	<?php

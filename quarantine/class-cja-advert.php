@@ -20,13 +20,90 @@ class CJA_Advert {
     public $author_human_name; // Humain readable author (company) name
     public $created_by_current_user; // Boolean
     public $applied_to_by_current_user; // Boolean
-    public $salary;
-    public $contact_person;
-    public $phone;
-    public $deadline; // YYYY-MM-DD
-    public $job_type;
-    public $sectors;
     
+    // Form Fields
+    public $form_fields = array(
+        0 => array(
+            'name' => 'Salary',
+            'database_name' => 'salary',
+            'formname' => 'salary',
+            'input_type' => 'text',
+        ),
+        1 => array(
+            'name' => 'Job Type',
+            'database_name' => 'job_type',
+            'formname' => 'job_type',
+            'input_type' => 'select',
+            'select_options' => array(
+                0 => array(
+                    'name' => 'Freelance',
+                    'formname' => 'freelance'
+                ),
+                1 => array(
+                    'name' => 'Full time',
+                    'formname' => 'fulltime'
+                ),
+                2 => array(
+                    'name' => 'Part time',
+                    'formname' => 'parttime'
+                ),
+                3 => array(
+                    'name' => 'Intern',
+                    'formname'=> 'intern'
+                ),
+                4 => array(
+                    'name' => 'Temporary',
+                    'formname' => 'temporary'
+                ),
+                5 => array(
+                    'name' => 'Volunteer',
+                    'formname' => 'volunteer'
+                ),
+                6 => array(
+                    'name' => 'Work Based Learning',
+                    'formname' => 'work_based_learning'
+                )
+            )
+        ),
+        2 => array(
+            'name' => 'Contact Person',
+            'database_name' => 'contact_person',
+            'formname' => 'contact_person',
+            'input_type' => 'text',
+        ),
+        3 => array(
+            'name' => 'Phone Number',
+            'database_name' => 'phone_number',
+            'formname' => 'phone_number',
+            'input_type' => 'text'
+        ),
+        4 => array(
+            'name' => 'Deadline',
+            'database_name' => 'deadline',
+            'formname' => 'deadline',
+            'input_type' => 'date'
+        ),
+        5 => array(
+            'name' => 'Sector(s)',
+            'database_name' => 'sectors',
+            'formname' => 'sectors',
+            'input_type' => 'select',
+            'select_options' => array(
+                0 => array(
+                    'name' => 'Accounting',
+                    'formname' => 'accounting'
+                ),
+                1 => array(
+                    'name' => 'Construction',
+                    'formname' => 'construction'
+                ),
+                2 => array(
+                    'name' => 'Nursing',
+                    'formname' => 'nursing'
+                )
+            )
+        )
+    );
 
     /**
      * CONSTRUCTOR
@@ -48,18 +125,22 @@ class CJA_Advert {
             $this->author_human_name = $this->get_human_name();
             $this->created_by_current_user = $this->is_current_user_ad();
             $this->applied_to_by_current_user = $this->is_applied_to_by_current_user();
-            $this->salary = get_post_meta($id, 'cja_salary', true);
-            $this->contact_person = get_post_meta($id, 'cja_contact_person', true);
-            $this->phone = get_post_meta($id, 'cja_phone', true);
-            $this->deadline = get_post_meta($id, 'cja_deadline', true);
-            $this->job_type = get_post_meta($id, 'cja_job_type', true);
-            $this->sectors = get_post_meta($id, 'cja_sectors', true);
         }
     }
 
     /**
      * PUBLIC FUNCTIONS
      */
+
+    // Display form fields
+    public function display_form_fields() {
+        foreach ($this->form_fields as $field) {
+            if ($field['input_type'] == 'text') {
+                ?><p><?php echo $field['name']; ?></p>
+                <input type="text" name="<?php echo $field['formname']; ?>"><?php
+            }
+        }
+    }
 
     // Create a new WP Post
     public function create() {
@@ -81,24 +162,6 @@ class CJA_Advert {
         if ($_POST['ad-content']) {
             $this->content = $_POST['ad-content'];
         }
-        if ($_POST['salary']) {
-            $this->salary = $_POST['salary'];
-        }
-        if ($_POST['contact_person']) {
-            $this->contact_person = $_POST['contact_person'];
-        }
-        if ($_POST['phone']) {
-            $this->phone = $_POST['phone'];
-        }
-        if ($_POST['deadline']) {
-            $this->deadline = $_POST['deadline'];
-        }
-        if ($_POST['job_type']) {
-            $this->job_type = $_POST['job_type'];
-        }
-        if ($_POST['sectors']) {
-            $this->sectors = $_POST['sectors'];
-        }
     }
 
     // Update all properties in the WP database
@@ -113,12 +176,6 @@ class CJA_Advert {
         update_post_meta($this->id, 'cja_ad_status', $this->status);
         update_post_meta($this->id, 'cja_ad_expiry_date', $this->expiry_date);
         update_post_meta($this->id, 'cja_ad_activation_date', $this->activation_date);
-        update_post_meta($this->id, 'cja_salary', $this->salary);
-        update_post_meta($this->id, 'cja_contact_person', $this->contact_person);
-        update_post_meta($this->id, 'cja_phone', $this->phone);
-        update_post_meta($this->id, 'cja_deadline', $this->deadline);
-        update_post_meta($this->id, 'cja_job_type', $this->job_type);
-        update_post_meta($this->id, 'cja_sectors', $this->sectors);
     }
 
     // Activate the advert
@@ -136,22 +193,6 @@ class CJA_Advert {
     // Delete ad (not delete post but set status to deleted)
     public function delete() {
         $this->status = 'deleted';
-    }
-
-    public function return_human($field) {
-        if ($field == 'job_type') {
-            if ($this->job_type == 'full_time') { return 'Full Time'; }
-            if ($this->job_type == 'part_time') { return 'Part Time'; }
-            if ($this->job_type == 'freelance') { return 'Freelance'; }
-            if ($this->job_type == 'intern') { return 'Internship'; }
-            if ($this->job_type == 'temporary') { return 'Temporary'; }
-        }
-
-        if ($field == 'sectors') {
-            if ($this->sectors == 'accountancy') { return 'Accountancy'; }
-            if ($this->sectors == 'construction') { return 'Construction'; }
-            if ($this->sectors == 'nursing') { return 'Nursing'; }
-        }
     }
 
     /**
