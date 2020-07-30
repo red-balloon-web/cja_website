@@ -14,6 +14,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2.0">
 <link rel="profile" href="http://gmpg.org/xfn/11">
 <link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Catamaran:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
 <?php wp_head(); ?>
 </head>
@@ -30,8 +32,6 @@
 <div id="page" class="hfeed site">
 	<?php do_action( 'storefront_before_header' ); ?>
 
-	
-
 	<header id="masthead" class="site-header" role="banner" style="<?php storefront_header_styles(); ?>">
 		<div class="col-full header-top">
 			<div class="logged-in-message">
@@ -40,14 +40,31 @@
 					if ($cja_current_user->is_logged_in) {
 						if ($cja_current_user->company_name) {
 						?><p>Logged in as <?php echo $cja_current_user->company_name;
-						} else if ($cja_current_user->full_name) {
+						} else if ($cja_current_user->first_name) {
 							?><p>Logged in as <?php echo $cja_current_user->full_name;
 						} else {
 							?><p>Logged in as <?php echo $cja_current_user->login_name; 
 						}
 						?>&nbsp;&nbsp;<a href="<?php echo wp_logout_url( home_url() ); ?>"><i class="fas fa-sign-out-alt"></i></a><?php
 					} else {
-						?><p><a href="<?php echo get_site_url(); ?>/my-details">Create Account / Log In</a></p><?php
+						?>
+
+						<form action="<?php echo get_site_url(); ?>/wp-login.php?redirect_to=<?php echo get_site_url() . '/' . $cja_config['user-details-page-slug']; ?>" method="post" class="cja_home_login">
+							<div class="header_login_form">
+								<div class="username">
+									<p>Username</p>
+									<input type="text" name="log">
+								</div>
+								<div class="password">
+									<p>Password</p>
+									<input type="password" name="pwd">
+								</div>
+								<div class="login">
+									<p class="input-right"><input class="cja_button cja_button--home_login" name="wp-submit" type="submit" value="Log In"></p>
+								</div>
+							</div>
+						</form>
+					<?php
 					}
 				?>
 			</div>

@@ -14,6 +14,12 @@ Template: storefront
 @import 'forms.scss';
 @import 'front-page.scss';
 @import 'applications.scss';
+@import 'navigation.scss';
+
+/* Remove view cart button on alert */
+.woocommerce-message .wc-forward {
+    display: none;
+}
 
 /* JOBS ARCHIVE PAGE */
 

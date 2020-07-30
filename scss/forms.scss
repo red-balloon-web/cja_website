@@ -5,4 +5,31 @@ p.label {
 input,
 textarea {
     margin-bottom: 15px;
+    font-family: 'Poppins';
+}
+
+input[type="text"],
+input[type="date"],
+input[type="password"],
+select,
+textarea {
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 5px;
+    outline: 0;
+    margin-bottom: 23px;
+    font-family: 'Poppins';
+
+    &:focus {
+        background-color: #e8f7ff;
+        outline: 0;
+    }
+}
+
+a:focus, 
+input:focus, 
+textarea:focus, 
+button:focus {
+    outline: 0;
 }

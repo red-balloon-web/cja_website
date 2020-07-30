@@ -48,7 +48,23 @@
 						}
 						?>&nbsp;&nbsp;<a href="<?php echo wp_logout_url( home_url() ); ?>"><i class="fas fa-sign-out-alt"></i></a><?php
 					} else {
-						?><p><a href="<?php echo get_site_url(); ?>/my-details">Create Account / Log In</a></p><?php
+						?>
+						<form action="<?php echo get_site_url(); ?>/wp-login.php?redirect_to=<?php echo get_site_url() . '/' . $cja_config['user-details-page-slug']; ?>" method="post" class="cja_home_login">
+							<div class="header_login_form">
+								<div class="username">
+									<p>Username</p>
+									<input type="text" name="log">
+								</div>
+								<div class="password">
+									<p>Password</p>
+									<input type="password" name="pwd">
+								</div>
+								<div class="login">
+									<p class="input-right"><input class="cja_button cja_button--home_login" name="wp-submit" type="submit" value="Log In"></p>
+								</div>
+							</div>
+						</form>
+					<?php
 					}
 				?>
 			</div>

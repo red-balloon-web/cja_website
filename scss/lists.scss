@@ -11,30 +11,30 @@
     }
 
     .cja_icon {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
 
         .fa-trash {
-            color: #800;
+            color: #5b6c8e;
             &:hover {
-                color: #52527b;
+                color: #101019;
             }
         }
         .fa-edit {
-            color: #8181c7;
+            color: #5b6c8e;
             &:hover {
-                color: #52527b;
+                color: #101019;
             }
         }
         .fa-eye {
-            color: #8181c7;
+            color: #5b6c8e;
             &:hover {
-                color: #52527b;
+                color: #101019;
             }
         }
         .fa-clock {
-            color: #8181c7;
+            color: #5b6c8e;
             &:hover {
-                color: #52527b;
+                color: #101019;
             }
         }
     }
@@ -42,11 +42,14 @@
     .item-title {
         display: inline-block;
         margin-bottom: 0;
-        font-weight: 600;
+        font-weight: 400;
+        font-size: 19px;
     }
 
     .item-meta {
         margin-bottom: 0;
+        font-size: 15px;
+        font-weight: 300;
 
         &.inactive span {
             color: #800;
@@ -56,4 +59,12 @@
             color: #506f50;
         }
     }
+}
+
+.cja_listing_item {
+    //font-size: 1.2rem;
+}
+
+.cja_description p {
+    color: #666;
 }

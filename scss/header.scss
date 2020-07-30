@@ -1,22 +1,64 @@
 #masthead.site-header {
     background-color: #a2d0e6;
     /*background-color: #facc39;*/
+    background-color: #3f3d5f;
+    background-color: #3d485f;
 
     @media (min-width: 768px) {
         border-bottom-color: #555;
-        padding-top: 30px;
+        padding-top: 20px;
         margin-bottom: 50px;
+    
+        .site-header-cart .cart-contents {
+            color: #ccc;
+            font-size: .9rem;
+        }
+
     }
 
     &.homepage {
         margin-bottom: 0;
     }
 
+    p {
+        color: #ccc;
+    }
+
 
     .header-top {
 
+        form {
+            margin-bottom: 0;
+        }
+        .header_login_form {
+            display: flex;
+            align-items: flex-end;
+
+            p {
+                margin-bottom: 0;
+                font-size: .8rem;
+            }
+
+            input {
+                margin-bottom: 0;
+
+                &[type='text'],
+                &[type='password'] {
+                    padding: 1px 10px;
+                    font-size: .9rem;
+                    margin-right: 10px;
+                    color: #666;
+                }
+            }
+        }
+
         .logged-in-message {
             float: right;
+            a {
+                i {
+                    color: white;
+                }
+            }
         }
 
         h2 {
@@ -24,6 +66,9 @@
             text-align: left;
             margin-bottom: 0;
             display: inline-block;
+            color: #fff;
+            font-family: 'Catamaran';
+            margin-top: 17px;
         }
     }
 
@@ -35,5 +80,9 @@
 }
 
 .site-footer {
-    background-color: #a2d0e6;
+    background-color: #3d485f;
+    color: #ccc;
+    .address {
+        font-size: .8rem;
+    }
 }

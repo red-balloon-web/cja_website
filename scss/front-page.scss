@@ -6,15 +6,27 @@
     height: 700px;
     position: relative;
 
-    .splash_login_box {
-        position: absolute;
-        left: 200px;
-        top: 50px;
-        width: 420px;
-        background: #facc39ee;
-        border: 3px solid black;
-        border-radius: 20px;
-        padding: 20px;
+    .col-full {
+        position: relative;
+
+        .splash_login_box {
+            position: absolute;
+            left: 0;
+            top: 60px;
+            width: 420px;
+            background: #facc39ee;
+            border: 3px solid black;
+            border-radius: 20px;
+            padding: 20px;
+        }
+    }
+
+    
+}
+
+    .splash_login_box,
+    .existing-user-login,
+    .new-user-account {
 
         hr {
             background-color: #333;
@@ -28,6 +40,7 @@
 
             &.account_create {
                 margin-top: 20px;
+                margin-bottom: 40px;
             }
         }
 
@@ -55,21 +68,32 @@
 
         .cja_home_create {
             margin-bottom: 0;
-
+            
+            
             .topbox {
                 display: flex;
-
+                
+                
                 .username {
                     width: 50%;
                 }
             }   
+
+            input[name='email'] {
+                margin-bottom: 30px;
+            }
+            
+            .rolebox {
+                margin-bottom: 30px;
+            }
 
             .role_option {
                 color: #333;
             }
         }
     }
-}
+
+
 
 .cja_splash h1.header {
     position: absolute;

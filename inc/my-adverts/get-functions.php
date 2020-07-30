@@ -111,7 +111,7 @@ if ($_GET) {
         $cja_delete_ad = new CJA_Advert($_GET['delete-ad']);
         $cja_delete_ad->delete(); 
         $cja_delete_ad->save();
-        ?><p class="cja_alert_success">Your advert for "<?php echo ($cja_delete_ad->title); ?>" has been deleted.</p><?php
+        ?><p class="cja_alert cja_alert--success">Your advert for "<?php echo ($cja_delete_ad->title); ?>" has been deleted.</p><?php
     }
 
 
@@ -121,7 +121,7 @@ if ($_GET) {
         $cja_extend_ad->extend();
         $cja_extend_ad->save();
         spend_credits();
-        ?><p class="cja_alert_success">Your advert for "<?php echo ($cja_extend_ad->title); ?>" has been extended for 1 credit.</p><?php
+        ?><p class="cja_alert cja_alert--success">Your advert for "<?php echo ($cja_extend_ad->title); ?>" has been extended for 1 credit.</p><?php
     }
 
     // Activate ad
@@ -130,7 +130,7 @@ if ($_GET) {
         $cja_activate_ad->activate();
         $cja_activate_ad->save();
         spend_credits();
-        ?><p class="cja_alert_success">Your advert for "<?php echo ($cja_activate_ad->title); ?>" has been activated for 1 credit.</p><?php
+        ?><p class="cja_alert cja_alert--success">Your advert for "<?php echo ($cja_activate_ad->title); ?>" has been activated for 1 credit.</p><?php
     }
 }
 ?>

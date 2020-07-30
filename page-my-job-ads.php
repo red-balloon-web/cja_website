@@ -32,11 +32,11 @@ get_header(); ?>
 
 		if ($do_list) {
 			$cja_current_user = new CJA_User; ?>
-			<p>
-			<span class="credits-large"><?php echo ($cja_current_user->credits); ?></span>&nbsp;&nbsp;advert credits remaining
-			<a href="<?php echo get_page_link() . '?create-ad=true'; ?>" class="cja_button cja_button--2 create-ad-button">Create Advert</a>
-			<a href="<?php echo get_page_link() . '?buy-credits=true'; ?>" class="cja_button cja_button--2 create-ad-button">Buy Credits</a>
-			</p>
+			<div class="my-jobs-header">
+				<span class="credits-large"><?php echo ($cja_current_user->credits); ?></span>&nbsp;&nbsp;advert credits remaining
+				<a href="<?php echo get_page_link() . '?create-ad=true'; ?>" class="cja_button cja_button--2 my-jobs-header-button create-advert-button">Create Advert</a>
+				<a href="<?php echo get_page_link() . '?buy-credits=true'; ?>" class="cja_button cja_button--2 my-jobs-header-button">Buy Credits</a>
+		</div>
 			<h1>My Job Adverts</h1>
 
 			<?php

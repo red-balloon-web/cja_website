@@ -35,6 +35,8 @@
 			$result = wp_insert_user($userdata);
 
 			if (is_int($result)) {
+				// Give new user 1 credit
+				add_user_meta($result, 'cja_credits', 1, true);
 				?><p class="cja_alert cja_alert--success"><?php echo $username; ?>, Your Account Has Been Created!<br>Please use your password to login!</p><?php
 				$freshaccountcreation = true;
 			} else {
@@ -58,7 +60,7 @@
 			<!-- IF USER IS ADVERTISER DISPLAY ADVERTISER DETAILS -->
 			<?php if($cja_current_user_obj->role == 'advertiser') { ?>
 				
-				<h1>My Organisation Details - <?php echo stripslashes($cja_current_user_obj->company_name); ?></h1>
+				<h1>My Organisation Details<?php if ($cja_current_user_obj->company_name) { echo ' - ' . stripslashes($cja_current_user_obj->company_name); } ?></h1>
 				<form action="<?php echo $cja_page_address; ?>" method="post" enctype="multipart/form-data">
 					<p>Username: <?php echo $cja_current_user_obj->login_name; ?><br><em>Your username cannot be changed</em></p>
 					<p>Organisation Name<br><input type="text" name="company_name" value="<?php echo stripslashes($cja_current_user_obj->company_name); ?>"></p>
@@ -116,6 +118,25 @@
 		<?php } else { ?>
 			<div class="cja-login-screen">
 				<div class="existing-user-login<?php if($freshaccountcreation) { echo(' highlight'); } ?>">
+				
+				<h4>Log In</h4>
+        <form action="<?php echo get_site_url(); ?>/wp-login.php" method="post" class="cja_home_login">
+            <div class="topbox">
+                <div class="username">
+                    <p>Username</p>
+                    <input type="text" name="log" <?php if ($freshaccountcreation) { echo ('value="' . $_POST['username'] . '"'); } ?>>
+                </div>
+                <div class="password">
+                    <p>Password</p>
+                    <input type="password" name="pwd">
+                </div>
+            </div>
+            <input type="hidden" name="redirect_to" value="<?php echo get_site_url() . '/' . $cja_config['user-details-page-slug']; ?>">
+            <div class="login">
+                <p class="input-right"><input class="cja_button cja_button--home_login" name="wp-submit" type="submit" value="Log In"></p>
+            </div>
+        </form>
+		<!--
 					<h4>LOG IN</h4>
 					<form action="<?php echo get_site_url(); ?>/wp-login.php" method="post" class="loginform">
 						<p>Username or Email<br>
@@ -126,11 +147,36 @@
 						<input type="hidden" name="redirect_to" value="<?php echo get_page_link(); ?>">
 						<p><input type="submit" name="wp-submit" value="Log In"></p>
 
-					</form>
+					</form>-->
 				</div>
 
 				<div class="new-user-account">
-					<h4>CREATE ACCOUNT</h4>
+				<h4 class="account_create">Create an Account</h4>
+        <form action="<?php echo get_site_url() . '/' . $cja_config['user-details-page-slug']; ?>" method="post" class="cja_home_create">
+            <div class="topbox">
+                <div class="username">
+                    <p>Username</p>
+                    <input type="text" name="username">
+                </div>
+                <div class="password">
+                    <p>Password</p>
+                    <input type="password" name="password">
+                </div>
+            </div>
+            <p>Email Address</p>
+            <input type="text" name="email">
+            <div class="rolebox">
+                <div class="role_option">
+                    <input type="radio" name="role" value="jobseeker" checked> I am looking for a job or course</input>
+                </div>
+                <div class="role_option">
+                    <input type="radio" name="role" value="employer"> I am an employer or course provider</input>
+                </div>
+            </div>
+            <input type="hidden" name="createaccount" value="true">
+            <p class="input-right"><input class="cja_button cja_button--home_login" type="submit" value="Create Free Account"></p>
+		</form>
+					<!--<h4>CREATE ACCOUNT</h4>
 					<form action="<?php echo $cja_page_address; ?>" method="POST">
 						<p>Username<br>
 						<input type="text" name="username">
@@ -146,7 +192,7 @@
 						<p class="account-choice"><input type="radio" name="role" value="jobseeker"> <strong>Job Seeker Account</strong> - I want to apply for jobs or courses</p>
 						<input type="hidden" name="createaccount" value="true">
 						<input type="submit" value="Create Account">
-					</form>
+					</form>-->
 				</div>
 			</div>
 			

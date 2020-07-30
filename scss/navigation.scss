@@ -1,0 +1,24 @@
+.main-navigation {
+    ul {
+        li {
+            a {
+                color: #ccc;
+
+                &:hover {
+                    color: #fff;
+                }
+            }
+        }
+    }
+}
+
+@media (min-width: 768px) {
+    .main-navigation ul.menu > li > a,
+    .main-navigation ul.nav-menu > li > a {
+        font-size: .9rem;
+    }
+}
+
+#masthead.site-header ul.menu li.current-menu-item>a {
+    color: #fff;
+}

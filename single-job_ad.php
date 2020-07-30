@@ -73,26 +73,19 @@
 				<?php if ($cja_current_ad->status == 'deleted') {
 					?><p class="red"><strong>This advert has been deleted</strong></p>
 				<?php } ?>
-				<p class="cja_center">Posted by <?php echo ($cja_current_ad->author_human_name); 
+				<p class="cja_center header_subtitle">Posted by <?php echo ($cja_current_ad->author_human_name); 
 					if ($cja_current_ad->status == 'active') {
 						echo ' on ' . ($cja_current_ad->human_activation_date); 
 					}
 				?></p>
-				<div class="application_box">
-					<h2>Job Details</h2>
-					<h4 class="label">Job Description:</h4>
-					<p><?php echo $cja_current_ad->content; ?></p>
-					<h4>Salary: <strong><?php echo $cja_current_ad->salary; ?></strong></h4>
-					<h4>Contact person: <strong><?php echo $cja_current_ad->contact_person; ?></strong></h4>
-					<h4>Contact phone number: <strong><?php echo $cja_current_ad->phone; ?></strong></h4>
-					<h4>Deadline: <strong><?php echo $cja_current_ad->deadline; ?></strong></h4>
-					<h4>Job Type: <strong><?php echo $cja_current_ad->return_human('job_type'); ?></strong></h4>
-					<h4>Sector: <strong><?php echo $cja_current_ad->return_human('sectors'); ?></strong></h4>
-				</div>
-				<div class="application_box">
-					<h2>About <?php echo $cja_current_ad->author_human_name; ?></h2>
-					<p><?php echo $cja_current_advertiser->company_description; ?></p>
-				</div>
+				
+				<?php include('inc/templates/job-details.php'); ?>
+
+				<hr>
+
+				<?php include('inc/templates/company-details.php'); ?>
+
+				<hr>
 
 				<?php
 

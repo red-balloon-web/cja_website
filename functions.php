@@ -167,8 +167,14 @@ add_action('init', 'logoutUser');
  * Adds purchased credits to user meta on checkout completion
  */
 
-add_action( 'woocommerce_thankyou', 'add_purchased_credits' );
+add_action( 'woocommerce_before_thankyou', 'add_purchased_credits' );
 function add_purchased_credits( $order_id ){
+
+    $cja_order = new WC_Order( $order_id );
+
+    if ( $cja_order->has_status( 'failed' ) ) {
+        exit;
+    }
     
     if( ! get_post_meta( $order_id, 'cja_credits_added', true ) ) { // prevent user re-adding by refreshing page
         
@@ -197,9 +203,18 @@ function add_purchased_credits( $order_id ){
         update_user_meta( $user_id, "cja_credits", $new_total_credits );
         update_post_meta( $order_id, 'cja_credits_added', true );
 
-        echo ($new_credits . " credits were added to your account. You now have " . $new_total_credits . " credits.");
+        include('config.php');
+
+        ?><p class="cja_alert cja_alert--success">Thank you for your order. <?php echo ($new_credits . " credits were added to your account. You now have " . $new_total_credits . " credits."); ?></p>
+        <p><a href="<?php echo get_site_url() . '/' . $cja_config['my-job-ads-slug']; ?>" class="cja_button cja_button--2">My Job Adverts</a></p>
+        <?php
     
     }
+}
+
+add_filter( 'woocommerce_thankyou_order_received_text', 'remove_thankyou' );
+function remove_thankyou() {
+    return '';
 }
 
 /**
@@ -212,5 +227,14 @@ function spend_credits( $spend = 1 ) {
 	update_user_meta( get_current_user_id(), "cja_credits", $credits);
 }
 
+/**
+ * REDIRECT ON LOGIN
+ */
+
+function my_login_redirect( $redirect_to, $request, $user ) {
+            return get_site_url() . '/my-details';
+}
+ 
+add_filter( 'login_redirect', 'my_login_redirect', 10, 3 );
 
 ?>
