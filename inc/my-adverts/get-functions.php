@@ -12,8 +12,8 @@ if ($_GET) {
         $cja_edit_ad = new CJA_Advert($_GET['edit-ad']);
         ?>
         <h1>Edit Advert</h1>
-
-        <form action="<?php echo $cja_page_address; ?>" id="edit_ad_form" method="POST">
+        
+        <form action="<?php echo $cja_page_address; ?>" id="edit_ad_form" method="post" enctype="multipart/form-data">
 
             <?php include( ABSPATH . 'wp-content/themes/courses-and-jobs/inc/templates/job-details-form.php'); ?>
 
@@ -31,7 +31,7 @@ if ($_GET) {
     if ($_GET['create-ad']) { 
         $do_list = false; ?>
         <h1>Create Advert</h1>
-        <form action="<?php echo $cja_page_address; ?>" id="edit_ad_form" method="POST">
+        <form action="<?php echo $cja_page_address; ?>" id="edit_ad_form" method="post" enctype="multipart/form-data">
             <?php         
             include( ABSPATH . 'wp-content/themes/courses-and-jobs/inc/templates/job-details-form.php');
             ?>
