@@ -1,7 +1,10 @@
 .cja_list_item {
     margin-bottom: 10px;
-    border-bottom: 1px solid #ddd;
     padding-bottom: 10px;
+
+    &:not(:last-child) {
+        border-bottom: 1px solid #ddd;
+    }
 
     .cja_button,
     .cja_icon,
@@ -67,4 +70,36 @@
 
 .cja_description p {
     color: #666;
+}
+
+.cja_pagination {
+    padding: 2rem 0 1rem 0;
+    text-align: center;
+    clear: both;
+
+    .page-numbers {
+        display: inline-block;
+        padding: 4px 8px;
+        border: 1px solid black;
+        margin: 0 5px;
+        background-color: #5b6c8e;
+        color: white;
+        border-radius: 5px;
+
+        &.dots,
+        &.current {
+            border: 0;
+            background-color: unset;
+            color: #333;
+        }
+
+        &.current {
+            border: 1px solid black;
+        }
+    }
+
+    a.page-numbers:hover {
+        background-color: unset;
+        color: #333;
+    }
 }

@@ -24,6 +24,7 @@ get_header(); ?>
 				<h1>Applications I Have Made</h1>
 				
 				<?php
+				$paged = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
 				$args = array(  
 					'post_type' => 'application',
 					'author' => get_current_user_id(),
@@ -34,6 +35,7 @@ get_header(); ?>
 							'value' => '0'
 						)
 					),
+					'paged' => $paged
 				);
 				$the_query = new WP_Query( $args );
 
@@ -60,7 +62,27 @@ get_header(); ?>
 					<?php
 
 					endwhile;
-
+					?>
+					<div class="cja_pagination">
+					<?php 
+						echo paginate_links( array(
+							'base'         => str_replace( 999999999, '%#%', esc_url( get_pagenum_link( 999999999 ) ) ),
+							'total'        => $the_query->max_num_pages,
+							'current'      => max( 1, get_query_var( 'paged' ) ),
+							'format'       => '?paged=%#%',
+							'show_all'     => false,
+							'type'         => 'plain',
+							'end_size'     => 2,
+							'mid_size'     => 1,
+							'prev_next'    => true,
+							'prev_text'    => '<<<',
+							'next_text'    => '>>>',
+							'add_args'     => false,
+							'add_fragment' => '',
+						) );
+					?>
+				</div>
+				<?php
 				} else {
 						echo ("You have not yet made any applications");
 				}
@@ -84,7 +106,7 @@ get_header(); ?>
 				<h1>Applications to My Jobs</h1>
 
 				<?php
-
+				$paged = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
 				$args = array(  
 					'post_type' => 'application',
 					'meta_query' => array(
@@ -98,6 +120,7 @@ get_header(); ?>
 						)
 					),
 					'order' => 'ASC', 
+					'paged' => $paged
 				);
 
 				$the_query = new WP_Query( $args );
@@ -124,6 +147,28 @@ get_header(); ?>
 					<?php
 
 					endwhile;
+
+					?>
+					<div class="cja_pagination">
+					<?php 
+						echo paginate_links( array(
+							'base'         => str_replace( 999999999, '%#%', esc_url( get_pagenum_link( 999999999 ) ) ),
+							'total'        => $the_query->max_num_pages,
+							'current'      => max( 1, get_query_var( 'paged' ) ),
+							'format'       => '?paged=%#%',
+							'show_all'     => false,
+							'type'         => 'plain',
+							'end_size'     => 2,
+							'mid_size'     => 1,
+							'prev_next'    => true,
+							'prev_text'    => '<<<',
+							'next_text'    => '>>>',
+							'add_args'     => false,
+							'add_fragment' => '',
+						) );
+					?>
+				</div>
+				<?php
 
 				} else {
 						echo ("You have not yet received any applications");

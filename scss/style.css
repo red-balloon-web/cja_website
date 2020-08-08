@@ -15,6 +15,7 @@ Template: storefront
 @import 'front-page.scss';
 @import 'applications.scss';
 @import 'navigation.scss';
+@import 'search_jobs.scss';
 
 /* Remove view cart button on alert */
 .woocommerce-message .wc-forward {

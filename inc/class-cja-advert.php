@@ -18,6 +18,7 @@ class CJA_Advert {
     public $author_human_name; // Humain readable author (company) name
     public $created_by_current_user; // Boolean
     public $applied_to_by_current_user; // Boolean
+    public $hourly_equivalent_rate;
     
     // Form fields
     public $title;
@@ -62,7 +63,7 @@ class CJA_Advert {
             
             // Form Fields
             $this->title = get_the_title($id);
-            $this->salary_numeric = get_post_meta($id, 'cja_salary_numeric', true);
+            $this->salary_numeric = (float) filter_var( get_post_meta($id, 'cja_salary_numeric', true), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION );
             $this->salary_per = get_post_meta($id, 'cja_salary_per', true);
             $this->content = get_the_content(null, false, $id);
             $this->job_type = get_post_meta($id, 'cja_job_type', true);
@@ -81,6 +82,8 @@ class CJA_Advert {
             $this->deadline = get_post_meta($id, 'cja_deadline', true);
             $this->job_spec_filename = get_post_meta($id, 'cja_job_spec_filename', true);
             $this->job_spec_url = get_post_meta($id, 'cja_job_spec_url', true);
+
+            $this->hourly_equivalent_rate = $this->get_hourly_equivalent_rate();
         }
     }
 
@@ -188,6 +191,7 @@ class CJA_Advert {
         // form fields
         update_post_meta($this->id, 'cja_salary_numeric', $this->salary_numeric);
         update_post_meta($this->id, 'cja_salary_per', $this->salary_per);
+        update_post_meta($this->id, 'cja_hourly_equivalent_rate', $this->get_hourly_equivalent_rate());
         update_post_meta($this->id, 'cja_job_type', $this->job_type);
         update_post_meta($this->id, 'cja_sector', $this->sector);
         update_post_meta($this->id, 'cja_contact_person', $this->contact_person);
@@ -223,6 +227,81 @@ class CJA_Advert {
         $this->status = 'deleted';
     }
 
+    // Update search object from cookies
+    public function update_from_cookies() {
+        $this->salary_numeric = $_COOKIE[ get_current_user_id() . '_salary_numeric'];
+        $this->salary_per = $_COOKIE[ get_current_user_id() . '_salary_per'];
+        $this->job_type = $_COOKIE[ get_current_user_id() . '_job_type'];
+        $this->sector = $_COOKIE[ get_current_user_id() . '_sector'];
+        $this->career_level = $_COOKIE[ get_current_user_id() . '_career_level'];
+        $this->experience_required = $_COOKIE[ get_current_user_id() . '_experience_required'];
+        $this->employer_type = $_COOKIE[ get_current_user_id() . '_employer_type'];
+        $this->minimum_qualification = $_COOKIE[ get_current_user_id() . '_minimum_qualification'];
+        $this->dbs_required = $_COOKIE[ get_current_user_id() . '_dbs_required'];
+        $this->payment_frequency = $_COOKIE[ get_current_user_id() . '_payment_frequency'];
+        $this->shift_work = $_COOKIE[ get_current_user_id() . '_shift_work'];
+        $this->location_options = $_COOKIE[ get_current_user_id() . '_location_options'];
+    }
+
+    // Build WP Query from search values
+    public function build_wp_query() {
+
+        $paged = ( get_query_var( 'paged' ) ) ? get_query_var( 'paged' ) : 1;
+
+        $wp_query_args = array(
+            'post_type' => 'job_ad',
+            'orderby' => 'order_clause',
+            'order' => 'DSC',
+            'paged' => $paged
+        );
+
+        $meta_query = array();
+        $meta_query['order-clause'] = array(
+            'key' => 'cja_ad_activation_date',
+            'type' => 'NUMERIC'
+        );
+
+        if ($this->salary_numeric) {
+            $meta_item = array();
+            $meta_item['key'] = 'cja_hourly_equivalent_rate';
+            $meta_item['value'] = $this->get_hourly_equivalent_rate();
+            //$meta_item['value'] = (float) filter_var( $this->salary_numeric, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION );
+            //$meta_item['value'] = 5;
+            $meta_item['type'] = 'numeric';
+            $meta_item['compare'] = '>=';
+            $meta_query[] = $meta_item;
+        }
+
+        $fields = array( 'job_type', 'sector', 'career_level', 'experience_required', 'employer_type', 'minimum_qualification', 'dbs_required', 'payment_frequency', 'shift_work', 'location_options');
+
+        foreach($fields as $field) {
+            if ($this->$field) {
+                $meta_item = array();
+                $meta_item['key'] = 'cja_' . $field;
+                $meta_item['value'] = $this->$field;
+                $meta_query[] = $meta_item;
+            }
+        }
+
+        /*
+        $meta_item = array();
+        $meta_item['key'] = 'cja_ad_status';
+        $meta_item['value'] = 'active';
+
+        $meta_item_two = array();
+        $meta_item_two['key'] = 'job_type';
+        $meta_item_two['value'] = 'part_time';
+
+        $meta_query[] = $meta_item;
+        $meta_query[] = $meta_item_two;
+        */
+
+        $wp_query_args['meta_query'] = $meta_query;
+
+        return $wp_query_args;
+    }
+
+    // Return human values
     public function return_human($field) {
         if ($field == 'job_type') {
             if ($this->job_type == 'full_time') { return 'Full Time'; }
@@ -429,6 +508,21 @@ class CJA_Advert {
 
         wp_reset_postdata();
         return 0;
+    }
+
+    public function get_hourly_equivalent_rate() {
+        
+        if (!$this->salary_numeric || !$this->salary_per) {
+            return 0;
+        }
+
+        if ($this->salary_per == 'hour') {
+            return round($this->salary_numeric, 2);
+        } else if ($this->salary_per == 'day') {
+            return round($this->salary_numeric / 8, 2);
+        } else if ($this->salary_per == 'year') {
+            return round($this->salary_numeric / 1958, 2);
+        }
     }
 }
 

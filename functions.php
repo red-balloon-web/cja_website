@@ -237,4 +237,31 @@ function my_login_redirect( $redirect_to, $request, $user ) {
  
 add_filter( 'login_redirect', 'my_login_redirect', 10, 3 );
 
+/**
+ * SAVE SEARCH COOKIES
+ */
+
+add_action('init', 'cja_save_cookies');
+function cja_save_cookies() {
+    if ($_POST['cja_set_cookies'] && $_POST['update_job_search']) {
+        if (array_key_exists('salary_numeric',$_POST)) {
+            $sal_num = (float) filter_var( $_POST['salary_numeric'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION );
+            setcookie( get_current_user_id() . '_salary_numeric', $sal_num);
+        } else {
+            setcookie( get_current_user_id() . '_salary_numeric', $_POST['salary_numeric']);
+        }
+        setcookie( get_current_user_id() . '_salary_per', $_POST['salary_per']);
+        setcookie( get_current_user_id() . '_job_type', $_POST['job_type']);
+        setcookie( get_current_user_id() . '_sector', $_POST['sector']);
+        setcookie( get_current_user_id() . '_career_level', $_POST['career_level']);
+        setcookie( get_current_user_id() . '_experience_required', $_POST['experience_required']);
+        setcookie( get_current_user_id() . '_employer_type', $_POST['employer_type']);
+        setcookie( get_current_user_id() . '_minimum_qualification', $_POST['minimum_qualification']);
+        setcookie( get_current_user_id() . '_dbs_required', $_POST['dbs_required']);
+        setcookie( get_current_user_id() . '_payment_frequency', $_POST['payment_frequency']);
+        setcookie( get_current_user_id() . '_shift_work', $_POST['shift_work']);
+        setcookie( get_current_user_id() . '_location_options', $_POST['location_options']);
+    }
+}
+
 ?>
