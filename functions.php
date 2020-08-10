@@ -150,6 +150,104 @@ function cja_primary_navigation() {
 }
 
 /**
+ * WOOCOMMERCE MY ACCOUNT
+ */
+
+ /*
+add_filter( 'woocommerce_account_menu_items', 'bbloomer_remove_address_my_account', 999 );
+function bbloomer_remove_address_my_account( $items ) {
+    unset($items['edit-address']);
+    return $items;
+}
+add_action( 'woocommerce_account_edit-account_endpoint', 'woocommerce_account_edit_address' );
+*/
+
+//Remove required field requirement for first/last name in My Account Edit form
+add_filter('woocommerce_save_account_details_required_fields', 'remove_required_fields');
+
+function remove_required_fields( $required_fields ) {
+    unset($required_fields['account_first_name']);
+    unset($required_fields['account_last_name']);
+    unset($required_fields['account_display_name']);
+
+    return $required_fields;
+}
+
+/**
+ * @snippet       WooCommerce Add New Tab @ My Account
+ * @how-to        Get CustomizeWoo.com FREE
+ * @author        Rodolfo Melogli
+ * @compatible    WooCommerce 3.5.7
+ * @donate $9     https://businessbloomer.com/bloomer-armada/
+ */
+  
+// ------------------
+// 1. Register new endpoint to use for My Account page
+// Note: Resave Permalinks or it will give 404 error
+
+add_action( 'init', 'cja_add_my_details_endpoint' );
+function cja_add_my_details_endpoint() {
+    add_rewrite_endpoint( 'my-details', EP_ROOT | EP_PAGES );
+}
+  
+  
+// 2. Add new query var
+  
+add_filter( 'query_vars', 'cja_my_details_query_vars', 0 );
+function cja_my_details_query_vars( $vars ) {
+    $vars[] = 'my-details';
+    return $vars;
+}
+  
+  
+// 3. Insert the new endpoint into the My Account menu
+  
+function cja_order_woocommerce_account_menu( $items ) {
+    unset ($items['orders']);
+    unset ($items['subscriptions']);
+    unset ($items['edit-address']);
+    unset ($items['edit-account']);
+    unset ($items['customer-logout']);
+
+
+    $items['my-details'] = 'Public Details';
+    $items['edit-account'] = 'Email / Password';
+    $items['orders'] = 'Orders';
+    $items['subscriptions'] = 'Subscriptions';
+    $items['customer-logout'] = 'Log Out';
+    return $items;
+}
+  
+add_filter( 'woocommerce_account_menu_items', 'cja_order_woocommerce_account_menu' );
+  
+// 4. Add content to the new endpoint
+function cja_my_details_content() { 
+    include('inc/my-account/my-details-endpoint.php');
+}
+add_action( 'woocommerce_account_my-details_endpoint', 'cja_my_details_content' );
+// Note: add_action must follow 'woocommerce_account_{your-endpoint-slug}_endpoint' format
+
+/*
+add_filter( 'woocommerce_endpoint_my-details_title', 'change_my_account_my_details_title', 10, 2 );
+function change_my_account_my_details_title( $title, $endpoint ) {
+    $title = __( "Public Details", "woocommerce" );
+    return $title;
+}  
+
+add_filter( 'woocommerce_endpoint_edit-account_title', 'change_my_account_edit_account_title', 10, 2 );
+function change_my_account_edit_account_title( $title, $endpoint ) {
+    $title = __( "Edit Email Address and Password", "woocommerce" );
+    return $title;
+}
+
+add_filter( 'woocommerce_endpoint_edit-address_title', 'change_my_account_edit_address_title', 10, 2 );
+function change_my_account_edit_address_title( $title, $endpoint ) {
+    $title = __( "Billing Details", "woocommerce" );
+    return $title;
+}
+*/
+
+/**
  * LOG OUT USER
  */
 
@@ -232,7 +330,7 @@ function spend_credits( $spend = 1 ) {
  */
 
 function my_login_redirect( $redirect_to, $request, $user ) {
-            return get_site_url() . '/my-details';
+            return get_site_url() . '/my-account';
 }
  
 add_filter( 'login_redirect', 'my_login_redirect', 10, 3 );

@@ -35,3 +35,38 @@
         }
     }
 }
+
+.hentry .entry-content .woocommerce-MyAccount-navigation ul li {
+    margin-bottom: 10px;
+    background-color: #3d485f;
+    padding: 0 10px;
+    border-radius: 5px;
+
+    a {
+        color: #ccc;
+
+        &::before {
+            opacity: 1;
+        }
+
+        &:hover {
+            color: white;
+        }
+    }
+
+    &.is-active {
+
+        background-color: white;
+        border: 1px solid black;
+
+        a {
+            color: #3d485f;
+        }
+    }
+}
+
+#post-14 {
+    .entry-header {
+        display: none;
+    }
+}
