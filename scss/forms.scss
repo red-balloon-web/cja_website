@@ -1,5 +1,7 @@
-p.label {
+p.label,
+label {
     margin-bottom: 0;
+    color: #666;
 }
 
 input,
@@ -12,15 +14,18 @@ input[type="text"],
 input[type="date"],
 input[type="password"],
 input[type="email"],
+input[type="tel"],
 select,
 textarea {
     background-color: white;
-    border: 1px solid black;
+    border: 1px solid #999;
     border-radius: 5px;
     padding: 5px;
     outline: 0;
     margin-bottom: 23px;
     font-family: 'Poppins';
+    color: #444;
+    font-size: .9rem;
 
     &:focus {
         background-color: #e8f7ff;
@@ -28,9 +33,22 @@ textarea {
     }
 }
 
+textarea {
+    padding: 20px;
+}
+
 a:focus, 
 input:focus, 
 textarea:focus, 
 button:focus {
     outline: 0;
+}
+
+.wc-proceed-to-checkout .button.checkout-button {
+    background-color: #548c51;
+    color: white;
+
+    &:hover {
+        background-color: #5cb34b;
+    }
 }

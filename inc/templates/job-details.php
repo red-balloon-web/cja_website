@@ -21,6 +21,8 @@
     <?php } ?>
     <p class="cja_listing_item">Location options: <strong><?php echo $cja_current_ad->return_human('location_options'); ?></strong></p>
     <p class="cja_listing_item">Deadline: <strong><?php echo $cja_current_ad->return_human('deadline'); ?></strong></p>
-    <p class="cja_listing_item"><a class="cja_button" href="<?php echo $cja_current_ad->job_spec_url; ?>" target="_blank">Download Job Specification</a></p>
+    <?php if ($cja_current_ad->job_spec_url) { ?>
+        <p class="cja_listing_item"><a class="cja_button" href="<?php echo $cja_current_ad->job_spec_url; ?>" target="_blank">Download Job Specification</a></p>
+    <?php } ?>
 
 </div>

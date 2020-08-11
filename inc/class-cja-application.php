@@ -48,7 +48,7 @@ class CJA_Application {
         $this->applicant_ID = $cja_current_user_obj->id;
         $this->advertiser_ID = $cja_current_ad->author;
         $this->applicant_name = $cja_current_user_obj->full_name;
-        $this->applicant_letter = $_POST['letter'];
+        // $this->applicant_letter = $_POST['letter'];
         $this->cv_url = $cja_current_user_obj->cv_url;
         $this->applicant_archived = 0;
         $this->advertiser_archived = 0;

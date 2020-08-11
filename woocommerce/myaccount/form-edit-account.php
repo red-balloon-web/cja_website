@@ -22,6 +22,8 @@ do_action( 'woocommerce_before_edit_account_form' ); ?>
 <form class="woocommerce-EditAccountForm edit-account" action="" method="post" <?php do_action( 'woocommerce_edit_account_form_tag' ); ?> >
 
 	<?php do_action( 'woocommerce_edit_account_form_start' ); ?>
+	<input type="hidden" name="account_first_name" value="<?php echo esc_attr( $user->first_name ); ?>">
+	<input type="hidden" name="account_last_name" value="<?php echo esc_attr( $user->last_name ); ?>">
 
 	<!--
 	<p class="woocommerce-form-row woocommerce-form-row--first form-row form-row-first">
@@ -45,9 +47,9 @@ do_action( 'woocommerce_before_edit_account_form' ); ?>
 
 	<h1>Change Email and Password</h1>
 
-	<p>Username: <?php echo $cja_current_user_obj->login_name; ?><br><em>Your username cannot be changed</em></p>
+	<p style="color: #666">Username: <?php echo $cja_current_user_obj->login_name; ?><br><em>Your username cannot be changed</em></p>
 
-	<p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide">
+	<p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide label">
 		<label for="account_email"><?php esc_html_e( 'Email address', 'woocommerce' ); ?>&nbsp;<span class="required">*</span></label>
 		<input type="email" class="woocommerce-Input woocommerce-Input--email input-text" name="account_email" id="account_email" autocomplete="email" value="<?php echo esc_attr( $user->user_email ); ?>" />
 	</p>
@@ -74,7 +76,7 @@ do_action( 'woocommerce_before_edit_account_form' ); ?>
 
 	<p>
 		<?php wp_nonce_field( 'save_account_details', 'save-account-details-nonce' ); ?>
-		<button type="submit" class="woocommerce-Button button" name="save_account_details" value="<?php esc_attr_e( 'Save changes', 'woocommerce' ); ?>"><?php esc_html_e( 'Save changes', 'woocommerce' ); ?></button>
+		<button type="submit" class="woocommerce-Button button cja_button cja_button--2" name="save_account_details" value="<?php esc_attr_e( 'Save changes', 'woocommerce' ); ?>"><?php esc_html_e( 'Save Changes', 'woocommerce' ); ?></button>
 		<input type="hidden" name="action" value="save_account_details" />
 	</p>
 

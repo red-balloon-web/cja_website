@@ -33,3 +33,30 @@ a.add-credits-to-cart {
         font-size: 1.7rem;
     }
 }
+
+.cja_are_sure_modal_wrapper {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background-color: #ffffffaa;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    display: none;
+
+    .cja_are_sure_modal {
+        padding: 50px 70px;
+        background-color: white;
+        border: 2px solid black;
+        border-radius: 20px;
+    }
+
+    #cja_modal_message {
+        text-align: center;
+    }
+
+    #modal-yay {
+        margin-right: 30px;
+    }
+}

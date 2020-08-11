@@ -44,6 +44,7 @@
 
     a {
         color: #ccc;
+        font-size: .9rem;
 
         &::before {
             opacity: 1;
@@ -68,5 +69,13 @@
 #post-14 {
     .entry-header {
         display: none;
+    }
+
+    .entry-content {
+        margin-top: 30px;
+
+        .woocommerce-MyAccount-navigation {
+            margin-top: 20px;
+        }
     }
 }

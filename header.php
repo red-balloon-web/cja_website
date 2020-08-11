@@ -22,6 +22,16 @@
 
 <body <?php body_class(); ?>>
 
+<div class="cja_are_sure_modal_wrapper">
+	<div class="cja_are_sure_modal">
+		<p id="cja_modal_message">Message goes in here</p>
+		<p class="modal_button_wrap">
+			<a id="modal-yay" href="" class="cja_button cja_button--2">I'm Sure!</a>
+			<button id="modal-nay" class="cja_button">Cancel</button>
+		</p>
+	</div>
+</div>
+
 <?php wp_body_open(); ?>
 
 <?php do_action( 'storefront_before_site' ); ?>

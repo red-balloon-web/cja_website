@@ -79,6 +79,7 @@ get_header(); ?>
 					while ( $the_query->have_posts() ) : $the_query->the_post();
 
 					$cja_current_advert = new CJA_Advert(get_the_ID());
+					$cja_current_advertiser = new CJA_User($cja_current_advert->author);
 
 					?>
 					<div class="cja_list_item">
@@ -92,16 +93,25 @@ get_header(); ?>
 						?>
 						
 						<h4 class="item-title"><?php echo ($cja_current_advert->title); ?></h4>
-						<p class="item-meta"><?php echo ($cja_current_advert->author_human_name); ?></p>
-						<p class="item-meta"><em>Posted <?php echo ($cja_current_advert->days_old); ?> days ago</em></p>
-						<!--
-						<p>Salary numeric <?php var_dump($cja_current_advert->salary_numeric); ?></p>
-						<p>Equivalent Hr rate £<?php echo $cja_current_advert->hourly_equivalent_rate; ?></p>-->
+						<p class="item-meta"><?php echo ($cja_current_advert->author_human_name); 
+							if ($cja_current_advertiser->postcode) {
+								echo (', ' . $cja_current_advertiser->postcode);
+							}
+						?></p>
 						<?php if ($cja_current_advert->applied_to_by_current_user) {
 							$cja_user_application = new CJA_Application($cja_current_advert->applied_to_by_current_user);
 							?><p class="green"><strong>You applied on <?php echo $cja_user_application->human_application_date; ?>.</strong></p>
 							<?php
 						} else { ?>
+							<p class="item-meta"><em>Posted <?php 
+								if ($cja_current_advert->days_old == 0) {
+									echo ('today');
+								} else if ($cja_current_advert->days_old == 1) {
+									echo ('yesterday');
+								} else {
+									echo ($cja_current_advert->days_old) . ' days ago';
+								} ?>
+							</em></p>
 						<?php } ?>
 					</div>
 					<?php

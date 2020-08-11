@@ -188,6 +188,7 @@ function remove_required_fields( $required_fields ) {
 add_action( 'init', 'cja_add_my_details_endpoint' );
 function cja_add_my_details_endpoint() {
     add_rewrite_endpoint( 'my-details', EP_ROOT | EP_PAGES );
+    add_rewrite_endpoint( 'purchase-credits', EP_ROOT | EP_PAGES);
 }
   
   
@@ -196,6 +197,7 @@ function cja_add_my_details_endpoint() {
 add_filter( 'query_vars', 'cja_my_details_query_vars', 0 );
 function cja_my_details_query_vars( $vars ) {
     $vars[] = 'my-details';
+    $vars[] = 'purchase-credits';
     return $vars;
 }
   
@@ -210,10 +212,17 @@ function cja_order_woocommerce_account_menu( $items ) {
     unset ($items['customer-logout']);
 
 
+    $items['purchase-credits'] = 'Purchase Credits';
     $items['my-details'] = 'Public Details';
     $items['edit-account'] = 'Email / Password';
-    $items['orders'] = 'Orders';
-    $items['subscriptions'] = 'Subscriptions';
+    $items['orders'] = 'My Purchases';
+    
+    // only display subscriptions tab to advertisers
+    $the_current_user = new CJA_User;
+    if ($the_current_user->role == 'advertiser') {
+        $items['subscriptions'] = 'Subscriptions';
+    }
+
     $items['customer-logout'] = 'Log Out';
     return $items;
 }
@@ -221,10 +230,15 @@ function cja_order_woocommerce_account_menu( $items ) {
 add_filter( 'woocommerce_account_menu_items', 'cja_order_woocommerce_account_menu' );
   
 // 4. Add content to the new endpoint
+add_action( 'woocommerce_account_my-details_endpoint', 'cja_my_details_content' );
 function cja_my_details_content() { 
     include('inc/my-account/my-details-endpoint.php');
 }
-add_action( 'woocommerce_account_my-details_endpoint', 'cja_my_details_content' );
+
+add_action( 'woocommerce_account_purchase-credits_endpoint', 'cja_purchase_credits_content' );
+function cja_purchase_credits_content() {
+    include('inc/my-account/purchase-credits.php');
+}
 // Note: add_action must follow 'woocommerce_account_{your-endpoint-slug}_endpoint' format
 
 /*
@@ -246,6 +260,21 @@ function change_my_account_edit_address_title( $title, $endpoint ) {
     return $title;
 }
 */
+
+/**
+ * WOOCOMMERCE CHECKOUT
+ */
+
+ // Removes Order Notes Title - Additional Information & Notes Field
+add_filter( 'woocommerce_enable_order_notes_field', '__return_false', 9999 );
+
+// Remove Order Notes Field
+add_filter( 'woocommerce_checkout_fields' , 'remove_order_notes' );
+
+function remove_order_notes( $fields ) {
+     unset($fields['order']['order_comments']);
+     return $fields;
+}
 
 /**
  * LOG OUT USER

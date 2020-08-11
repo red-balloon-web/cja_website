@@ -159,4 +159,15 @@ class CJA_User {
             }
         }
     }
+
+    // Return display name
+    public function display_name() {
+        if ($this->company_name) {
+            return $this->company_name;
+        } else if ($this->first_name) {
+            return $this->full_name;
+        } else {
+            return $this->login_name;
+        }
+    }
 }

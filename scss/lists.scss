@@ -103,3 +103,31 @@
         color: #333;
     }
 }
+
+.cja_tooltip {
+    position: relative;
+
+    .tooltiptext {
+        position: absolute;
+        visibility: hidden;
+        opacity: 0;
+        font-family: 'Poppins';
+        font-weight: 400;
+        font-size: .9rem;
+        text-align: center;
+        background-color: #777;
+        color: white;
+        border-radius: 10px;
+        padding: 10px 5px;
+        width: 100px;
+        bottom: 155%;
+        left: 50%;
+        margin-left: -50px;
+    }
+
+    &:hover .tooltiptext {
+        visibility: visible;
+        opacity: .8;
+        transition: opacity .3s ease .8s;
+    }
+}

@@ -40,9 +40,9 @@
 			
 				// Display user messages
 				if ($cja_current_ad->created_by_current_user) {
-					/*if ($cja_current_ad->status == 'active') {
+					if ($cja_current_ad->status == 'active') {
 						?><p class="cja_alert_success">You Placed this Advert on <?php echo $cja_current_ad->human_activation_date; ?> (<?php echo $cja_current_ad->days_left; ?> days left)</p><?php
-					}*/
+					}
 					if ($cja_current_ad->status == 'inactive') {
 						?><p class="cja_alert cja_alert--amber">This Advert Is a Draft</p><?php
 					}
@@ -50,19 +50,6 @@
 						?><p class="cja_alert cja_alert--red">This Advert Has Been Deleted</p><?php
 					}
 				}
-
-
-				/**
-				 * DISPLAY USER OPTIONS
-				 * 
-				 * ADVERTISER
-				 *  - Activate
-				 *  - Edit
-				 *  - Extend
-				 *  - Delete
-				 */
-				/*include('inc/single-ad/display-user-options.php');*/
-				
 				?>
 
 				<!--<hr>-->
@@ -89,7 +76,7 @@
 				<?php
 
 				if ($cja_current_user_obj->is_logged_in == false) {
-					?><a href="<?php echo get_site_url(); ?>/my-details" class="cja_button">LOG IN OR CREATE ACCOUNT TO APPLY</a><?php
+					?><a href="<?php echo get_site_url(); ?>/my-account" class="cja_button cja_button--2">Log In or Create Account to Apply</a><?php
 				}
 
 				// show apply button if user is jobseeker and if we are not on the application page already
@@ -99,10 +86,19 @@
 
 						?><p><strong>You applied to this job on <?php echo $cja_user_application->human_application_date; ?></strong></p><?php
 					} else {
-						?><a class="cja_button" href="<?php echo get_the_permalink(); ?>?action=apply">APPLY FOR THIS JOB</a><?php
+						?><a class="cja_button" href="<?php echo get_the_permalink(); ?>?action=apply">Apply for this Job</a><?php
 					}
 				}
 
+				/**
+				 * DISPLAY USER OPTIONS
+				 * 
+				 * ADVERTISER
+				 *  - Activate
+				 *  - Edit
+				 *  - Extend
+				 *  - Delete
+				 */
 				include('inc/single-ad/display-user-options.php');
 
 			

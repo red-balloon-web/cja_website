@@ -43,23 +43,6 @@ if ($_GET) {
         </form>
     <?php }
 
-    // Display buttons to purchase credits
-    if ($_GET{'buy-credits'}) {
-        $do_list = false;
-        $cja_current_user = new CJA_User; ?>
-
-        <h1>Buy Credits</h1>
-        <p><span class="credits-large"><?php echo ($cja_current_user->credits); ?></span>&nbsp;&nbsp;advert credits remaining</p>
-        <p>When you place an advert it costs you one credit per month. You can extend ads for another month for one credit.</p>
-        <p>You can buy 1 credit for £30 or 10 credits for £150.</p>
-        <p>
-            <a href="<?php echo get_site_url(); ?>/basket?add-to-cart=8" class="cja_button cja_button--2 add-credits-to-cart"><span>1 Credit £30</span><br>Add to cart</a>
-            <a href="<?php echo get_site_url(); ?>/basket?add-to-cart=7" class="cja_button cja_button--2 add-credits-to-cart"><span>10 Credits £150</span><br>Add to cart</a>
-        </p>
-        <p><a href="<?php echo get_page_link(); ?>" class="cja_button">Cancel</a></p>
-    
-    <?php }
-
 
     /**
      * DO ADMIN TASKS
