@@ -51,9 +51,11 @@ if ($_GET) {
     // Delete advert
     if ($_GET['delete-ad']) {
         $cja_delete_ad = new CJA_Advert($_GET['delete-ad']);
-        $cja_delete_ad->delete(); 
-        $cja_delete_ad->save();
-        ?><p class="cja_alert cja_alert--success">Your advert for "<?php echo ($cja_delete_ad->title); ?>" has been deleted.</p><?php
+        if ($cja_delete_ad->status != 'deleted') {
+            $cja_delete_ad->delete(); 
+            $cja_delete_ad->save();
+            ?><p class="cja_alert cja_alert--success">Your advert for "<?php echo ($cja_delete_ad->title); ?>" has been deleted.</p><?php
+        }
     }
 
 
@@ -69,10 +71,12 @@ if ($_GET) {
     // Activate ad
     if ($_GET['activate-ad']) {
         $cja_activate_ad = new CJA_Advert($_GET['activate-ad']);
-        $cja_activate_ad->activate();
-        $cja_activate_ad->save();
-        spend_credits();
-        ?><p class="cja_alert cja_alert--success">Your advert for "<?php echo ($cja_activate_ad->title); ?>" has been activated for 1 credit.</p><?php
+        if ($cja_activate_ad->status != 'active') {
+            $cja_activate_ad->activate();
+            $cja_activate_ad->save();
+            spend_credits();
+            ?><p class="cja_alert cja_alert--success">Your advert for "<?php echo ($cja_activate_ad->title); ?>" has been activated for 1 credit.</p><?php
+        }
     }
 }
 ?>

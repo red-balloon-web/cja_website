@@ -34,6 +34,16 @@
 
 	<header id="masthead" class="site-header homepage" role="banner" style="<?php storefront_header_styles(); ?>">
 
+	<!--<nav id="site-navigation" class="main-navigation" role="navigation" aria-label="<?php esc_html_e( 'Primary Navigation', 'storefront' ); ?>">
+	<button class="menu-toggle" aria-controls="site-navigation" aria-expanded="false"><span><?php echo esc_attr( apply_filters( 'storefront_menu_toggle_text', __( 'Menu', 'storefront' ) ) ); ?></span></button>
+	<?php wp_nav_menu(
+                array(
+                    'theme_location' => 'loggedout-primary',
+                    'container_class' => 'handheld-navigation',
+                )
+			); ?>
+	</nav>-->
+
 	<div class="col-full header-top">
 			<div class="logged-in-message">
 				<?php
@@ -68,7 +78,7 @@
 					}
 				?>
 			</div>
-			<h2>Courses and Jobs Advertiser</h2>
+			<h2 class="cja_site_title">Courses and Jobs Advertiser</h2>
 		</div>
 		<div class="col-full">
 

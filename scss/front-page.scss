@@ -21,7 +21,20 @@
         }
     }
 
-    
+    @media (max-width: 700px) {
+        background: none;
+        height: unset;
+
+        .col-full {
+            
+            .splash_login_box {
+                position: relative;
+                top: unset;
+                left: unset;
+                margin: 60px auto 60px auto;
+            }
+        }
+    }
 }
 
     .splash_login_box,

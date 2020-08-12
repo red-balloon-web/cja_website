@@ -78,12 +78,18 @@ get_header(); ?>
 
 					?>
 						<div class="cja_list_item">
-							<a class="cja_icon" href="<?php echo $cja_page_address; ?>?delete-ad=<?php echo get_the_ID(); ?>"><i class="fa fa-trash cja_tooltip"><div class="tooltiptext">delete</div></i></a>
+							<!--<a class="cja_icon" href="<?php echo $cja_page_address; ?>?delete-ad=<?php echo get_the_ID(); ?>"><i class="fa fa-trash cja_tooltip"><div class="tooltiptext">delete</div></i></a>--> 
+
+							<div class="cja_icon cja_call_are_you_sure" data-linkurl="<?php echo $cja_page_address; ?>?delete-ad=<?php echo get_the_ID(); ?>" data-yaybutton="Delete" data-text="Delete Advert"><i class="fa fa-trash cja_tooltip"><div class="tooltiptext">delete</div></i></div>
+
 							<a class="cja_icon" href="<?php echo $cja_page_address; ?>?edit-ad=<?php echo get_the_ID(); ?>"><i class="fas fa-edit cja_tooltip"><div class="tooltiptext">edit</div></i></a>
 							<a class="cja_icon" href="<?php echo get_the_permalink($currentad->id); ?>"><i class="fas fa-eye cja_tooltip"><div class="tooltiptext">view</div></i></a>
 							<?php if ($currentad->status == 'active') {
 								?>
-								<a class="cja_icon" href="<?php echo ($cja_page_address . '?extend-ad=' . get_the_ID()); ?>"><i class="fas fa-clock cja_tooltip"><div class="tooltiptext">extend</div></i></a>
+								<!--<a class="cja_icon" href="<?php echo ($cja_page_address . '?extend-ad=' . get_the_ID()); ?>"><i class="fas fa-clock cja_tooltip"><div class="tooltiptext">extend</div></i></a>-->
+
+								<div class="cja_icon cja_extend_button cja_call_are_you_sure" data-text="Extend Advert (1 Credit)" data-yaybutton="Extend" data-linkurl="<?php echo ($cja_page_address . '?extend-ad=' . get_the_ID()); ?>"><i class="fas fa-clock cja_tooltip"><div class="tooltiptext">extend</div></i></div>
+
 								
 								<?php
 							} else if ($currentad->status == 'inactive') {
@@ -137,6 +143,29 @@ get_header(); ?>
 
 		</main><!-- #main -->
 	</div><!-- #primary -->
+
+<script>
+jQuery(document).ready(function() {
+
+	jQuery('.cja_call_are_you_sure').on('click', function(e) {
+		jQuery('#cja_modal_message').text(jQuery(this).data('text'));
+		jQuery('#modal-yay').attr('href', jQuery(this).data('linkurl'));
+		jQuery('#modal-yay').text(jQuery(this).data('yaybutton'));
+		jQuery('#cja_are_sure_modal_wrapper').css('visibility', 'visible');
+	}); 
+
+	jQuery('#cja_are_sure_modal_wrapper').on('click', function(e) {
+		if (e.target == this) {
+			jQuery('#cja_are_sure_modal_wrapper').css('visibility', 'hidden');
+		}
+	});
+
+	jQuery('#modal-nay').on('click', function(e) {
+		jQuery('#cja_are_sure_modal_wrapper').css('visibility', 'hidden');
+	});
+
+});
+</script>
 
 <?php
 //do_action( 'storefront_sidebar' );

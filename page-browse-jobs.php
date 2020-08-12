@@ -86,7 +86,7 @@ get_header(); ?>
 						<?php 
 						if ($cja_current_advert->applied_to_by_current_user) {
 								$cja_user_application = new CJA_Application($cja_current_advert->applied_to_by_current_user);
-								?><a class="cja_button" href="<?php echo get_the_permalink($cja_current_advert->applied_to_by_current_user); ?>">View My Application</a><?php	
+								?><a class="cja_button" href="<?php echo get_the_permalink($cja_current_advert->applied_to_by_current_user); ?>">View Job</a><?php	
 						} else {
 							?><a class="cja_button" href="<?php echo get_the_permalink($cja_current_advert->id); ?>">View Job<?php if ($cja_current_user_obj->role == 'jobseeker') { echo (' and Apply'); } ?></a><?php
 						}

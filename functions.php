@@ -102,6 +102,7 @@ add_filter( 'storefront_register_nav_menus', 'cja_custom_menus');
 
 function cja_primary_navigation() {
     ?>
+    <!-- CJA PRIMARY NAVIGATION STARTS HERE -->
     <nav id="site-navigation" class="main-navigation" role="navigation" aria-label="<?php esc_html_e( 'Primary Navigation', 'storefront' ); ?>">
     <button class="menu-toggle" aria-controls="site-navigation" aria-expanded="false"><span><?php echo esc_attr( apply_filters( 'storefront_menu_toggle_text', __( 'Menu', 'storefront' ) ) ); ?></span></button>
         <?php
@@ -115,11 +116,23 @@ function cja_primary_navigation() {
                     'container_class' => 'primary-navigation',
                 )
             );
+            wp_nav_menu(
+                array(
+                    'theme_location' => 'loggedout-primary',
+                    'container_class' => 'handheld-navigation',
+                )
+            );
         } else if ($cja_current_user_obj->role == 'advertiser') {
             wp_nav_menu(
                 array(
                     'theme_location' => 'advertiser-primary',
                     'container_class' => 'primary-navigation',
+                )
+            );
+            wp_nav_menu(
+                array(
+                    'theme_location' => 'advertiser-primary',
+                    'container_class' => 'handheld-navigation',
                 )
             );
         } else if ($cja_current_user_obj->role == 'jobseeker') {
@@ -129,22 +142,14 @@ function cja_primary_navigation() {
                     'container_class' => 'primary-navigation',
                 )
             );
+            wp_nav_menu(
+                array(
+                    'theme_location' => 'jobseeker-primary',
+                    'container_class' => 'handheld-navigation',
+                )
+            );
         }
-        
-        /*wp_nav_menu(
-            array(
-                'theme_location'  => 'primary',
-                'container_class' => 'primary-navigation',
-            )
-        );
-
-        wp_nav_menu(
-            array(
-                'theme_location'  => 'handheld',
-                'container_class' => 'handheld-navigation',
-            )
-        );*/
-        ?>
+    ?>
     </nav><!-- #site-navigation -->
     <?php
 }
@@ -391,4 +396,25 @@ function cja_save_cookies() {
     }
 }
 
-?>
+/**
+ * PAGINATION
+ */
+
+add_filter( 'paginate_links', function( $link )
+    {
+
+    if (filter_input( INPUT_GET, 'extend-ad') ) {
+        $link = remove_query_arg( 'extend-ad', $link );
+    }
+    if (filter_input( INPUT_GET, 'delete-ad') ) {
+        $link = remove_query_arg('delete-ad', $link);
+    }
+    return $link;
+    
+}
+    /*return  
+       filter_input( INPUT_GET, 'extend-ad' )
+       ? remove_query_arg( 'extend-ad', $link )
+       : $link;
+    } */
+);

@@ -138,8 +138,8 @@ get_header(); ?>
 					?>
 							
 					<div class="cja_list_item">
-						<a href="<?php echo $cja_current_page_url; ?>?advertiser_archive=<?php echo $cja_current_application->id; ?>" class="cja_icon"><i class="fa fa-trash"></i></a>
-						<a href="<?php echo get_the_permalink($cja_current_application->id); ?>" class="cja_icon"><i class="fas fa-eye"></i></a>
+						<a href="<?php echo $cja_current_page_url; ?>?advertiser_archive=<?php echo $cja_current_application->id; ?>" class="cja_icon"><i class="fa fa-trash cja_tooltip"><div class="tooltiptext">archive</div></i></a>
+						<a href="<?php echo get_the_permalink($cja_current_application->id); ?>" class="cja_icon"><i class="fas fa-eye cja_tooltip"><div class="tooltiptext">view</div></i></a>
 						<h4 class="item-title"><?php echo $cja_current_advert->title; ?></h4>
 						<p class="item-meta"><em><?php echo $cja_current_applicant->full_name; ?> :: <?php echo $cja_current_application->human_application_date; ?></em></p>
 					</div>
