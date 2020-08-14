@@ -21,10 +21,23 @@ if ($_GET) {
             <input type="hidden" name="update-ad" value="true" >
             <input type="hidden" name="advert-id" value="<?php echo ($cja_edit_ad->id); ?>">
             <input type="submit" class="cja_button cja_button--2" value="Update Advert">
+            <a class = "cja_button" href="<?php echo get_site_url() . '/' . $cja_config['my-job-ads-slug']; ?>">Cancel</a>
 
         </form>
         
         <?php
+    }
+
+    // Display success message on successful ad creation
+    if ($_GET['create-ad-success']) {
+        $cja_new_ad = new CJA_Advert($_GET['create-ad-success']);
+        ?><p class="cja_alert cja_alert--success">Your Advert "<?php echo $cja_new_ad->title; ?>" Was Created for 1 Credit!</p><?php
+    }
+
+    // Display success message on successful ad extension
+    if ($_GET['extend-ad-success']) {
+        $cja_extend_ad = new CJA_Advert($_GET['extend-ad-success']);
+        ?><p class="cja_alert cja_alert--success">Your Advert "<?php echo $cja_extend_ad->title; ?>" Was Extended for 1 Credit!</p><?php
     }
 
     // Display form to create new advert
@@ -38,7 +51,7 @@ if ($_GET) {
             <br><br>
             <input type="hidden" name="process-create-ad" value="true">
             <input type="submit" class="cja_button cja_button--2" value="Create Advert (1 Credit)">&nbsp;&nbsp;
-            <input type="submit" class="cja_button" formaction="<?php echo $cja_page_address; ?>?draft=true" value="Save as Draft">&nbsp;&nbsp;
+            <!--<input type="submit" class="cja_button" formaction="<?php echo $cja_page_address; ?>?draft=true" value="Save as Draft">&nbsp;&nbsp;-->
             <a href="<?php echo get_page_link(); ?>" class="cja_button">Cancel</a>
         </form>
     <?php }

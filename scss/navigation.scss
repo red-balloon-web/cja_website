@@ -22,3 +22,40 @@
 #masthead.site-header ul.menu li.current-menu-item>a {
     color: #fff;
 }
+
+/* show the right nav section because theyre not in the same place */
+#site-navigation.cja_mobile-navigation {
+    @media(min-width: 768px) {
+        display: none !important;
+    }
+}
+#site-navigation.cja_desktop-navigation {
+    @media(max-width: 767px) {
+        display: none;
+    }
+}
+
+
+.woocommerce-active .site-header .main-navigation {
+    @media (max-width: 992px) {
+        width: unset;
+        text-align: center;
+        float: unset;
+        margin-right: 0;
+    }
+}
+
+button.menu-toggle,
+button.menu-toggle:hover {
+    padding: 0;
+    border: 0;
+    background-color: unset;
+    color: #ccc;
+    font-size: 30px;
+    margin-right: 20px;
+}
+
+button.menu-toggle:before,
+button.menu-toggle::after {
+    display: none;
+}

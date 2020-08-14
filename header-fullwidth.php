@@ -14,6 +14,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2.0">
 <link rel="profile" href="http://gmpg.org/xfn/11">
 <link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
 <?php wp_head(); ?>
 </head>
@@ -30,21 +31,10 @@
 <div id="page" class="hfeed site">
 	<?php do_action( 'storefront_before_header' ); ?>
 
-	
-
 	<header id="masthead" class="site-header homepage" role="banner" style="<?php storefront_header_styles(); ?>">
 
-	<!--<nav id="site-navigation" class="main-navigation" role="navigation" aria-label="<?php esc_html_e( 'Primary Navigation', 'storefront' ); ?>">
-	<button class="menu-toggle" aria-controls="site-navigation" aria-expanded="false"><span><?php echo esc_attr( apply_filters( 'storefront_menu_toggle_text', __( 'Menu', 'storefront' ) ) ); ?></span></button>
-	<?php wp_nav_menu(
-                array(
-                    'theme_location' => 'loggedout-primary',
-                    'container_class' => 'handheld-navigation',
-                )
-			); ?>
-	</nav>-->
-
-	<div class="col-full header-top">
+		<?php include('inc/navigation/mobile-menu.php'); ?>
+		<div class="col-full header-top">
 			<div class="logged-in-message">
 				<?php
 					$cja_current_user = new CJA_User;
@@ -74,6 +64,9 @@
 								</div>
 							</div>
 						</form>
+						<div class="header_login_button">
+							<a href="<?php echo get_site_url(); ?>/my-account" class="cja_button cja_button--home_login">Create Account / Log In</a>
+						</div>
 					<?php
 					}
 				?>
@@ -116,7 +109,7 @@
 	 * @hooked storefront_header_widget_region - 10
 	 * @hooked woocommerce_breadcrumb - 10
 	 */
-	do_action( 'storefront_before_content' );
+	//do_action( 'storefront_before_content' );
 	?>
 
 	<!--<div id="content" class="site-content" tabindex="-1">

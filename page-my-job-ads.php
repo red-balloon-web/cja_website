@@ -33,7 +33,7 @@ get_header(); ?>
 		if ($do_list) {
 			$cja_current_user = new CJA_User; ?>
 			<div class="my-jobs-header">
-				<span class="credits-large"><?php echo ($cja_current_user->credits); ?></span>&nbsp;&nbsp;advert credits remaining
+				<div class="cja_credits_remaining"><span class="credits-large"><?php echo ($cja_current_user->credits); ?></span>&nbsp;&nbsp;advert credits remaining</div>
 				<a href="<?php echo get_page_link() . '?create-ad=true'; ?>" class="cja_button cja_button--2 my-jobs-header-button create-advert-button">Create Advert</a>
 				<a href="<?php echo get_site_url(); ?>/my-account/purchase-credits'; ?>" class="cja_button cja_button--2 my-jobs-header-button">Buy Credits</a>
 		</div>
@@ -78,25 +78,24 @@ get_header(); ?>
 
 					?>
 						<div class="cja_list_item">
-							<!--<a class="cja_icon" href="<?php echo $cja_page_address; ?>?delete-ad=<?php echo get_the_ID(); ?>"><i class="fa fa-trash cja_tooltip"><div class="tooltiptext">delete</div></i></a>--> 
+							<div class="cja_icon_set">
+								<div class="cja_icon cja_call_are_you_sure" data-linkurl="<?php echo $cja_page_address; ?>?delete-ad=<?php echo get_the_ID(); ?>" data-yaybutton="Delete" data-text="Delete Advert"><i class="fa fa-trash cja_tooltip"><div class="tooltiptext">delete</div></i></div>
 
-							<div class="cja_icon cja_call_are_you_sure" data-linkurl="<?php echo $cja_page_address; ?>?delete-ad=<?php echo get_the_ID(); ?>" data-yaybutton="Delete" data-text="Delete Advert"><i class="fa fa-trash cja_tooltip"><div class="tooltiptext">delete</div></i></div>
+								<a class="cja_icon" href="<?php echo $cja_page_address; ?>?edit-ad=<?php echo get_the_ID(); ?>"><i class="fas fa-edit cja_tooltip"><div class="tooltiptext">edit</div></i></a>
+								<a class="cja_icon" href="<?php echo get_the_permalink($currentad->id); ?>"><i class="fas fa-eye cja_tooltip"><div class="tooltiptext">view</div></i></a>
+								<?php if ($currentad->status == 'active') {
+									?>
 
-							<a class="cja_icon" href="<?php echo $cja_page_address; ?>?edit-ad=<?php echo get_the_ID(); ?>"><i class="fas fa-edit cja_tooltip"><div class="tooltiptext">edit</div></i></a>
-							<a class="cja_icon" href="<?php echo get_the_permalink($currentad->id); ?>"><i class="fas fa-eye cja_tooltip"><div class="tooltiptext">view</div></i></a>
-							<?php if ($currentad->status == 'active') {
+									<div class="cja_icon cja_extend_button cja_call_are_you_sure" data-text="Extend Advert (1 Credit)" data-yaybutton="Extend" data-linkurl="<?php echo ($cja_page_address . '?extend-ad=' . get_the_ID()); ?>"><i class="fas fa-clock cja_tooltip"><div class="tooltiptext">extend</div></i></div>
+
+									
+									<?php
+								} else if ($currentad->status == 'inactive') {
+									?><a class="cja_spend_button" href="<?php echo ($cja_page_address . '?activate-ad=' . get_the_ID()); ?>"><span>ACTIVATE</span><br>1 Credit</a><?php
+								}
+
 								?>
-								<!--<a class="cja_icon" href="<?php echo ($cja_page_address . '?extend-ad=' . get_the_ID()); ?>"><i class="fas fa-clock cja_tooltip"><div class="tooltiptext">extend</div></i></a>-->
-
-								<div class="cja_icon cja_extend_button cja_call_are_you_sure" data-text="Extend Advert (1 Credit)" data-yaybutton="Extend" data-linkurl="<?php echo ($cja_page_address . '?extend-ad=' . get_the_ID()); ?>"><i class="fas fa-clock cja_tooltip"><div class="tooltiptext">extend</div></i></div>
-
-								
-								<?php
-							} else if ($currentad->status == 'inactive') {
-								?><a class="cja_spend_button" href="<?php echo ($cja_page_address . '?activate-ad=' . get_the_ID()); ?>"><span>ACTIVATE</span><br>1 Credit</a><?php
-							}
-
-							?>
+							</div>
 
 							<h4 class="item-title"><?php echo $currentad->title; ?></h4>
 							<p class="item-meta <?php echo $currentad->status; ?>">

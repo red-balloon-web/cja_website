@@ -34,6 +34,19 @@
             margin-bottom: 20px;
         }
     }
+
+    @media (max-width: 929px) {
+        flex-direction: column;
+
+        .existing-user-login {
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .new-user-account {
+            width: 100%;
+        }
+    }
 }
 
 .hentry .entry-content .woocommerce-MyAccount-navigation ul li {

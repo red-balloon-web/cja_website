@@ -6,12 +6,30 @@
     display: flex;
     align-items: center;
 
+    .cja_credits_remaining {
+        display: flex;
+        align-items: center;
+    }
+
     .my-jobs-header-button {
         margin-left: 15px;
     }
 
     .create-advert-button {
         margin-left: auto;
+    }
+
+    @media (max-width: 699px) {
+        flex-direction: column;
+
+        .my-jobs-header-button,
+        .create-advert-button {
+            margin-left: unset;
+        }
+
+        .create-advert-button {
+            margin-bottom: 15px;
+        }
     }
 }
 

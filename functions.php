@@ -103,8 +103,9 @@ add_filter( 'storefront_register_nav_menus', 'cja_custom_menus');
 function cja_primary_navigation() {
     ?>
     <!-- CJA PRIMARY NAVIGATION STARTS HERE -->
-    <nav id="site-navigation" class="main-navigation" role="navigation" aria-label="<?php esc_html_e( 'Primary Navigation', 'storefront' ); ?>">
-    <button class="menu-toggle" aria-controls="site-navigation" aria-expanded="false"><span><?php echo esc_attr( apply_filters( 'storefront_menu_toggle_text', __( 'Menu', 'storefront' ) ) ); ?></span></button>
+    <nav id="site-navigation" class="main-navigation cja_desktop-navigation" role="navigation" aria-label="<?php esc_html_e( 'Primary Navigation', 'storefront' ); ?>">
+    <!--<button class="menu-toggle" aria-controls="site-navigation" aria-expanded="false"><span><?php echo esc_attr( apply_filters( 'storefront_menu_toggle_text', __( 'Menu', 'storefront' ) ) ); ?></span></button>-->
+    <button class="menu-toggle" aria-controls="site-navigation" aria-expanded="false"><i class="fas fa-bars"></i></button>
         <?php
 
         $cja_current_user_obj = new CJA_User;
@@ -418,3 +419,73 @@ add_filter( 'paginate_links', function( $link )
        : $link;
     } */
 );
+
+/**
+ * PREVENT WP LOGIN ERRORS
+ */
+
+ /**
+ * Function Name: front_end_login_fail.
+ * Description: This redirects the failed login to the custom login page instead of default login page with a modified url
+**/
+add_action( 'wp_login_failed', 'front_end_login_fail' );
+function front_end_login_fail( $username ) {
+
+// Getting URL of the login page
+$referrer = $_SERVER['HTTP_REFERER'];    
+// if there's a valid referrer, and it's not the default log-in screen
+if( !empty( $referrer ) && !strstr( $referrer,'wp-login' ) && !strstr( $referrer,'wp-admin' ) ) {
+    wp_redirect( get_site_url() . "/my-account?login=failed" ); 
+    exit;
+}
+
+}
+
+/**
+ * Function Name: check_username_password.
+ * Description: This redirects to the custom login page if user name or password is   empty with a modified url
+**/
+add_action( 'authenticate', 'check_username_password', 1, 3);
+function check_username_password( $login, $username, $password ) {
+
+    // Getting URL of the login page
+    $referrer = $_SERVER['HTTP_REFERER'];
+
+    // if there's a valid referrer, and it's not the default log-in screen
+    if( !empty( $referrer ) && !strstr( $referrer,'wp-login' ) && !strstr( $referrer,'wp-admin' ) ) { 
+        if( $username == "" || $password == "" ){
+            wp_redirect( get_site_url() . "/my-account?login=empty" );
+            exit;
+        }
+    }
+
+}
+
+/**
+ * Function name: Process and Redirect
+ * 
+ * Description: processes forms on init hook and redirects without form data. This is to prevent users duplicating an action by using the refresh button.
+ */
+
+ add_action('init', 'process_and_redirect');
+ function process_and_redirect() {
+    if ($_POST['process-create-ad']) {
+        $cja_new_ad = new CJA_Advert;
+        $cja_new_ad->create(); // create a new post in the database
+        $cja_new_ad->update_from_form();
+        $cja_new_ad->activate();
+        $cja_new_ad->save();
+        spend_credits();
+        header('Location: ' . get_site_url() . '/my-job-ads?create-ad-success=' . $cja_new_ad->id);
+        exit;
+    }
+
+    if ($_GET['extend-ad']) {
+        $cja_extend_ad = new CJA_Advert($_GET['extend-ad']);
+        $cja_extend_ad->extend();
+        $cja_extend_ad->save();
+        spend_credits();
+        header('Location: ' . get_site_url() . '/my-job-ads?extend-ad-success=' . $cja_extend_ad->id);
+        exit;
+    }
+}

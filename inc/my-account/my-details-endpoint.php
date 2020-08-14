@@ -16,7 +16,7 @@
     <p class="header_subtitle">These are the details that will appear on your adverts</p>
     <form action="<?php echo $cja_config['user-details-page-slug']; ?>" method="post" enctype="multipart/form-data">
         <p class="label">Organisation Name</p>
-        <input type="text" name="company_name" value="<?php echo stripslashes($cja_current_user_obj->company_name); ?>" style="width: 350px">
+        <input type="text" name="company_name" value="<?php echo stripslashes($cja_current_user_obj->company_name); ?>" style="width: 300px">
         <p class="label">Short Description of Your Organisation</p>
         <textarea name="company_description" id="" cols="30" rows="10"><?php echo stripslashes($cja_current_user_obj->company_description); ?></textarea>
         <input type="hidden" name="form-update" value="advertiser">

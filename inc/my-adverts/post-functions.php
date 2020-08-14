@@ -2,6 +2,8 @@
 
 if ($_POST) {
 
+// This is now handled from functions.php to redirect to page without form data
+/*
 if ($_POST['process-create-ad']) {
 
     $cja_new_ad = new CJA_Advert;
@@ -20,6 +22,7 @@ if ($_POST['process-create-ad']) {
 
     }
 }
+*/
 
 if ($_POST['update-ad']) {
 

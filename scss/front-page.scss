@@ -7,11 +7,15 @@
     position: relative;
 
     .col-full {
-        position: relative;
+        /*position: relative;*/
+
+        @media (min-width: 1050px) {
+            position: relative;
+        }
 
         .splash_login_box {
             position: absolute;
-            left: 0;
+            left: 60px;
             top: 60px;
             width: 420px;
             background: #facc39ee;
@@ -21,9 +25,10 @@
         }
     }
 
-    @media (max-width: 700px) {
-        background: none;
-        height: unset;
+    @media (max-width: 600px) {
+        /*background: none;
+        height: unset;*/
+        padding: 60px 0;
 
         .col-full {
             
@@ -31,7 +36,21 @@
                 position: relative;
                 top: unset;
                 left: unset;
-                margin: 60px auto 60px auto;
+                margin: 0 auto;
+            }
+        }
+    }
+
+    @media (max-width: 479px) {
+        background: url('images/splash.jpg');
+        background-size: cover;
+        background-position: 70% 50%;
+        width: 100%;
+        height: 500px;
+
+        .col-full {
+            .splash_login_box {
+                display: none;
             }
         }
     }
@@ -72,10 +91,20 @@
 
             .topbox {
                 display: flex;
-                .login,
-                .password {
-                    padding-left: 20px;
+
+                .username {
+                    width: 50%;
+
+                    @media (max-width: 929px) {
+                        width: unset;
+                        padding-right: 20px;
+                    }
                 }
+
+                @media (max-width: 434px) {
+                    flex-direction: column;
+                }
+                
             }
         }
 
@@ -85,10 +114,18 @@
             
             .topbox {
                 display: flex;
-                
-                
+
                 .username {
                     width: 50%;
+
+                    @media (max-width: 929px) {
+                        width: unset;
+                        margin-right: 20px;
+                    }
+                }
+
+                @media (max-width: 434px) {
+                    flex-direction: column;
                 }
             }   
 

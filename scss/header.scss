@@ -4,14 +4,24 @@
     background-color: #3f3d5f;
     background-color: #3d485f;
 
+    padding-top: 10px;
+    margin-bottom: 50px;
+
     @media (min-width: 768px) {
         border-bottom-color: #555;
         padding-top: 20px;
         margin-bottom: 50px;
     
-        .site-header-cart .cart-contents {
-            color: #ccc;
-            font-size: .9rem;
+        .site-header-cart {
+
+            @media (max-width: 991px) {
+                display: none;
+            }
+
+            .cart-contents {
+                color: #ccc;
+                font-size: .9rem;
+            }
         }
 
     }
@@ -64,11 +74,18 @@
             @media (max-width: 479px) {
                 flex-direction: column;
                 align-items: center;
+                display: none;
 
                 .username,
                 .password {
                     margin-bottom: 10px;
                 }
+            }
+        }
+
+        .header_login_button {
+            @media (min-width: 480px) {
+                display: none;
             }
         }
 
@@ -96,6 +113,7 @@
 
             @media (max-width: 479px) {
                 margin-bottom: 20px;
+                font-size: 1.8rem;
             }
         }
     }
@@ -110,15 +128,8 @@
 .site-footer {
     background-color: #3d485f;
     color: #ccc;
+    padding: 20px 0;
     .address {
         font-size: .8rem;
-    }
-}
-
-.woocommerce-active .site-header .main-navigation {
-    @media (max-width: 992px) {
-        width: unset;
-        text-align: center;
-        float: unset;
     }
 }

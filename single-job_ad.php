@@ -40,12 +40,15 @@
 			
 				// Display user messages
 				if ($cja_current_ad->created_by_current_user) {
+					/*
 					if ($cja_current_ad->status == 'active') {
 						?><p class="cja_alert_success">You Placed this Advert on <?php echo $cja_current_ad->human_activation_date; ?> (<?php echo $cja_current_ad->days_left; ?> days left)</p><?php
 					}
+					*/
 					if ($cja_current_ad->status == 'inactive') {
 						?><p class="cja_alert cja_alert--amber">This Advert Is a Draft</p><?php
 					}
+					
 					if ($cja_current_ad->status == 'deleted') {
 						?><p class="cja_alert cja_alert--red">This Advert Has Been Deleted</p><?php
 					}

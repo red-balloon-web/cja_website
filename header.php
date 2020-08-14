@@ -41,6 +41,8 @@
 	<?php do_action( 'storefront_before_header' ); ?>
 
 	<header id="masthead" class="site-header" role="banner" style="<?php storefront_header_styles(); ?>">
+
+		<?php include('inc/navigation/mobile-menu.php'); ?>
 		<div class="col-full header-top">
 			<div class="logged-in-message">
 				<?php
@@ -72,11 +74,14 @@
 								</div>
 							</div>
 						</form>
+						<div class="header_login_button">
+							<a href="<?php echo get_site_url(); ?>/my-account" class="cja_button cja_button--home_login">Create Account / Log In</a>
+						</div>
 					<?php
 					}
 				?>
 			</div>
-			<h2>Courses and Jobs Advertiser</h2>
+			<h2 class="cja_site_title">Courses and Jobs Advertiser</h2>
 		</div>
 		<div class="col-full">
 

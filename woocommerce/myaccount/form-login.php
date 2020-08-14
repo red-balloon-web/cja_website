@@ -43,10 +43,21 @@ if ($_POST['createaccount']) {
 	if (is_int($result)) {
 		// Give new user 1 credit
 		add_user_meta($result, 'cja_credits', 1, true);
-		?><p class="cja_alert cja_alert--success"><?php echo $username; ?>, Your Account Has Been Created!<br>Please use your password to login!</p><?php
+		?><p class="cja_alert cja_alert--success"><strong><?php echo $username; ?></strong>, Your Account Has Been Created!<br>Please use your password to login!</p><?php
 		$freshaccountcreation = true;
-	} else {
-		echo $result->get_error_message();
+	} else { ?>
+
+	<p class="cja_alert cja_alert--red"><?php echo $result->get_error_message(); ?></p>
+	<?php }
+}
+
+// DISPLAY ERROR MESSAGE IF LOGIN FAILED
+if ($_GET['login']) {
+	if ($_GET['login'] == 'failed') {
+		?><p class="cja_alert cja_alert--red">Your username or password are incorrect. <a href="<?php echo esc_url( wp_lostpassword_url() ); ?>"><?php esc_html_e( 'Lost your password?', 'woocommerce' ); ?></a></p><?php
+	}
+	if ($_GET['login'] == 'empty') {
+		?><p class="cja_alert cja_alert--red">Please complete both the username and password</p><?php
 	}
 }
 
