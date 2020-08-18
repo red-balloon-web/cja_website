@@ -100,6 +100,9 @@
 <p class="label">Contact Phone Number</p>
 <input type="text" name="contact_phone_number" value="<?php echo ($cja_edit_ad->contact_phone_number); ?>">
 
+<p class="label">Postcode</p>
+<input type="text" name="postcode" value="<?php echo ($cja_edit_ad->postcode); ?>">
+
 <p class="label">Career Level</p>
 <select name="career_level" form="edit_ad_form">
     <option value="">--Select--</option>

@@ -9,6 +9,7 @@
     <p class="cja_listing_item">Sector: <strong><?php echo $cja_current_ad->return_human('sector'); ?></strong></p>
     <p class="cja_listing_item">Contact person: <strong><?php echo $cja_current_ad->contact_person; ?></strong></p>
     <p class="cja_listing_item">Contact phone number: <strong><?php echo $cja_current_ad->contact_phone_number; ?></strong></p>
+    <p class="cja_listing_item">Postcode: <strong><?php echo $cja_current_ad->postcode; ?></strong></p>
     <p class="cja_listing_item">Career level: <strong><?php echo $cja_current_ad->return_human('career_level'); ?></strong></p>
     <p class="cja_listing_item">Experience required: <strong><?php echo $cja_current_ad->return_human('experience_required'); ?></strong></p>
     <p class="cja_listing_item">Employer type: <strong><?php echo $cja_current_ad->return_human('employer_type'); ?></strong></p>

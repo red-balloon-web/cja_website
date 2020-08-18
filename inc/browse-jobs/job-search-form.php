@@ -10,6 +10,16 @@ if ($_GET['edit-search']) {
 
 
     <form action="<?php echo get_the_permalink(); ?>" method="post" id="edit_search_form">
+        <p class="label">Maximum Distance from my Postcode:</p>
+        <select name="max_distance" form="edit_search_form">
+            <option value="">-- Any --</option>
+            <option value="10" <?php if ($cja_jobsearch->max_distance == '10') { echo 'selected'; } ?>>10 Miles</option>
+            <option value="20" <?php if ($cja_jobsearch->max_distance == '20') { echo 'selected'; } ?>>20 Miles</option>
+            <option value="30" <?php if ($cja_jobsearch->max_distance == '30') { echo 'selected'; } ?>>30 Miles</option>
+            <option value="50" <?php if ($cja_jobsearch->max_distance == '50') { echo 'selected'; } ?>>50 Miles</option>
+            <option value="100" <?php if ($cja_jobsearch->max_distance == '100') { echo 'selected'; } ?>>100 Miles</option>
+        </select>
+
         <p class="label">Minimum Salary</p>
         <input type="text" name="salary_numeric" value="£<?php echo ($cja_jobsearch->salary_numeric); ?>">
         <select name="salary_per" form="edit_search_form">
@@ -181,6 +191,12 @@ if ($_GET['edit-search']) {
             <option value="on_premises" <?php if ($cja_jobsearch->location_options == 'on_premises') { echo 'selected'; } ?>>On Premises</option>
             <option value="remotely" <?php if ($cja_jobsearch->location_options == 'remotely') { echo 'selected'; } ?>>Remotely</option>
             <option value="both" <?php if ($cja_jobsearch->location_options == 'both') { echo 'selected'; } ?>>On Premises and Remotely</option>
+        </select>
+
+        <p class="label">Order Results By</p>
+        <select name="order_by" form="edit_search_form">
+            <option value="date">Newest Jobs First</option>
+            <option value="distance" <?php if ($cja_jobsearch->order_by == 'distance') { echo 'selected'; } ?>>Closest Jobs First</option>
         </select>
 
         <input type="hidden" name="update_job_search" value="true">

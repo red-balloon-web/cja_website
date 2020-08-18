@@ -3,6 +3,9 @@
     <?php if ($cja_jobsearch->salary_numeric) { ?>
         <p>Minimum salary: <strong>£<?php echo $cja_jobsearch->salary_numeric; ?> per <?php echo $cja_jobsearch->salary_per; ?></strong></p>
     <?php } ?>
+    <?php if ($cja_jobsearch->max_distance) { ?>
+        <p>Maximum Distance: <strong><?php echo $cja_jobsearch->max_distance; ?> miles</strong></p>
+    <?php } ?>
     <?php if ($cja_jobsearch->job_type) { ?>
         <p>Job Type: <strong><?php echo $cja_jobsearch->return_human('job_type'); ?></strong></p>
     <?php } ?>
@@ -33,5 +36,11 @@
     <?php if ($cja_jobsearch->location_options) { ?>
         <p>Location Options: <strong><?php echo $cja_jobsearch->return_human('location_options'); ?></strong></p>
     <?php } ?>
+    <p>Order results by: <strong><?php 
+        if ($cja_jobsearch->order_by == 'date') {
+            echo 'Newest Jobs First';
+        } else if ($cja_jobsearch->order_by == 'distance') {
+            echo 'Closest Jobs First';
+        } ?></strong></p>
 
 </div>

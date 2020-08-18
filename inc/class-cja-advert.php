@@ -29,6 +29,7 @@ class CJA_Advert {
     public $sector;
     public $contact_person;
     public $contact_phone_number;
+    public $postcode = 0;
     public $career_level;
     public $experience_required;
     public $employer_type;
@@ -41,6 +42,10 @@ class CJA_Advert {
     public $deadline; // YYYY-MM-DD
     public $job_spec_filename;
     public $job_spec_url;
+
+    // For search
+    public $order_by = 'distance';
+    public $max_distance;
 
     /**
      * CONSTRUCTOR
@@ -70,6 +75,7 @@ class CJA_Advert {
             $this->sector = get_post_meta($id, 'cja_sector', true);
             $this->contact_person = get_post_meta($id, 'cja_contact_person', true);
             $this->contact_phone_number = get_post_meta($id, 'cja_contact_phone_number', true);
+            $this->postcode = get_post_meta($id, 'cja_postcode', true);
             $this->career_level = get_post_meta($id, 'cja_career_level', true);
             $this->experience_required = get_post_meta($id, 'cja_experience_required', true);
             $this->employer_type = get_post_meta($id, 'cja_employer_type', true);
@@ -115,6 +121,9 @@ class CJA_Advert {
         if (array_key_exists('salary_per',$_POST)) {
             $this->salary_per = $_POST['salary_per'];
         }
+        if (array_key_exists('max_distance',$_POST)) {
+            $this->max_distance = $_POST['max_distance'];
+        }
         if (array_key_exists('ad-content',$_POST)) {
             $this->content = $_POST['ad-content'];
         }
@@ -129,6 +138,9 @@ class CJA_Advert {
         }
         if (array_key_exists('contact_phone_number',$_POST)) {
             $this->contact_phone_number = $_POST['contact_phone_number'];
+        }
+        if (array_key_exists('postcode',$_POST)) {
+            $this->postcode = $_POST['postcode'];
         }
         if (array_key_exists('career_level',$_POST)) {
             $this->career_level = $_POST['career_level'];
@@ -159,6 +171,9 @@ class CJA_Advert {
         }
         if (array_key_exists('deadline',$_POST)) {
             $this->deadline = $_POST['deadline'];
+        }
+        if (array_key_exists('order_by',$_POST)) {
+            $this->order_by = $_POST['order_by'];
         }
         if ( $_FILES['job_specification']['size'] != 0 ) {
             if ( ! function_exists( 'wp_handle_upload' ) ) {
@@ -196,6 +211,7 @@ class CJA_Advert {
         update_post_meta($this->id, 'cja_sector', $this->sector);
         update_post_meta($this->id, 'cja_contact_person', $this->contact_person);
         update_post_meta($this->id, 'cja_contact_phone_number', $this->contact_phone_number);
+        update_post_meta($this->id, 'cja_postcode', $this->postcode);
         update_post_meta($this->id, 'cja_career_level', $this->career_level);
         update_post_meta($this->id, 'cja_experience_required', $this->experience_required);
         update_post_meta($this->id, 'cja_employer_type', $this->employer_type);
@@ -231,6 +247,7 @@ class CJA_Advert {
     public function update_from_cookies() {
         $this->salary_numeric = $_COOKIE[ get_current_user_id() . '_salary_numeric'];
         $this->salary_per = $_COOKIE[ get_current_user_id() . '_salary_per'];
+        $this->max_distance = $_COOKIE[ get_current_user_id() . '_max_distance'];
         $this->job_type = $_COOKIE[ get_current_user_id() . '_job_type'];
         $this->sector = $_COOKIE[ get_current_user_id() . '_sector'];
         $this->career_level = $_COOKIE[ get_current_user_id() . '_career_level'];
@@ -241,6 +258,7 @@ class CJA_Advert {
         $this->payment_frequency = $_COOKIE[ get_current_user_id() . '_payment_frequency'];
         $this->shift_work = $_COOKIE[ get_current_user_id() . '_shift_work'];
         $this->location_options = $_COOKIE[ get_current_user_id() . '_location_options'];
+        $this->order_by = $_COOKIE[ get_current_user_id() . '_order_by'];
     }
 
     // Build WP Query from search values
@@ -252,7 +270,8 @@ class CJA_Advert {
             'post_type' => 'job_ad',
             'orderby' => 'order_clause',
             'order' => 'DSC',
-            'paged' => $paged
+            //'paged' => $paged
+            'posts_per_page' => -1
         );
 
         $meta_query = array();
@@ -282,19 +301,6 @@ class CJA_Advert {
                 $meta_query[] = $meta_item;
             }
         }
-
-        /*
-        $meta_item = array();
-        $meta_item['key'] = 'cja_ad_status';
-        $meta_item['value'] = 'active';
-
-        $meta_item_two = array();
-        $meta_item_two['key'] = 'job_type';
-        $meta_item_two['value'] = 'part_time';
-
-        $meta_query[] = $meta_item;
-        $meta_query[] = $meta_item_two;
-        */
 
         $wp_query_args['meta_query'] = $meta_query;
 

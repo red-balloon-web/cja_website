@@ -43,6 +43,10 @@ function register_custom_post_types() {
        'name' => __( 'Job Adverts' ),
        'singular_name' => __( 'Job Advert' )
       ),
+      'supports' => array (
+          'title',
+          'custom-fields'
+      ),
       'public' => true,
       'has_archive' => false,
       'rewrite' => array('slug' => 'jobs'),
@@ -384,6 +388,7 @@ function cja_save_cookies() {
             setcookie( get_current_user_id() . '_salary_numeric', $_POST['salary_numeric']);
         }
         setcookie( get_current_user_id() . '_salary_per', $_POST['salary_per']);
+        setcookie( get_current_user_id() . '_max_distance', $_POST['max_distance']);
         setcookie( get_current_user_id() . '_job_type', $_POST['job_type']);
         setcookie( get_current_user_id() . '_sector', $_POST['sector']);
         setcookie( get_current_user_id() . '_career_level', $_POST['career_level']);
@@ -394,6 +399,7 @@ function cja_save_cookies() {
         setcookie( get_current_user_id() . '_payment_frequency', $_POST['payment_frequency']);
         setcookie( get_current_user_id() . '_shift_work', $_POST['shift_work']);
         setcookie( get_current_user_id() . '_location_options', $_POST['location_options']);
+        setcookie( get_current_user_id() . '_order_by', $_POST['order_by']);
     }
 }
 
