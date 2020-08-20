@@ -6,6 +6,7 @@ Author: Chris Dann
 Template: storefront 
 */  
 
+@import 'normalize.scss';
 @import 'base.scss';
 @import 'lists.scss';
 @import 'login-create-account.scss';

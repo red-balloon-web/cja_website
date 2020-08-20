@@ -44,7 +44,7 @@ class CJA_Advert {
     public $job_spec_url;
 
     // For search
-    public $order_by = 'distance';
+    public $order_by = 'date';
     public $max_distance;
 
     /**
@@ -259,6 +259,7 @@ class CJA_Advert {
         $this->shift_work = $_COOKIE[ get_current_user_id() . '_shift_work'];
         $this->location_options = $_COOKIE[ get_current_user_id() . '_location_options'];
         $this->order_by = $_COOKIE[ get_current_user_id() . '_order_by'];
+        if (!$this->order_by) { $this->order_by = 'date'; }
     }
 
     // Build WP Query from search values
@@ -280,6 +281,12 @@ class CJA_Advert {
             'type' => 'NUMERIC'
         );
 
+        $meta_item = array(
+            'key' => 'cja_ad_status',
+            'value' => 'active'
+        );
+        $meta_query[] = $meta_item;
+
         if ($this->salary_numeric) {
             $meta_item = array();
             $meta_item['key'] = 'cja_hourly_equivalent_rate';
@@ -291,7 +298,190 @@ class CJA_Advert {
             $meta_query[] = $meta_item;
         }
 
-        $fields = array( 'job_type', 'sector', 'career_level', 'experience_required', 'employer_type', 'minimum_qualification', 'dbs_required', 'payment_frequency', 'shift_work', 'location_options');
+        if ($this->minimum_qualification) {
+            $meta_item = array();
+            $meta_item['relation'] = 'OR';
+
+            if ($this->minimum_qualification == 'gcse' ||
+            $this->minimum_qualification == 'alevels' ||
+            $this->minimum_qualification == 'award' ||
+            $this->minimum_qualification == 'certificate' ||
+            $this->minimum_qualification == 'diploma' ||
+            $this->minimum_qualification == 'studying_degree' ||
+            $this->minimum_qualification == 'degree' ||
+            $this->minimum_qualification == 'masters_degree' ||
+            $this->minimum_qualification == 'doctorate_degree') {
+                $sub_meta = array();
+                $sub_meta['key'] = 'cja_minimum_qualification';
+                $sub_meta['value'] = 'gcse';
+                $meta_item[] = $sub_meta;
+            }
+
+            if ($this->minimum_qualification == 'alevels' ||
+            $this->minimum_qualification == 'award' ||
+            $this->minimum_qualification == 'certificate' ||
+            $this->minimum_qualification == 'diploma' ||
+            $this->minimum_qualification == 'studying_degree' ||
+            $this->minimum_qualification == 'degree' ||
+            $this->minimum_qualification == 'masters_degree' ||
+            $this->minimum_qualification == 'doctorate_degree') {
+                $sub_meta = array();
+                $sub_meta['key'] = 'cja_minimum_qualification';
+                $sub_meta['value'] = 'alevels';
+                $meta_item[] = $sub_meta;
+            }
+
+            if ($this->minimum_qualification == 'award' ||
+            $this->minimum_qualification == 'certificate' ||
+            $this->minimum_qualification == 'diploma' ||
+            $this->minimum_qualification == 'studying_degree' ||
+            $this->minimum_qualification == 'degree' ||
+            $this->minimum_qualification == 'masters_degree' ||
+            $this->minimum_qualification == 'doctorate_degree') {
+                $sub_meta = array();
+                $sub_meta['key'] = 'cja_minimum_qualification';
+                $sub_meta['value'] = 'award';
+                $meta_item[] = $sub_meta;
+            }
+
+            if ($this->minimum_qualification == 'certificate' ||
+            $this->minimum_qualification == 'diploma' ||
+            $this->minimum_qualification == 'studying_degree' ||
+            $this->minimum_qualification == 'degree' ||
+            $this->minimum_qualification == 'masters_degree' ||
+            $this->minimum_qualification == 'doctorate_degree') {
+                $sub_meta = array();
+                $sub_meta['key'] = 'cja_minimum_qualification';
+                $sub_meta['value'] = 'certificate';
+                $meta_item[] = $sub_meta;
+            }
+
+            if ($this->minimum_qualification == 'diploma' ||
+            $this->minimum_qualification == 'studying_degree' ||
+            $this->minimum_qualification == 'degree' ||
+            $this->minimum_qualification == 'masters_degree' ||
+            $this->minimum_qualification == 'doctorate_degree') {
+                $sub_meta = array();
+                $sub_meta['key'] = 'cja_minimum_qualification';
+                $sub_meta['value'] = 'diploma';
+                $meta_item[] = $sub_meta;
+            }
+
+            if ($this->minimum_qualification == 'studying_degree' ||
+            $this->minimum_qualification == 'degree' ||
+            $this->minimum_qualification == 'masters_degree' ||
+            $this->minimum_qualification == 'doctorate_degree') {
+                $sub_meta = array();
+                $sub_meta['key'] = 'cja_minimum_qualification';
+                $sub_meta['value'] = 'studying_degree';
+                $meta_item[] = $sub_meta;
+            }
+
+            if ($this->minimum_qualification == 'degree' ||
+            $this->minimum_qualification == 'masters_degree' ||
+            $this->minimum_qualification == 'doctorate_degree') {
+                $sub_meta = array();
+                $sub_meta['key'] = 'cja_minimum_qualification';
+                $sub_meta['value'] = 'degree';
+                $meta_item[] = $sub_meta;
+            }
+
+            if ($this->minimum_qualification == 'masters_degree' ||
+            $this->minimum_qualification == 'doctorate_degree') {
+                $sub_meta = array();
+                $sub_meta['key'] = 'cja_minimum_qualification';
+                $sub_meta['value'] = 'masters_degree';
+                $meta_item[] = $sub_meta;
+            }
+
+            if ($this->minimum_qualification == 'doctorate_degree') {
+                $sub_meta = array();
+                $sub_meta['key'] = 'cja_minimum_qualification';
+                $sub_meta['value'] = 'doctorate_degree';
+                $meta_item[] = $sub_meta;
+            }
+
+            $meta_query[] = $meta_item;
+        }
+
+        if ($this->experience_required) {
+            $meta_item = array();
+            $meta_item['relation'] = 'OR';
+
+            if ($this->experience_required == 'none' ||
+            $this->experience_required == '3months' ||
+            $this->experience_required == '6months' ||
+            $this->experience_required == '1year' ||
+            $this->experience_required == '2years' ||
+            $this->experience_required == '3years' ||
+            $this->experience_required == '4years') {
+                $sub_meta = array();
+                $sub_meta['key'] = 'cja_experience_required';
+                $sub_meta['value'] = 'none';
+                $meta_item[] = $sub_meta;
+            }
+
+            if ($this->experience_required == '3months' ||
+            $this->experience_required == '6months' ||
+            $this->experience_required == '1year' ||
+            $this->experience_required == '2years' ||
+            $this->experience_required == '3years' ||
+            $this->experience_required == '4years') {
+                $sub_meta = array();
+                $sub_meta['key'] = 'cja_experience_required';
+                $sub_meta['value'] = '3months';
+                $meta_item[] = $sub_meta;
+            }
+
+            if ($this->experience_required == '6months' ||
+            $this->experience_required == '1year' ||
+            $this->experience_required == '2years' ||
+            $this->experience_required == '3years' ||
+            $this->experience_required == '4years') {
+                $sub_meta = array();
+                $sub_meta['key'] = 'cja_experience_required';
+                $sub_meta['value'] = '6months';
+                $meta_item[] = $sub_meta;
+            }
+
+            if ($this->experience_required == '1year' ||
+            $this->experience_required == '2years' ||
+            $this->experience_required == '3years' ||
+            $this->experience_required == '4years') {
+                $sub_meta = array();
+                $sub_meta['key'] = 'cja_experience_required';
+                $sub_meta['value'] = '1year';
+                $meta_item[] = $sub_meta;
+            }
+
+            if ($this->experience_required == '2years' ||
+            $this->experience_required == '3years' ||
+            $this->experience_required == '4years') {
+                $sub_meta = array();
+                $sub_meta['key'] = 'cja_experience_required';
+                $sub_meta['value'] = '2years';
+                $meta_item[] = $sub_meta;
+            }
+
+            if ($this->experience_required == '3years' ||
+            $this->experience_required == '4years') {
+                $sub_meta = array();
+                $sub_meta['key'] = 'cja_experience_required';
+                $sub_meta['value'] = '3years';
+                $meta_item[] = $sub_meta;
+            }
+
+            if ($this->experience_required == '4years') {
+                $sub_meta = array();
+                $sub_meta['key'] = 'cja_experience_required';
+                $sub_meta['value'] = '4years';
+                $meta_item[] = $sub_meta;
+            }
+
+            $meta_query[] = $meta_item;
+        }
+
+        $fields = array( 'job_type', 'sector', 'career_level', 'employer_type', 'dbs_required', 'payment_frequency', 'shift_work', 'location_options');
 
         foreach($fields as $field) {
             if ($this->$field) {

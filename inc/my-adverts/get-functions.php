@@ -31,29 +31,39 @@ if ($_GET) {
     // Display success message on successful ad creation
     if ($_GET['create-ad-success']) {
         $cja_new_ad = new CJA_Advert($_GET['create-ad-success']);
-        ?><p class="cja_alert cja_alert--success">Your Advert "<?php echo $cja_new_ad->title; ?>" Was Created for 1 Credit!</p><?php
+        ?><p class="cja_alert cja_alert--success">Your Advert "<?php echo $cja_new_ad->title; ?>" Was Created<?php if (get_option('cja_charge_users')) { echo ' for 1 Credit'; } ?>!</p><?php
     }
 
     // Display success message on successful ad extension
     if ($_GET['extend-ad-success']) {
         $cja_extend_ad = new CJA_Advert($_GET['extend-ad-success']);
-        ?><p class="cja_alert cja_alert--success">Your Advert "<?php echo $cja_extend_ad->title; ?>" Was Extended for 1 Credit!</p><?php
+        ?><p class="cja_alert cja_alert--success">Your Advert "<?php echo $cja_extend_ad->title; ?>" Was Extended<?php if (get_option('cja_charge_users')) { echo ' for 1 Credit'; } ?>!</p><?php
     }
 
     // Display form to create new advert
     if ($_GET['create-ad']) { 
-        $do_list = false; ?>
-        <h1>Create Advert</h1>
-        <form action="<?php echo $cja_page_address; ?>" id="edit_ad_form" method="post" enctype="multipart/form-data">
-            <?php         
-            include( ABSPATH . 'wp-content/themes/courses-and-jobs/inc/templates/job-details-form.php');
-            ?>
-            <br><br>
-            <input type="hidden" name="process-create-ad" value="true">
-            <input type="submit" class="cja_button cja_button--2" value="Create Advert (1 Credit)">&nbsp;&nbsp;
-            <!--<input type="submit" class="cja_button" formaction="<?php echo $cja_page_address; ?>?draft=true" value="Save as Draft">&nbsp;&nbsp;-->
-            <a href="<?php echo get_page_link(); ?>" class="cja_button">Cancel</a>
-        </form>
+
+        $cja_user = new CJA_User;
+        if ($cja_user->company_details_complete) {
+
+            $do_list = false; ?>
+            <h1>Create Advert</h1>
+            <form action="<?php echo $cja_page_address; ?>" id="edit_ad_form" method="post" enctype="multipart/form-data">
+                <?php         
+                include( ABSPATH . 'wp-content/themes/courses-and-jobs/inc/templates/job-details-form.php');
+                ?>
+                <br><br>
+                <input type="hidden" name="process-create-ad" value="true">
+                <input type="submit" class="cja_button cja_button--2" value="Create Advert (1 Credit)">&nbsp;&nbsp;
+                <!--<input type="submit" class="cja_button" formaction="<?php echo $cja_page_address; ?>?draft=true" value="Save as Draft">&nbsp;&nbsp;-->
+                <a href="<?php echo get_page_link(); ?>" class="cja_button">Cancel</a>
+            </form>
+
+        <?php } else { ?>
+
+            <p class="cja_alert cja_alert--red">Please <a href="<?php echo get_site_url() . $cja_config['user-details-page-slug']; ?>">complete your public details </a>before placing an advert</p>
+
+        <?php } ?>
     <?php }
 
 
@@ -87,7 +97,7 @@ if ($_GET) {
         if ($cja_activate_ad->status != 'active') {
             $cja_activate_ad->activate();
             $cja_activate_ad->save();
-            spend_credits();
+            if (get_option('cja_charge_users')) { spend_credits(); }
             ?><p class="cja_alert cja_alert--success">Your advert for "<?php echo ($cja_activate_ad->title); ?>" has been activated for 1 credit.</p><?php
         }
     }

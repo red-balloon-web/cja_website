@@ -1,6 +1,7 @@
 <?php
 
-get_header(); ?>
+get_header(); 
+?>
 
 	<div id="primary" class="content-area">
 		<main id="main" class="site-main" role="main">
@@ -34,9 +35,16 @@ get_header(); ?>
 			$cja_current_user = new CJA_User; ?>
 			<div class="my-jobs-header">
 				<div class="cja_credits_remaining"><span class="credits-large"><?php echo ($cja_current_user->credits); ?></span>&nbsp;&nbsp;advert credits remaining</div>
-				<a href="<?php echo get_page_link() . '?create-ad=true'; ?>" class="cja_button cja_button--2 my-jobs-header-button create-advert-button">Create Advert</a>
+				<?php if ($cja_current_user->credits > 0) { ?>
+					<a href="<?php echo get_page_link() . '?create-ad=true'; ?>" class="cja_button cja_button--2 my-jobs-header-button create-advert-button">Create Advert</a>
+				<?php } ?>
 				<a href="<?php echo get_site_url(); ?>/my-account/purchase-credits'; ?>" class="cja_button cja_button--2 my-jobs-header-button">Buy Credits</a>
-		</div>
+			</div>
+
+			<?php if ($cja_current_user->credits < 1) {
+				?><p class="cja_alert cja_alert--amber">Please purchase credits to create, extend or reactivate your ads</p><?php
+			} ?>
+
 			<h1>My Job Adverts</h1>
 			<div class="results">
 
@@ -86,12 +94,19 @@ get_header(); ?>
 								<?php if ($currentad->status == 'active') {
 									?>
 
-									<div class="cja_icon cja_extend_button cja_call_are_you_sure" data-text="Extend Advert (1 Credit)" data-yaybutton="Extend" data-linkurl="<?php echo ($cja_page_address . '?extend-ad=' . get_the_ID()); ?>"><i class="fas fa-clock cja_tooltip"><div class="tooltiptext">extend</div></i></div>
+									<?php if ($cja_current_user->credits > 0) { 
+										if (get_option('cja_charge_users') || $currentad->days_left < 35) {
+										?>
+											<div class="cja_icon cja_extend_button cja_call_are_you_sure" data-text="Extend Advert (1 Credit)" data-yaybutton="Extend" data-linkurl="<?php echo ($cja_page_address . '?extend-ad=' . get_the_ID()); ?>"><i class="fas fa-clock cja_tooltip"><div class="tooltiptext">extend</div></i></div>
+										<?php } ?>
+									<?php } ?>
 
 									
 									<?php
-								} else if ($currentad->status == 'inactive') {
-									?><a class="cja_spend_button" href="<?php echo ($cja_page_address . '?activate-ad=' . get_the_ID()); ?>"><span>ACTIVATE</span><br>1 Credit</a><?php
+								} else if ($currentad->status == 'expired' && $cja_current_user->credits > 0) {
+									?>
+										<div class="cja_icon cja_extend_button cja_call_are_you_sure" data-text="Reactivate Advert for 1 month (1 Credit)" data-yaybutton="Activate" data-linkurl="<?php echo ($cja_page_address . '?activate-ad=' . get_the_ID()); ?>"><i class="fas fa-clock cja_tooltip"><div class="tooltiptext">reactivate</div></i></div>
+									<?php
 								}
 
 								?>

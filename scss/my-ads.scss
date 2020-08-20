@@ -9,15 +9,18 @@
     .cja_credits_remaining {
         display: flex;
         align-items: center;
+        margin-right: auto;
     }
 
     .my-jobs-header-button {
         margin-left: 15px;
     }
 
+    /*
     .create-advert-button {
         margin-left: auto;
     }
+    */
 
     @media (max-width: 699px) {
         flex-direction: column;

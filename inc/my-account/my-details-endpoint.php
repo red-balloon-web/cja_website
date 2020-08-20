@@ -19,9 +19,15 @@
         <input type="text" name="company_name" value="<?php echo stripslashes($cja_current_user_obj->company_name); ?>" style="width: 300px">
         <p class="label">Short Description of Your Organisation</p>
         <textarea name="company_description" id="" cols="30" rows="10"><?php echo stripslashes($cja_current_user_obj->company_description); ?></textarea>
-        <input type="hidden" name="form-update" value="advertiser">
+        <p class="label">Contact Person</p>
+        <input type="text" name="contact_person" value="<?php echo $cja_current_user_obj->contact_person; ?>">
+        <p class="label">Contact Phone Number</p>
+        <input type="text" name="phone" value="<?php echo $cja_current_user_obj->phone; ?>">
+        <p class="label">Address</p>
+        <textarea name="address" id="" cols="30" rows="5"><?php echo stripslashes($cja_current_user_obj->address); ?></textarea>
         <p class="label">Postcode</p>
         <input type="text" name="postcode" value="<?php echo $cja_current_user_obj->postcode; ?>">
+        <input type="hidden" name="form-update" value="advertiser">
         <p><input class="cja_button cja_button--2" type="submit" value="Update Details"></p>
     </form>
 
@@ -65,7 +71,8 @@
             <p>Upload New CV<br><input type="file" name="cv-file"></p>
             <p><em>Current CV: <?php echo $cja_current_user_obj->cv_filename; ?></em><br><a href="<?php echo $cja_current_user_obj->cvurl; ?>" target="_blank">VIEW / DOWNLOAD CV</a></p>
         <?php } else { ?>
-            Upload CV<br><input type="file" name="cv-file"></p>
+            <p class="label">Upload CV</p>
+            <input type="file" name="cv-file"></p>
         <?php } ?>
         <input type="hidden" name="form-update" value="jobseeker">
         <p><input class="cja_button cja_button--2" type="submit" value="Update My Details"></p>

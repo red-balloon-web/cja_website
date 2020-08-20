@@ -86,6 +86,11 @@
             padding: 4px;
         }
 
+        input[type='text'],
+        input[type='password'] {
+            width: 158px;
+        }
+
         .cja_home_login {
             margin-bottom: 0;
 

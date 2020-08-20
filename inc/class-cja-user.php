@@ -14,6 +14,8 @@ class CJA_User {
     public $full_name;
     public $company_name;
     public $company_description;
+    public $address;
+    public $contact_person;
     public $cv_filename;
     public $cv_url;
     public $credits;
@@ -22,6 +24,7 @@ class CJA_User {
     public $age_category;
     public $gcse_maths;
     public $weekends_availability;
+    public $company_details_complete;
 
     
     /**
@@ -49,6 +52,8 @@ class CJA_User {
         $this->full_name = $this->first_name . ' ' . $this->last_name;
         $this->company_name = get_user_meta($this->id, 'company_name', true);
         $this->company_description = get_user_meta($this->id, 'company_description', true);
+        $this->address = get_user_meta($this->id, 'cja_address', true);
+        $this->contact_person = get_user_meta($this->id, 'cja_contact_person', true);
         $this->cv_filename = get_user_meta($this->id, 'cv_filename', true);
         $this->cv_url = get_user_meta($this->id, 'cv_url', true);
         $this->credits = get_user_meta($this->id, 'cja_credits', true);
@@ -57,6 +62,7 @@ class CJA_User {
         $this->age_category = get_user_meta($this->id, 'age_category', true);
         $this->gcse_maths = get_user_meta($this->id, 'gcse_maths', true);
         $this->weekends_availability = get_user_meta($this->id, 'weekends_availability', true);
+        $this->company_details_complete = $this->company_details_complete();
         
     }
 
@@ -78,15 +84,20 @@ class CJA_User {
         if ($_POST['company_description']) {
             $this->company_description = $_POST['company_description'];
         }
-
-        // Jobseekers
-
         if ($_POST['phone']) {
             $this->phone = $_POST['phone'];
         }
         if ($_POST['postcode']) {
             $this->postcode = $_POST['postcode'];
         }
+        if ($_POST['address']) {
+            $this->address = $_POST['address'];
+        }
+        if ($_POST['contact_person']) {
+            $this->contact_person = $_POST['contact_person'];
+        }
+        // Jobseekers
+
         if ($_POST['age_category']) {
             $this->age_category = $_POST['age_category'];
         }
@@ -121,12 +132,14 @@ class CJA_User {
         wp_update_user($userdata);
         update_user_meta($this->id, 'company_name', $this->company_name);
         update_user_meta($this->id, 'company_description', $this->company_description);
+        update_user_meta($this->id, 'phone', $this->phone);
+        update_user_meta($this->id, 'postcode', $this->postcode);
+        update_user_meta($this->id, 'cja_address', $this->address);
+        update_user_meta($this->id, 'cja_contact_person', $this->contact_person);
         
         // Jobseekers
         update_user_meta($this->id, 'cv_filename', $this->cv_filename);
         update_user_meta($this->id, 'cv_url', $this->cv_url);
-        update_user_meta($this->id, 'phone', $this->phone);
-        update_user_meta($this->id, 'postcode', $this->postcode);
         update_user_meta($this->id, 'age_category', $this->age_category);
         update_user_meta($this->id, 'gcse_maths', $this->gcse_maths);
         update_user_meta($this->id, 'weekends_availability', $this->weekends_availability);
@@ -168,6 +181,15 @@ class CJA_User {
             return $this->full_name;
         } else {
             return $this->login_name;
+        }
+    }
+
+    // set variable for whether company details have been completed
+    private function company_details_complete() {
+        if ($this->company_name && $this->company_description && $this->postcode && $this->address) {
+            return true;
+        } else {
+            return false;
         }
     }
 }

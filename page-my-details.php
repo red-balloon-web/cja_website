@@ -1,3 +1,10 @@
+<?php
+
+/**
+ * THIS FILE IS NO LONGER USED, SEE INC/MY-DETAILS-ENDPOINT.PHP
+ */
+
+?>
 <?php get_header(); ?>
 
 	<?php			

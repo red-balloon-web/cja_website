@@ -468,6 +468,44 @@ function check_username_password( $login, $username, $password ) {
 }
 
 /**
+ * Filter ads and update ads which have expired to 'expired' if it hasn't been done already today.
+ */
+
+ add_action('init', 'update_expired_ads');
+ function update_expired_ads() {
+     if (get_option('cja_expired_check') != strtotime(date('j F Y'))) {
+
+        $args = array(
+            'post_type' => 'job_ad',
+            'posts_per_page' => -1,
+            'meta_query' => array(
+                array(
+                    'key' => 'cja_ad_status',
+                    'value' => 'active'
+                )
+            )
+        );
+
+        $cja_update_expired = new WP_Query($args);
+        //print_r($cja_update_expired);
+        if ($cja_update_expired->have_posts()) {
+            while ( $cja_update_expired->have_posts() ) {
+                $cja_update_expired->the_post();
+
+                //var_dump( get_the_ID() );
+                if (get_post_meta(get_the_ID(), 'cja_ad_expiry_date', true) <= strtotime(date('j F Y'))) {
+                    update_post_meta(get_the_ID(), 'cja_ad_status', 'expired');
+                }
+            }
+        }
+
+        wp_reset_postdata();
+        update_option('cja_expired_check', strtotime(date('j F Y')));
+     }
+ }
+
+
+/**
  * Function name: Process and Redirect
  * 
  * Description: processes forms on init hook and redirects without form data. This is to prevent users duplicating an action by using the refresh button.
@@ -481,7 +519,7 @@ function check_username_password( $login, $username, $password ) {
         $cja_new_ad->update_from_form();
         $cja_new_ad->activate();
         $cja_new_ad->save();
-        spend_credits();
+        if (get_option('cja_charge_users')) { spend_credits(); }
         header('Location: ' . get_site_url() . '/my-job-ads?create-ad-success=' . $cja_new_ad->id);
         exit;
     }
@@ -490,8 +528,55 @@ function check_username_password( $login, $username, $password ) {
         $cja_extend_ad = new CJA_Advert($_GET['extend-ad']);
         $cja_extend_ad->extend();
         $cja_extend_ad->save();
-        spend_credits();
+        if (get_option('cja_charge_users')) { spend_credits(); }
         header('Location: ' . get_site_url() . '/my-job-ads?extend-ad-success=' . $cja_extend_ad->id);
         exit;
     }
+
+    if ($_POST['cja_action'] == 'update_theme_options') {
+        
+        if ($_POST['cja_charge_users'] == 'true') {
+            update_option('cja_charge_users', TRUE);
+        } else {
+            update_option('cja_charge_users', FALSE);
+        }
+
+        update_option('cja_free_ads_message', $_POST['cja_free_ads_message']);
+    }
+}
+
+/**
+ * CUSTOM MENU PAGE FOR THEME OPTIONS
+ */
+
+function cja_admin_menu() {
+    add_menu_page(
+        'Theme Options',
+        'Theme Options',
+        'manage_options',
+        'cja_options',
+        'cja_admin_page_contents',
+        'dashicons-schedule',
+        3
+    );
+}
+
+add_action( 'admin_menu', 'cja_admin_menu' );
+
+
+function cja_admin_page_contents() {
+    ?>
+        <h1>Theme Options</h1>
+
+        <form action="<?php echo admin_url('admin.php?page=cja_options'); ?>" method="POST">
+
+        <p><input type="checkbox" name="cja_charge_users" value="true" <?php if (get_option('cja_charge_users')) { echo 'checked'; } ?>> Charge users to place adverts</p>
+
+        <p class="label">Display message to users that adverts are free (leave blank for no message)</p>
+        <p><input type="text" name="cja_free_ads_message" value="<?php echo get_option('cja_free_ads_message'); ?>"></p>
+        <hr>
+        <input type="submit" value="Update Options">
+        <input type="hidden" name="cja_action" value="update_theme_options">
+        </form>
+    <?php
 }

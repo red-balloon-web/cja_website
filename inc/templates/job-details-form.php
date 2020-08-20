@@ -2,6 +2,8 @@
 
 // Requires $cja_edit_ad = CJA_Advert to edit existing ad otherwise will leave fields blank if $cja_edit_ad is unset
 
+$cja_current_user = new CJA_User;
+
 ?>
 
 <p class="label">Opportunity Title</p>
@@ -94,14 +96,32 @@
 
 
 <p class="label">Contact Person</p>
-<input type="text" name="contact_person" value="<?php echo ($cja_edit_ad->contact_person); ?>">
+<input type="text" name="contact_person" value="<?php     
+    if ($cja_edit_ad) {
+        echo ($cja_edit_ad->contact_person); 
+    } else {
+        echo ($cja_current_user->contact_person);
+    }
+?>">
 
 
 <p class="label">Contact Phone Number</p>
-<input type="text" name="contact_phone_number" value="<?php echo ($cja_edit_ad->contact_phone_number); ?>">
+<input type="text" name="contact_phone_number" value="<?php 
+    if ($cja_edit_ad) {
+        echo ($cja_edit_ad->contact_phone_number);
+    } else {
+        echo ($cja_current_user->phone);
+    }
+?>">
 
 <p class="label">Postcode</p>
-<input type="text" name="postcode" value="<?php echo ($cja_edit_ad->postcode); ?>">
+<input type="text" name="postcode" value="<?php 
+    if ($cja_edit_ad) {
+        echo ($cja_edit_ad->postcode); 
+    } else {
+        echo ($cja_current_user->postcode);
+    }
+?>">
 
 <p class="label">Career Level</p>
 <select name="career_level" form="edit_ad_form">

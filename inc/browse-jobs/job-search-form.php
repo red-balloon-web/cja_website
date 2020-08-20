@@ -6,19 +6,24 @@ if ($_GET['edit-search']) {
 
     ?>
 
+
+
     <h1>Edit My Job Search</h1>
 
 
     <form action="<?php echo get_the_permalink(); ?>" method="post" id="edit_search_form">
-        <p class="label">Maximum Distance from my Postcode:</p>
-        <select name="max_distance" form="edit_search_form">
-            <option value="">-- Any --</option>
-            <option value="10" <?php if ($cja_jobsearch->max_distance == '10') { echo 'selected'; } ?>>10 Miles</option>
-            <option value="20" <?php if ($cja_jobsearch->max_distance == '20') { echo 'selected'; } ?>>20 Miles</option>
-            <option value="30" <?php if ($cja_jobsearch->max_distance == '30') { echo 'selected'; } ?>>30 Miles</option>
-            <option value="50" <?php if ($cja_jobsearch->max_distance == '50') { echo 'selected'; } ?>>50 Miles</option>
-            <option value="100" <?php if ($cja_jobsearch->max_distance == '100') { echo 'selected'; } ?>>100 Miles</option>
-        </select>
+
+        <?php if ($cja_user->postcode) { ?>
+            <p class="label">Maximum Distance from my Postcode:</p>
+            <select name="max_distance" form="edit_search_form">
+                <option value="">-- Any --</option>
+                <option value="10" <?php if ($cja_jobsearch->max_distance == '10') { echo 'selected'; } ?>>10 Miles</option>
+                <option value="20" <?php if ($cja_jobsearch->max_distance == '20') { echo 'selected'; } ?>>20 Miles</option>
+                <option value="30" <?php if ($cja_jobsearch->max_distance == '30') { echo 'selected'; } ?>>30 Miles</option>
+                <option value="50" <?php if ($cja_jobsearch->max_distance == '50') { echo 'selected'; } ?>>50 Miles</option>
+                <option value="100" <?php if ($cja_jobsearch->max_distance == '100') { echo 'selected'; } ?>>100 Miles</option>
+            </select>
+        <?php } ?>
 
         <p class="label">Minimum Salary</p>
         <input type="text" name="salary_numeric" value="£<?php echo ($cja_jobsearch->salary_numeric); ?>">
@@ -115,7 +120,7 @@ if ($_GET['edit-search']) {
             <option value="executive" <?php if ($cja_jobsearch->career_level == 'executive') { echo 'selected'; } ?>>Executive</option>
         </select>
 
-        <p class="label">Experience Required</p>
+        <p class="label">Maximum Experience Required</p>
         <select name="experience_required" form="edit_search_form">
             <option value="">-- Any --</option>
             <option value="none" <?php if ($cja_jobsearch->experience_required == 'none') { echo 'selected'; } ?>>None</option>
@@ -144,7 +149,7 @@ if ($_GET['edit-search']) {
             <option value="other" <?php if ($cja_jobsearch->employer_type == 'other') { echo 'selected'; } ?>>Other</option>
         </select>
 
-        <p class="label">Minimum Qualification Required</p>
+        <p class="label">Highest Qualification Required</p>
         <select name="minimum_qualification" form="edit_search_form">
             <option value="">-- Any --</option>
             <option value="gcse" <?php if ($cja_jobsearch->minimum_qualification == 'gcse') { echo 'selected'; } ?>>GCSE's</option>
@@ -193,11 +198,15 @@ if ($_GET['edit-search']) {
             <option value="both" <?php if ($cja_jobsearch->location_options == 'both') { echo 'selected'; } ?>>On Premises and Remotely</option>
         </select>
 
-        <p class="label">Order Results By</p>
-        <select name="order_by" form="edit_search_form">
-            <option value="date">Newest Jobs First</option>
-            <option value="distance" <?php if ($cja_jobsearch->order_by == 'distance') { echo 'selected'; } ?>>Closest Jobs First</option>
-        </select>
+        <?php if ($cja_user->postcode) { ?>
+            <p class="label">Order Results By</p>
+            <select name="order_by" form="edit_search_form">
+                <option value="date">Newest Jobs First</option>
+                <option value="distance" <?php if ($cja_jobsearch->order_by == 'distance') { echo 'selected'; } ?>>Closest Jobs First</option>
+            </select>
+        <?php } else { ?>
+            <input type="hidden" name="order_by" value="date">
+        <?php } ?>
 
         <input type="hidden" name="update_job_search" value="true">
         <input type="hidden" name="cja_set_cookies" value="true">

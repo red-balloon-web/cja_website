@@ -50,6 +50,13 @@ get_header(); ?>
 			exit;
 		}
 
+		$cja_user = new CJA_User;
+
+
+		if (!$cja_user->postcode) {
+			?><p class="cja_alert cja_alert--amber"><a href="<?php echo get_site_url() . $cja_config['user-details-page-slug']; ?>">Set your postcode</a> to search and order jobs by distance</p><?php
+		}
+
 
 		/**
 		 * 1. Job Search Form
@@ -169,98 +176,98 @@ get_header(); ?>
 						$cja_distance = array_column($cja_results_array, 'distance');
 						array_multisort($cja_distance, SORT_ASC, $cja_results_array);
 					}
-				
-				} else {
-					echo("There are no jobs to view");
-				}
+					
+					// var_dump($cja_results_array);
 
-				wp_reset_postdata();
-				
-				// print_r($cja_results_array);
+					/**
+					 * 5. Pagination to return just the bit of the array we need
+					 */
 
-				/**
-				 * 5. Pagination to return just the bit of the array we need
-				 */
+					// Now return just the page of the array that we want to look at
+					$cja_total_results = count($cja_results_array);
+					$cja_results_per_page = get_option( 'posts_per_page' );
+					$cja_pages = ceil($cja_total_results / $cja_results_per_page);
+					// echo ('there are ' . $cja_total_results . ' results and ' . $cja_pages . ' results pages');
+					if ($_GET['cjapage']) {
+						$cja_page = $_GET['cjapage'];
+					} else {
+						$cja_page = 1;
+					}
+					$cja_first_result = ($cja_page - 1) * $cja_results_per_page; 
+					$cja_results_array_paged = array_slice($cja_results_array, $cja_first_result, $cja_results_per_page);
 
-				// Now return just the page of the array that we want to look at
-				$cja_total_results = count($cja_results_array);
-				$cja_results_per_page = get_option( 'posts_per_page' );
-				$cja_pages = ceil($cja_total_results / $cja_results_per_page);
-				// echo ('there are ' . $cja_total_results . ' results and ' . $cja_pages . ' results pages');
-				if ($_GET['cjapage']) {
-					$cja_page = $_GET['cjapage'];
-				} else {
-					$cja_page = 1;
-				}
-				$cja_first_result = ($cja_page - 1) * $cja_results_per_page; 
-				$cja_results_array_paged = array_slice($cja_results_array, $cja_first_result, $cja_results_per_page);
+					/**
+					 * 6. Display loop
+					 */
 
-				/**
-				 * 6. Display loop
-				 */
+					// Now we do what would normally be the WP loop but on our results array instead
+					foreach ($cja_results_array_paged as $cja_result) {
+						$cja_current_advert = new CJA_Advert($cja_result['id']);
+						$cja_current_advertiser = new CJA_User($cja_current_advert->author);
 
-				// Now we do what would normally be the WP loop but on our results array instead
-				foreach ($cja_results_array_paged as $cja_result) {
-					$cja_current_advert = new CJA_Advert($cja_result['id']);
-					$cja_current_advertiser = new CJA_User($cja_current_advert->author);
-
-					?>
-					<div class="cja_list_item">
-						<?php 
-						if ($cja_current_advert->applied_to_by_current_user) {
-								$cja_user_application = new CJA_Application($cja_current_advert->applied_to_by_current_user);
-								?><a class="cja_button" href="<?php echo get_the_permalink($cja_current_advert->applied_to_by_current_user); ?>">View Job</a><?php	
-						} else {
-							?><a class="cja_button" href="<?php echo get_the_permalink($cja_current_advert->id); ?>">View Job<?php if ($cja_current_user_obj->role == 'jobseeker') { echo (' and Apply'); } ?></a><?php
-						}
 						?>
-
-						<h4 class="item-title"><?php echo ($cja_current_advert->title); ?></h4>
-						<p class="item-meta"><?php echo ($cja_current_advert->author_human_name); 
-							if ($cja_current_advert->postcode) {
-								echo (', ' . $cja_current_advert->postcode . ' (' . $cja_result['distance'] . ' miles away)');
+						<div class="cja_list_item">
+							<?php 
+							if ($cja_current_advert->applied_to_by_current_user) {
+									$cja_user_application = new CJA_Application($cja_current_advert->applied_to_by_current_user);
+									?><a class="cja_button" href="<?php echo get_the_permalink($cja_current_advert->applied_to_by_current_user); ?>">View Job</a><?php	
+							} else {
+								?><a class="cja_button" href="<?php echo get_the_permalink($cja_current_advert->id); ?>">View Job<?php if ($cja_current_user_obj->role == 'jobseeker') { echo (' and Apply'); } ?></a><?php
 							}
-						?></p>
+							?>
 
-						<?php if ($cja_current_advert->applied_to_by_current_user) {
-							$cja_user_application = new CJA_Application($cja_current_advert->applied_to_by_current_user);
-							?><p class="green"><strong>You applied on <?php echo $cja_user_application->human_application_date; ?>.</strong></p>
-							<?php
-						} else { ?>
-							<p class="item-meta"><em>Posted <?php 
-								if ($cja_current_advert->days_old == 0) {
-									echo ('today');
-								} else if ($cja_current_advert->days_old == 1) {
-									echo ('yesterday');
-								} else {
-									echo ($cja_current_advert->days_old) . ' days ago';
-								} ?>
-							</em></p>
-						<?php } ?>
-					</div>
+							<h4 class="item-title"><?php echo ($cja_current_advert->title); ?></h4>
+							<p class="item-meta"><?php echo ($cja_current_advert->author_human_name); 
+								if ($cja_current_advert->postcode && $cja_current_user_obj->postcode && $cja_result['distance'] != -1) {
+									echo (', ' . $cja_current_advert->postcode . ' (' . $cja_result['distance'] . ' miles away)');
+								}
+							?></p>
 
+							<?php if ($cja_current_advert->applied_to_by_current_user) {
+								$cja_user_application = new CJA_Application($cja_current_advert->applied_to_by_current_user);
+								?><p class="green"><strong>You applied on <?php echo $cja_user_application->human_application_date; ?>.</strong></p>
+								<?php
+							} else { ?>
+								<p class="item-meta"><em>Posted <?php 
+									if ($cja_current_advert->days_old == 0) {
+										echo ('today');
+									} else if ($cja_current_advert->days_old == 1) {
+										echo ('yesterday');
+									} else {
+										echo ($cja_current_advert->days_old) . ' days ago';
+									} ?>
+								</em></p>
+							<?php } ?>
+						</div>
+
+					<?php }
+
+					// And now we do the pagination
+					
+					if ($cja_pages > 1) { // don't display if only one page
+
+						?><div class="cja_pagination"><?php
+							if ($cja_page > 1) {
+								?><a class="page-numbers" href="<?php echo get_page_link(); ?>?cjapage=<?php echo $cja_page - 1; ?>"><<<</a><?php
+							} 
+							for ($i=0; $i < $cja_pages; $i++) {
+								//echo ('link to page ' . $i . ' ');
+								?><a class="page-numbers<?php if ($cja_page == $i + 1) {echo ' current'; } ?> " href="<?php echo get_page_link(); ?>?cjapage=<?php echo $i + 1; ?>"><?php echo $i + 1; ?></a>
+								<?php
+							}
+							if ($cja_page < $cja_pages) {
+								?><a class="page-numbers" href="<?php echo get_page_link(); ?>?cjapage=<?php echo $cja_page + 1; ?>">>>></a><?php
+							} ?>
+						</div>
 				<?php }
 
-				// And now we do the pagination
-				
-				if ($cja_pages > 1) { // don't display if only one page
+			} else {
+				echo("There are no jobs to view");
+			}
 
-					?><div class="cja_pagination"><?php
-					if ($cja_page > 1) {
-						?><a class="page-numbers" href="<?php echo get_page_link(); ?>?cjapage=<?php echo $cja_page - 1; ?>"><<<</a><?php
-					} 
-					for ($i=0; $i < $cja_pages; $i++) {
-						//echo ('link to page ' . $i . ' ');
-						?><a class="page-numbers<?php if ($cja_page == $i + 1) {echo ' current'; } ?> " href="<?php echo get_page_link(); ?>?cjapage=<?php echo $i + 1; ?>"><?php echo $i + 1; ?></a>
-						<?php
-					}
-					if ($cja_page < $cja_pages) {
-						?><a class="page-numbers" href="<?php echo get_page_link(); ?>?cjapage=<?php echo $cja_page + 1; ?>">>>></a><?php
-					} ?>
-				</div>
-				<?php } ?>
+			wp_reset_postdata();
 
-		<?php } // end of $display_search test ?>
+		} // end of $display_search test ?>
 
 		</main><!-- #main -->
 	</div><!-- #primary -->
