@@ -6,6 +6,7 @@
 
 include('config.php');
 include('inc/class-cja-advert.php');
+include('inc/class-cja-course-advert.php');
 include('inc/class-cja-user.php');
 include('inc/class-cja-application.php');
 
@@ -50,6 +51,23 @@ function register_custom_post_types() {
       'public' => true,
       'has_archive' => false,
       'rewrite' => array('slug' => 'jobs'),
+     )
+    );
+
+    // Course Advert
+    register_post_type( 'course_ad',
+    array(
+      'labels' => array(
+       'name' => __( 'Course Adverts' ),
+       'singular_name' => __( 'Course Advert' )
+      ),
+      'supports' => array (
+          'title',
+          'custom-fields'
+      ),
+      'public' => true,
+      'has_archive' => false,
+      'rewrite' => array('slug' => 'courses'),
      )
     );
 
@@ -251,25 +269,6 @@ function cja_purchase_credits_content() {
 }
 // Note: add_action must follow 'woocommerce_account_{your-endpoint-slug}_endpoint' format
 
-/*
-add_filter( 'woocommerce_endpoint_my-details_title', 'change_my_account_my_details_title', 10, 2 );
-function change_my_account_my_details_title( $title, $endpoint ) {
-    $title = __( "Public Details", "woocommerce" );
-    return $title;
-}  
-
-add_filter( 'woocommerce_endpoint_edit-account_title', 'change_my_account_edit_account_title', 10, 2 );
-function change_my_account_edit_account_title( $title, $endpoint ) {
-    $title = __( "Edit Email Address and Password", "woocommerce" );
-    return $title;
-}
-
-add_filter( 'woocommerce_endpoint_edit-address_title', 'change_my_account_edit_address_title', 10, 2 );
-function change_my_account_edit_address_title( $title, $endpoint ) {
-    $title = __( "Billing Details", "woocommerce" );
-    return $title;
-}
-*/
 
 /**
  * WOOCOMMERCE CHECKOUT
@@ -293,8 +292,6 @@ function remove_order_notes( $fields ) {
 function logoutUser(){
     if ( $_GET["cja-logout"] == 'true' ){ 
         wp_logout();
-        //header("refresh:0.5;url=".$_SERVER['REQUEST_URI']."");
-        //header("refresh:0.5;url=".get_page_link()."");
     }
 }
 add_action('init', 'logoutUser');
@@ -407,23 +404,16 @@ function cja_save_cookies() {
  * PAGINATION
  */
 
-add_filter( 'paginate_links', function( $link )
-    {
+add_filter( 'paginate_links', function( $link ) {
 
-    if (filter_input( INPUT_GET, 'extend-ad') ) {
-        $link = remove_query_arg( 'extend-ad', $link );
+        if (filter_input( INPUT_GET, 'extend-ad') ) {
+            $link = remove_query_arg( 'extend-ad', $link );
+        }
+        if (filter_input( INPUT_GET, 'delete-ad') ) {
+            $link = remove_query_arg('delete-ad', $link);
+        }
+        return $link;
     }
-    if (filter_input( INPUT_GET, 'delete-ad') ) {
-        $link = remove_query_arg('delete-ad', $link);
-    }
-    return $link;
-    
-}
-    /*return  
-       filter_input( INPUT_GET, 'extend-ad' )
-       ? remove_query_arg( 'extend-ad', $link )
-       : $link;
-    } */
 );
 
 /**
@@ -521,6 +511,17 @@ function check_username_password( $login, $username, $password ) {
         $cja_new_ad->save();
         if (get_option('cja_charge_users')) { spend_credits(); }
         header('Location: ' . get_site_url() . '/my-job-ads?create-ad-success=' . $cja_new_ad->id);
+        exit;
+    }
+
+    if ($_POST['process-create-course-ad']) {
+        $cja_new_ad = new CJA_Course_Advert;
+        $cja_new_ad->create(); // create a new post in the database
+        $cja_new_ad->update_from_form();
+        $cja_new_ad->activate();
+        $cja_new_ad->save();
+        if (get_option('cja_charge_users')) { spend_credits(); }
+        header('Location: ' . get_site_url() . '/my-course-ads?create-ad-success=' . $cja_new_ad->id);
         exit;
     }
 
