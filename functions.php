@@ -9,6 +9,7 @@ include('inc/class-cja-advert.php');
 include('inc/class-cja-course-advert.php');
 include('inc/class-cja-user.php');
 include('inc/class-cja-application.php');
+include('inc/class-cja-course-application.php');
 
 /**
  * REMOVE SIDEBAR
@@ -75,12 +76,33 @@ function register_custom_post_types() {
     register_post_type( 'application',
         array(
             'labels' => array(
-                'name' => 'Applications',
-                'singular_name' => 'Application'
+                'name' => 'Job Applications',
+                'singular_name' => 'Job Application'
+            ),
+            'supports' => array (
+                'title',
+                'custom-fields'
             ),
             'public' => true,
             'has_archive' => false,
             'rewrite' => array('slug' => 'applications')
+        )
+    );
+
+    // Course Application
+    register_post_type( 'course_application',
+        array(
+            'labels' => array(
+                'name' => 'Course Applications',
+                'singular_name' => 'Course Application'
+            ),
+            'supports' => array (
+                'title',
+                'custom-fields'
+            ),
+            'public' => true,
+            'has_archive' => false,
+            'rewrite' => array('slug' => 'course-applications')
         )
     );
 }
@@ -398,6 +420,33 @@ function cja_save_cookies() {
         setcookie( get_current_user_id() . '_location_options', $_POST['location_options']);
         setcookie( get_current_user_id() . '_order_by', $_POST['order_by']);
     }
+
+    if ($_POST['cja_set_course_cookies'] && $_POST['update_course_search']) {
+        setcookie( get_current_user_id() . '_course_max_distance', $_POST['max_distance']);
+        setcookie( get_current_user_id() . '_course_order_by', $_POST['order_by']);
+        setcookie( get_current_user_id() . '_course_offer_type', $_POST['offer_type']);
+        setcookie( get_current_user_id() . '_course_category', $_POST['category']);
+        setcookie( get_current_user_id() . '_course_sector', $_POST['sector']);
+        setcookie( get_current_user_id() . '_course_deposit_required', $_POST['deposit_required']);
+        setcookie( get_current_user_id() . '_course_career_level', $_POST['career_level']);
+        setcookie( get_current_user_id() . '_course_experience_required', $_POST['experience_required']);
+        setcookie( get_current_user_id() . '_course_provider_type', $_POST['provider_type']);
+        setcookie( get_current_user_id() . '_course_previous_qualification', $_POST['previous_qualification']);
+        setcookie( get_current_user_id() . '_course_course_pathway', $_POST['course_pathway']);
+        setcookie( get_current_user_id() . '_course_payment_plan', $_POST['payment_plan']);
+        setcookie( get_current_user_id() . '_course_qualification_level', $_POST['qualification_level']);
+        setcookie( get_current_user_id() . '_course_qualification_type', $_POST['qualification_type']);
+        setcookie( get_current_user_id() . '_course_total_units', $_POST['total_units']);
+        setcookie( get_current_user_id() . '_course_dbs_required', $_POST['dbs_required']);
+        setcookie( get_current_user_id() . '_course_availability_period', $_POST['availability_period']);
+        setcookie( get_current_user_id() . '_course_allowance_available', $_POST['allowance_available']);
+        setcookie( get_current_user_id() . '_course_awarding_body', $_POST['awarding_body']);
+        setcookie( get_current_user_id() . '_course_duration', $_POST['duration']);
+        setcookie( get_current_user_id() . '_course_suitable_benefits', $_POST['suitable_benefits']);
+        setcookie( get_current_user_id() . '_course_social_services', $_POST['social_services']);
+        setcookie( get_current_user_id() . '_course_delivery_route', $_POST['delivery_route']);
+        setcookie( get_current_user_id() . '_course_available_start', $_POST['available_start']);
+    }
 }
 
 /**
@@ -531,6 +580,15 @@ function check_username_password( $login, $username, $password ) {
         $cja_extend_ad->save();
         if (get_option('cja_charge_users')) { spend_credits(); }
         header('Location: ' . get_site_url() . '/my-job-ads?extend-ad-success=' . $cja_extend_ad->id);
+        exit;
+    }
+
+    if ($_GET['extend-course-ad']) {
+        $cja_extend_ad = new CJA_Course_Advert($_GET['extend-course-ad']);
+        $cja_extend_ad->extend();
+        $cja_extend_ad->save();
+        if (get_option('cja_charge_users')) { spend_credits(); }
+        header('Location: ' . get_site_url() . '/my-course-ads?extend-ad-success=' . $cja_extend_ad->id);
         exit;
     }
 

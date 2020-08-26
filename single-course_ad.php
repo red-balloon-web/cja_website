@@ -8,8 +8,10 @@
 			the_post();
 
 			$cja_current_user_obj = new CJA_User();
-			$cja_current_ad = new CJA_Advert(get_the_ID());
+			$cja_current_ad = new CJA_Course_Advert(get_the_ID());
 			$display_advert = true;
+
+			//print_r($cja_current_ad);
 
 			/**
 			 * JOBSEEKER FUNCTIONS
@@ -18,10 +20,10 @@
 			 *  - Create new application from POST
 			 *  - Display message if already applied
 			 */
-			include ('inc/single-ad/jobseeker-get-post-functions.php');
+			include ('inc/single-course-ad/jobseeker-get-post-functions.php');
 
 			/**
-			 * ADVERTISER FUNCTIONS
+			 * ADVERTISER FUNCTIONS - NO LONGER NEEDED AS REDIRECTS TO MY COURSE ADS
 			 * 
 			 *  $_GET
 			 *  - Extend ad
@@ -31,8 +33,8 @@
 			 *  $_POST
 			 *  - Update advert if submitted
 			 */
-			include ('inc/single-ad/advertiser-get-post-functions.php');
-
+			// include ('inc/single-ad/advertiser-get-post-functions.php');
+	
 			?>
 
 			<?php
@@ -68,7 +70,7 @@
 					}
 				?></p>
 				
-				<?php include('inc/templates/job-details.php'); ?>
+				<?php include('inc/templates/course-details.php'); ?>
 
 				<hr>
 
@@ -87,9 +89,9 @@
 					if ($cja_current_ad->applied_to_by_current_user) {
 						$cja_user_application = new CJA_Application($cja_current_ad->applied_to_by_current_user);
 
-						?><p><strong>You applied to this job on <?php echo $cja_user_application->human_application_date; ?></strong></p><?php
+						?><p><strong>You applied to this course on <?php echo $cja_user_application->human_application_date; ?></strong></p><?php
 					} else {
-						?><a class="cja_button" href="<?php echo get_the_permalink(); ?>?action=apply">Apply for this Job</a><?php
+						?><a class="cja_button" href="<?php echo get_the_permalink(); ?>?action=apply">Apply for this Course</a><?php
 					}
 				}
 
@@ -102,7 +104,7 @@
 				 *  - Extend
 				 *  - Delete
 				 */
-				include('inc/single-ad/display-user-options.php');
+				include('inc/single-course-ad/display-user-options.php');
 
 			
 			}

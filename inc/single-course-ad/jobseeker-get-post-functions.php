@@ -16,14 +16,14 @@ if ($cja_current_user_obj->role == 'jobseeker') {
         </form>-->
 
         <?php
-        $cja_current_ad = new CJA_Advert(get_the_ID());
+        $cja_current_ad = new CJA_Course_Advert(get_the_ID());
         if (!$cja_current_ad->applied_to_by_current_user) {
-            $cja_new_application = new CJA_Application;
+            $cja_new_application = new CJA_Course_Application;
             $cja_new_application->create(get_the_ID());
             $cja_new_application->update_from_form($cja_current_ad, $cja_current_user_obj);
             $cja_new_application->save();
             ?><p class="cja_alert cja_alert--success">You Applied to <?php echo $cja_current_ad->title; ?></p>
-            <p><a class="cja_button cja_button--2" href="<?php echo get_site_url() . '/' . $cja_config['browse-jobs-slug']; ?>">Back to Search Jobs</a></p><?php
+            <p><a class="cja_button cja_button--2" href="<?php echo get_site_url() . '/' . $cja_config['browse-course-ads-slug']; ?>">Back to Search Courses</a></p><?php
         }
     }
 
@@ -40,7 +40,7 @@ if ($cja_current_user_obj->role == 'jobseeker') {
     */
 
     // Display message if they already applied
-    $cja_current_ad = new CJA_Advert(get_the_ID());
+    $cja_current_ad = new CJA_Course_Advert(get_the_ID());
     if ($cja_current_ad->applied_to_by_current_user) {
         $cja_user_application = new CJA_Application($cja_current_ad->applied_to_by_current_user);
 

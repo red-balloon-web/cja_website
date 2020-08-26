@@ -14,8 +14,8 @@
 			the_post();
 			
 			
-			$cja_current_application = new CJA_Application(get_the_ID());
-			$cja_current_ad = new CJA_Advert($cja_current_application->advert_ID);
+			$cja_current_application = new CJA_Course_Application(get_the_ID());
+			$cja_current_ad = new CJA_Course_Advert($cja_current_application->advert_ID);
 			$cja_current_advertiser = new CJA_User($cja_current_application->advertiser_ID);
 			$cja_current_applicant = new CJA_User($cja_current_application->applicant_ID);
 
@@ -24,13 +24,13 @@
 
 			?>
 			<!--<hr>-->
-			<h1>View Job Application</h1>
+			<h1>View Course Application</h1>
 			
-			<?php include('inc/templates/application-details.php'); ?>
+			<?php include('inc/templates/course-application-details.php'); ?>
 			<hr>
 			<?php include('inc/templates/applicant-details.php'); ?>
 			<hr>
-			<?php include('inc/templates/job-details.php'); ?>
+			<?php include('inc/templates/course-details.php'); ?>
 			<hr>
 			<?php include('inc/templates/company-details.php'); ?>
 			<hr>
@@ -40,7 +40,7 @@
 			 *  - Archive (jobseeker)
 			 *  - Archive (advertiser)
 			 */
-			include('inc/single-application/display-options.php');
+			include('inc/single-course-application/display-options.php');
 
 		endwhile; // End of the loop.
 		?>

@@ -1,6 +1,6 @@
 <?php
 
-// Requires $cja_edit_ad = CJA_Advert to edit existing ad otherwise will leave fields blank if $cja_edit_ad is unset
+// Requires $cja_edit_ad = CJA_Course_Advert to edit existing ad otherwise will leave fields blank if $cja_edit_ad is unset
 
 $cja_current_user = new CJA_User;
 
@@ -10,7 +10,7 @@ $cja_current_user = new CJA_User;
 <input type="text" name="ad-title" value="<?php echo ($cja_edit_ad->title); ?>">
 
 <p class="label">Description</p>
-<textarea name="ad-content" id="" cols="30" rows="10"><?php echo ($cja_edit_ad->content); ?></textarea>
+<textarea name="ad-content" id="" cols="30" rows="10"><?php echo ($cja_edit_ad->description); ?></textarea>
 
 <p class="label">Offer Type</p>
 <select name="offer_type" form="edit_ad_form">
@@ -297,7 +297,7 @@ $cja_current_user = new CJA_User;
     <option value="certificate" <?php if ($cja_edit_ad->qualification_type == 'certificate') { echo 'selected'; } ?>>Certificate</option>
     <option value="diploma" <?php if ($cja_edit_ad->qualification_type == 'diploma') { echo 'selected'; } ?>>Diploma</option>
     <option value="extended_diploma" <?php if ($cja_edit_ad->qualification_type == 'extended_diploma') { echo 'selected'; } ?>>Extended Diploma</option>
-    <option value="subsidiary_diploma" <?php if ($cja_edit_ad->qualification_type == 'subsidiary_diploma') { echo 'selected'; } ?>>Subsidiart Diploma</option>
+    <option value="subsidiary_diploma" <?php if ($cja_edit_ad->qualification_type == 'subsidiary_diploma') { echo 'selected'; } ?>>Subsidiary Diploma</option>
     <option value="90credit" <?php if ($cja_edit_ad->qualification_type == '90credit') { echo 'selected'; } ?>>90 Credit Diploma</option>
     <option value="degree" <?php if ($cja_edit_ad->qualification_type == 'degree') { echo 'selected'; } ?>>Degree</option>
     <option value="associate_degree" <?php if ($cja_edit_ad->qualification_type == 'associate_degree') { echo 'selected'; } ?>>Associate Degree</option>
