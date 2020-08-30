@@ -7,6 +7,7 @@ $cja_config = array(
     'user-details-page-slug' => '/my-account/my-details',
     'my-job-ads-slug' => 'my-job-ads',
     'my-course-ads-slug' => 'my-course-ads',
+    'my-classified-ads-slug' => 'my-classified-ads',
     'browse-jobs-slug' => 'browse-jobs',
     'browse-course-ads-slug' => 'search-courses'
 );

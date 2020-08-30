@@ -8,6 +8,18 @@
                     color: #fff;
                 }
             }
+
+            &:hover {
+                > a {
+                    color: #fff;
+                }
+            }
+
+            ul {
+                li {
+                    background-color: #3d485f;
+                }
+            }
         }
     }
 }

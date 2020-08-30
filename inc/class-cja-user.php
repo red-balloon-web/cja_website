@@ -19,6 +19,7 @@ class CJA_User {
     public $cv_filename;
     public $cv_url;
     public $credits;
+    public $classified_credits;
     public $phone;
     public $postcode;
     public $age_category;
@@ -57,6 +58,7 @@ class CJA_User {
         $this->cv_filename = get_user_meta($this->id, 'cv_filename', true);
         $this->cv_url = get_user_meta($this->id, 'cv_url', true);
         $this->credits = get_user_meta($this->id, 'cja_credits', true);
+        $this->classified_credits = get_user_meta($this->id, 'cja_classified_credits', true);
         $this->phone = get_user_meta($this->id, 'phone', true);
         $this->postcode = get_user_meta($this->id, 'postcode', true);
         $this->age_category = get_user_meta($this->id, 'age_category', true);

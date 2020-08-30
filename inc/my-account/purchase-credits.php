@@ -18,6 +18,11 @@
         <p class="item-title">10 Credits: £150</p>
         <p class="item-meta">10 Course or Job Advert Credits</p>
     </div>
+    <div class="cja_list_item">
+        <a href="<?php echo get_site_url(); ?>/basket?add-to-cart=297" class="cja_button cja_button--2">Add to Cart</a>
+        <p class="item-title">Classified Ad: £40</p>
+        <p class="item-meta">1 Classified Advert Credit</p>
+    </div>
 </div>
 
 <h2 class="cja_margin_top">How it Works</h2>

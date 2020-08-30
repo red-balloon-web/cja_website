@@ -7,6 +7,7 @@
 include('config.php');
 include('inc/class-cja-advert.php');
 include('inc/class-cja-course-advert.php');
+include('inc/class-cja-classified-advert.php');
 include('inc/class-cja-user.php');
 include('inc/class-cja-application.php');
 include('inc/class-cja-course-application.php');
@@ -70,6 +71,23 @@ function register_custom_post_types() {
       'has_archive' => false,
       'rewrite' => array('slug' => 'courses'),
      )
+    );
+
+    // Classified Advert
+    register_post_type( 'classified_ad',
+        array(
+            'labels' => array(
+                'name' => 'Classified Adverts',
+                'singular_name' => 'Classified Advert'
+            ),
+            'supports' => array(
+                'title',
+                'custom-fields'
+            ),
+            'public' => true,
+            'has_archive' => false,
+            'rewrite' => array('slug' => 'classifieds')
+        )
     );
 
     // Application
@@ -327,6 +345,7 @@ add_action( 'woocommerce_before_thankyou', 'add_purchased_credits' );
 function add_purchased_credits( $order_id ){
 
     $cja_order = new WC_Order( $order_id );
+    include('config.php');
 
     if ( $cja_order->has_status( 'failed' ) ) {
         exit;
@@ -336,6 +355,7 @@ function add_purchased_credits( $order_id ){
         
         $order = wc_get_order( $order_id );
         $new_credits = 0;
+        $new_classified_credits = 0;
         
         foreach ( $order->get_items() as $item_id => $item ) {
             
@@ -351,20 +371,36 @@ function add_purchased_credits( $order_id ){
             if ($product_id == 8) {
                 $new_credits += $quantity;
             }
+
+            // 1 classified ad product
+            if ($product_id == 297) {
+                $new_classified_credits += $quantity;
+            }
         }
 
         $user_id = get_current_user_id();
-        $current_credits = get_user_meta( $user_id, "cja_credits", true );
-        $new_total_credits = $new_credits + $current_credits;
-        update_user_meta( $user_id, "cja_credits", $new_total_credits );
-        update_post_meta( $order_id, 'cja_credits_added', true );
+        
+        if ($new_credits) {
+            $current_credits = get_user_meta( $user_id, "cja_credits", true );
+            $new_total_credits = $new_credits + $current_credits;
+            update_user_meta( $user_id, "cja_credits", $new_total_credits );
+        
+            ?><p class="cja_alert cja_alert--success"><?php echo ($new_credits . " credits were added to your account. You now have " . $new_total_credits . " credits."); ?></p>
+            <p><a href="<?php echo get_site_url() . '/' . $cja_config['my-job-ads-slug']; ?>" class="cja_button cja_button--2">My Job Adverts</a></p>
+            <?php
+        }
 
-        include('config.php');
+        if ($new_classified_credits) {
+            $current_classified_credits = get_user_meta ($user_id, "cja_classified_credits", true );
+            $new_total_classified_credits = $new_classified_credits + $current_classified_credits;
+            update_user_meta( $user_id, "cja_classified_credits", $new_total_classified_credits );
+            ?>
+            <p class="cja_alert cja_alert--success"><?php echo ($new_classified_credits . " classified ad credits were added to your account. You now have " . $new_total_classified_credits . " classified ad credits."); ?></p>
+            <p><a href="<?php echo get_site_url() . '/' . $cja_config['my-classified-ads-slug']; ?>" class="cja_button cja_button--2">My Classified Adverts</a></p>
+            <?php
+        }
 
-        ?><p class="cja_alert cja_alert--success">Thank you for your order. <?php echo ($new_credits . " credits were added to your account. You now have " . $new_total_credits . " credits."); ?></p>
-        <p><a href="<?php echo get_site_url() . '/' . $cja_config['my-job-ads-slug']; ?>" class="cja_button cja_button--2">My Job Adverts</a></p>
-        <?php
-    
+        update_post_meta( $order_id, 'cja_credits_added', true );    
     }
 }
 
@@ -381,6 +417,12 @@ function spend_credits( $spend = 1 ) {
     $credits = get_user_meta( get_current_user_id(), "cja_credits", true);
 	$credits = $credits - $spend;
 	update_user_meta( get_current_user_id(), "cja_credits", $credits);
+}
+
+function spend_classified_credits( $spend = 1 ) {
+    $credits = get_user_meta( get_current_user_id(), "cja_classified_credits", true);
+	$credits = $credits - $spend;
+	update_user_meta( get_current_user_id(), "cja_classified_credits", $credits);
 }
 
 /**
@@ -446,6 +488,13 @@ function cja_save_cookies() {
         setcookie( get_current_user_id() . '_course_social_services', $_POST['social_services']);
         setcookie( get_current_user_id() . '_course_delivery_route', $_POST['delivery_route']);
         setcookie( get_current_user_id() . '_course_available_start', $_POST['available_start']);
+    }
+
+    if ($_POST['cja_set_classified_cookies'] && $_POST['update_classified_search']) {
+        setcookie( get_current_user_id() . '_classified_max_distance', $_POST['max_distance']);
+        setcookie( get_current_user_id() . '_classified_category', $_POST['category']);
+        setcookie( get_current_user_id() . '_classified_subcategory', $_POST['subcategory']);
+        setcookie( get_current_user_id() . '_classified_order_by', $_POST['order_by']);
     }
 }
 
@@ -574,6 +623,17 @@ function check_username_password( $login, $username, $password ) {
         exit;
     }
 
+    if ($_POST['process-create-classified-ad']) {
+        $cja_new_ad = new CJA_Classified_Advert;
+        $cja_new_ad->create(); // create a new post in the database
+        $cja_new_ad->update_from_form();
+        $cja_new_ad->activate();
+        $cja_new_ad->save();
+        if (get_option('cja_charge_users')) { spend_classified_credits(); }
+        header('Location: ' . get_site_url() . '/my-classified-ads?create-ad-success=' . $cja_new_ad->id);
+        exit;
+    }
+
     if ($_GET['extend-ad']) {
         $cja_extend_ad = new CJA_Advert($_GET['extend-ad']);
         $cja_extend_ad->extend();
@@ -589,6 +649,15 @@ function check_username_password( $login, $username, $password ) {
         $cja_extend_ad->save();
         if (get_option('cja_charge_users')) { spend_credits(); }
         header('Location: ' . get_site_url() . '/my-course-ads?extend-ad-success=' . $cja_extend_ad->id);
+        exit;
+    }
+
+    if ($_GET['extend-classified-ad']) {
+        $cja_extend_ad = new CJA_Classified_Advert($_GET['extend-classified-ad']);
+        $cja_extend_ad->extend();
+        $cja_extend_ad->save();
+        if (get_option('cja_charge_users')) { spend_classified_credits(); }
+        header('Location: ' . get_site_url() . '/my-classified-ads?extend-ad-success=' . $cja_extend_ad->id);
         exit;
     }
 
