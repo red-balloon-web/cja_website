@@ -16,12 +16,22 @@
             }
 
             ul {
-                li {
+                li,
+                li:active {
                     background-color: #3d485f;
+
+                    a:active,
+                    a:visited {
+                        background-color: #3d485f;
+                    }
                 }
             }
         }
     }
+}
+
+.main-navigation ul.menu ul li.focus {
+    background-color: #3d485f !important;
 }
 
 @media (min-width: 768px) {
@@ -31,7 +41,7 @@
     }
 }
 
-#masthead.site-header ul.menu li.current-menu-item>a {
+#masthead.site-header ul.menu li.current-menu-item > a {
     color: #fff;
 }
 

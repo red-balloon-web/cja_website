@@ -257,6 +257,7 @@ add_action( 'init', 'cja_add_my_details_endpoint' );
 function cja_add_my_details_endpoint() {
     add_rewrite_endpoint( 'my-details', EP_ROOT | EP_PAGES );
     add_rewrite_endpoint( 'purchase-credits', EP_ROOT | EP_PAGES);
+    add_rewrite_endpoint( 'purchase-subscriptions', EP_ROOT | EP_PAGES);
 }
   
   
@@ -266,6 +267,7 @@ add_filter( 'query_vars', 'cja_my_details_query_vars', 0 );
 function cja_my_details_query_vars( $vars ) {
     $vars[] = 'my-details';
     $vars[] = 'purchase-credits';
+    $vars[] = 'purchase-subscriptions';
     return $vars;
 }
   
@@ -288,7 +290,8 @@ function cja_order_woocommerce_account_menu( $items ) {
     // only display subscriptions tab to advertisers
     $the_current_user = new CJA_User;
     if ($the_current_user->role == 'advertiser') {
-        $items['subscriptions'] = 'Subscriptions';
+        $items['purchase-subscriptions'] = 'Purchase Subscriptions';
+        $items['subscriptions'] = 'My Subscriptions';
     }
 
     $items['customer-logout'] = 'Log Out';
@@ -306,6 +309,11 @@ function cja_my_details_content() {
 add_action( 'woocommerce_account_purchase-credits_endpoint', 'cja_purchase_credits_content' );
 function cja_purchase_credits_content() {
     include('inc/my-account/purchase-credits.php');
+}
+
+add_action( 'woocommerce_account_purchase-subscriptions_endpoint', 'cja_purchase_subscriptions_content' );
+function cja_purchase_subscriptions_content() {
+    include('inc/my-account/purchase-subscriptions.php');
 }
 // Note: add_action must follow 'woocommerce_account_{your-endpoint-slug}_endpoint' format
 
@@ -495,6 +503,14 @@ function cja_save_cookies() {
         setcookie( get_current_user_id() . '_classified_category', $_POST['category']);
         setcookie( get_current_user_id() . '_classified_subcategory', $_POST['subcategory']);
         setcookie( get_current_user_id() . '_classified_order_by', $_POST['order_by']);
+    }
+
+    if ($_POST['cja_set_cv_cookies'] && $_POST['update_cv_search']) {
+        setcookie( get_current_user_id() . '_cv_max_distance', $_POST['max_distance']);
+        setcookie( get_current_user_id() . '_cv_order_by', $_POST['order_by']);
+        setcookie( get_current_user_id() . '_cv_age_category', $_POST['age_category']);
+        setcookie( get_current_user_id() . '_cv_gcse_maths', $_POST['gcse_maths']);
+        setcookie( get_current_user_id() . '_cv_weekends_availability', $_POST['weekends_availability']);
     }
 }
 
@@ -707,4 +723,15 @@ function cja_admin_page_contents() {
         <input type="hidden" name="cja_action" value="update_theme_options">
         </form>
     <?php
+}
+
+// Check for Woo Subscription function
+function has_woocommerce_subscription($the_user_id, $the_product_id, $the_status) {
+	$current_user = wp_get_current_user();
+	if (empty($the_user_id)) {
+		$the_user_id = $current_user->ID;
+	}
+	if (WC_Subscriptions_Manager::user_has_subscription( $the_user_id, $the_product_id, $the_status)) {
+		return true;
+	}
 }

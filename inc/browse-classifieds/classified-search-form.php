@@ -30,10 +30,19 @@ if ($_GET['edit-search']) {
             <option value="">-- Any --</option>
             <option value="for_sale" <?php if ($cja_classifiedsearch->category == 'for_sale') { echo 'selected'; } ?>>For Sale</option>
             <option value="for_hire" <?php if ($cja_classifiedsearch->category == 'for_hire') { echo 'selected'; } ?>>For Hire</option>
-            <option value="lost_found" <?php if ($cja_classifiedsearch->category == 'lost_found') { echo 'selected'; } ?>>Lost and Found</option>
+            <option value="motors" <?php if ($cja_classifiedsearch->category == 'motors') { echo 'selected'; } ?>>Motors</option>
+            <option value="pets" <?php if ($cja_classifiedsearch->category == 'pets') { echo 'selected'; } ?>>Pets</option>
+            <option value="properties" <?php if ($cja_classifiedsearch->category == 'properties') { echo 'selected'; } ?>>Properties</option>
+            <option value="services" <?php if ($cja_classifiedsearch->category == 'services') { echo 'selected'; } ?>>Services</option>
+            <option value="exchange" <?php if ($cja_classifiedsearch->category == 'exchange') { echo 'selected'; } ?>>Exchange</option>
             <option value="freebies" <?php if ($cja_classifiedsearch->category == 'freebies') { echo 'selected'; } ?>>Freebies</option>
+            <option value="lost_found" <?php if ($cja_classifiedsearch->category == 'lost_found') { echo 'selected'; } ?>>Lost and Found</option>
+            <option value="make_offer" <?php if ($cja_classifiedsearch->category == 'make_offer') { echo 'selected'; } ?>>Make an Offer</option>
+            <option value="notices" <?php if ($cja_classifiedsearch->category == 'notices') { echo 'selected'; } ?>>Notices</option>
+            <option value="events" <?php if ($cja_classifiedsearch->category == 'events') { echo 'selected'; } ?>>Events</option>
+            <option value="urgent_jobs" <?php if ($cja_classifiedsearch->category == 'urgent_jobs') { echo 'selected'; } ?>>Urgent Jobs</option>
         </select>
-
+            <!--
         <p class="label">Advert Subcategory</p>
         <select name="subcategory" form="edit_classified_search_form">
             <option value="">-- Any --</option>
@@ -44,6 +53,7 @@ if ($_GET['edit-search']) {
             <option value="plumbers" <?php if ($cja_classifiedsearch->subcategory == 'plumbers') { echo 'selected'; } ?>>Plumbers</option>
             <option value="news_events" <?php if ($cja_classifiedsearch->subcategory == 'news_events') { echo 'selected'; } ?>>News and Events</option>
         </select>
+        -->
 
         <?php if ($cja_user->postcode) { ?>
             <p class="label">Order Results By</p>

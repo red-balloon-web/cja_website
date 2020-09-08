@@ -26,6 +26,8 @@ class CJA_User {
     public $gcse_maths;
     public $weekends_availability;
     public $company_details_complete;
+    public $is_jobseeker;
+    public $is_student;
 
     
     /**
@@ -65,6 +67,8 @@ class CJA_User {
         $this->gcse_maths = get_user_meta($this->id, 'gcse_maths', true);
         $this->weekends_availability = get_user_meta($this->id, 'weekends_availability', true);
         $this->company_details_complete = $this->company_details_complete();
+        $this->is_jobseeker = get_user_meta($this->id, 'is_jobseeker', true);
+        $this->is_student = get_user_meta($this->id, 'is_student', true);
         
     }
 
@@ -109,6 +113,16 @@ class CJA_User {
         if ($_POST['weekends_availability']) {
             $this->weekends_availability = $_POST['weekends_availability'];
         }
+        if ($_POST['is_jobseeker']) {
+            $this->is_jobseeker = $_POST['is_jobseeker'];
+        } else {
+            $this->is_jobseeker = false;
+        }
+        if ($_POST['is_student']) {
+            $this->is_student = $_POST['is_student'];
+        } else {
+            $this->is_student = false;
+        }
         if ( $_FILES['cv-file']['size'] != 0 ) {
             if ( ! function_exists( 'wp_handle_upload' ) ) {
                 require_once( ABSPATH . 'wp-admin/includes/file.php' );
@@ -121,6 +135,15 @@ class CJA_User {
             $movefile = wp_handle_upload( $uploadedfile, $upload_overrides );
             $this->cv_filename = $uploadedfile['name'];
             $this->cv_url = $movefile['url'];
+        }
+
+        // Search
+
+        if ($_POST['max_distance']) {
+            $this->max_distance = $_POST['max_distance'];
+        }
+        if ($_POST['order_by']) {
+            $this->order_by = $_POST['order_by'];
         }
     }
 
@@ -145,6 +168,68 @@ class CJA_User {
         update_user_meta($this->id, 'age_category', $this->age_category);
         update_user_meta($this->id, 'gcse_maths', $this->gcse_maths);
         update_user_meta($this->id, 'weekends_availability', $this->weekends_availability);
+        update_user_meta($this->id, 'is_jobseeker', $this->is_jobseeker);
+        update_user_meta($this->id, 'is_student', $this->is_student);
+    }
+
+    // Update search object from cookies
+    public function update_from_cookies() {
+        $this->max_distance = $_COOKIE[ get_current_user_id() . '_cv_max_distance'];
+        $this->order_by = $_COOKIE[ get_current_user_id() . '_cv_order_by'];
+        $this->age_category = $_COOKIE[ get_current_user_id() . '_cv_age_category'];
+        $this->gcse_maths = $_COOKIE[ get_current_user_id() . '_cv_gcse_maths'];
+        $this->weekends_availability = $_COOKIE[ get_current_user_id() . '_cv_weekends_availability'];
+    }
+
+    // Build WP User Query
+    public function build_wp_query() {
+        $return_wp_query = array(
+            'role' => 'jobseeker'
+        );
+        $meta_query = array();
+
+        if ($this->age_category) {
+            $meta_query_item = array(
+                'key' => 'age_category',
+                'value' => $this->age_category
+            );
+            $meta_query[] = $meta_query_item;
+        }
+
+        if ($this->gcse_maths) {
+            $meta_query_item = array(
+                'key' => 'gcse_maths',
+                'value' => $this->gcse_maths
+            );
+            $meta_query[] = $meta_query_item;
+        }
+
+        if ($this->weekends_availability) {
+            $meta_query_item = array(
+                'key' => 'weekends_availability',
+                'value' => $this->weekends_availability
+            );
+            $meta_query[] = $meta_query_item;
+        }
+
+        if ($this->is_jobseeker) {
+            $meta_query_item = array(
+                'key' => 'is_jobseeker',
+                'value' => 'true'
+            );
+            $meta_query[] = $meta_query_item;
+        }
+
+        if ($this->is_student) {
+            $meta_query_item = array(
+                'key' => 'is_student',
+                'value' => 'true'
+            );
+            $meta_query[] = $meta_query_item;
+        }
+
+        $return_wp_query['meta_query'] = $meta_query;
+        return $return_wp_query;
     }
 
     // Return human-friendly values

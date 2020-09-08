@@ -102,12 +102,29 @@ class CJA_Classified_Advert {
         if ($_POST['content']) {
             $this->content = $_POST['content'];
         }
+        
+        if ($_POST['max_distance']) {
+            $this->max_distance = $_POST['max_distance'];
+        }
+        if ($_POST['order_by']) {
+            $this->order_by = $_POST['order_by'];
+        }
         if ( $_FILES['class_photo']['size'] != 0 ) {
+            
+            $info = getimagesize($_FILES['class_photo']['tmp_name']);
+            if ($info === FALSE) {
+                return 'filetype_error';
+            }
+            
+            if (($info[2] !== IMAGETYPE_GIF) && ($info[2] !== IMAGETYPE_JPEG) && ($info[2] !== IMAGETYPE_PNG)) {
+                return 'filetype_error';
+            }
+    
             if ( ! function_exists( 'wp_handle_upload' ) ) {
                 require_once( ABSPATH . 'wp-admin/includes/file.php' );
             }
             $uploadedfile = $_FILES['class_photo'];
-
+    
             $upload_overrides = array(
                 'test_form' => false
             );
@@ -115,15 +132,8 @@ class CJA_Classified_Advert {
             $this->class_photo_filename = $uploadedfile['name'];
             $this->class_photo_url = $movefile['url'];
         }
-
-        if ($_POST['max_distance']) {
-            $this->max_distance = $_POST['max_distance'];
-        }
-        if ($_POST['order_by']) {
-            $this->order_by = $_POST['order_by'];
-        }
     }
-
+    
     // Update all properties in the WP database
     public function save() {
         $values = array(
@@ -218,10 +228,20 @@ class CJA_Classified_Advert {
         if ($field == 'category') {
             if ($this->category == 'for_sale') { return 'For Sale'; }
             if ($this->category == 'for_hire') { return 'For Hire'; }
-            if ($this->category == 'lost_found') { return 'Lost and Found'; }
+            if ($this->category == 'motors') { return 'Motors'; }
+            if ($this->category == 'pets') { return 'Pets'; }
+            if ($this->category == 'properties') { return 'Properties'; }
+            if ($this->category == 'services') { return 'Services'; }
+            if ($this->category == 'exchange') { return 'Exchange'; }
             if ($this->category == 'freebies') { return 'Freebies'; }
+            if ($this->category == 'lost_found') { return 'Lost and Found'; }
+            if ($this->category == 'make_offer') { return 'Make an Offer'; }
+            if ($this->category == 'notices') { return 'Notices'; }
+            if ($this->category == 'events') { return 'Events'; }
+            if ($this->category == 'urgent_jobs') { return 'Urgent Jobs'; }
         }
 
+        /*
         if ($field == 'subcategory') {
             if ($this->subcategory == 'motors') { return 'Motors'; }
             if ($this->subcategory == 'properties') { return 'Properties'; }
@@ -230,6 +250,7 @@ class CJA_Classified_Advert {
             if ($this->subcategory == 'plumbers') { return 'Plumbers'; }
             if ($this->subcategory == 'news_events') { return 'News and Events'; }
         }
+        */
     }
 
     /**

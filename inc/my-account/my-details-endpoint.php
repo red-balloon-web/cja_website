@@ -67,9 +67,11 @@
             <option value="sun" <?php if ($cja_current_user_obj->weekends_availability == 'sun') { echo 'selected'; } ?>>Sunday Only</option>
             <option value="satsun" <?php if ($cja_current_user_obj->weekends_availability == 'satsun') { echo 'selected'; } ?>>Saturday and Sunday</option>
         </select>
+        <p><input type="checkbox" name="is_jobseeker" value="true" <?php if($cja_current_user_obj->is_jobseeker) { echo 'checked'; } ?>> I am looking for employment, include my profile in CV searches</p>
+        <p><input type="checkbox" name="is_student" value="true" <?php if($cja_current_user_obj->is_student) { echo 'checked'; } ?>> I am looking for courses, include my profile in student searches</p>
         <?php if ($cja_current_user_obj->cv_url) { ?>
             <p>Upload New CV<br><input type="file" name="cv-file"></p>
-            <p><em>Current CV: <?php echo $cja_current_user_obj->cv_filename; ?></em><br><a href="<?php echo $cja_current_user_obj->cvurl; ?>" target="_blank">VIEW / DOWNLOAD CV</a></p>
+            <p><em>Current CV: <?php echo $cja_current_user_obj->cv_filename; ?></em><br><a href="<?php echo $cja_current_user_obj->cv_url; ?>" target="_blank">VIEW / DOWNLOAD CV</a></p>
         <?php } else { ?>
             <p class="label">Upload CV</p>
             <input type="file" name="cv-file"></p>

@@ -142,7 +142,26 @@
     background-color: #3d485f;
     color: #ccc;
     padding: 20px 0;
-    .address {
-        font-size: .8rem;
+
+    .col-full {
+    display: flex;
+    flex-direction: row;
+
+        .address {
+            font-size: .8rem;
+            width: 25%;
+        }
+
+        .links {
+            font-size: .8rem;
+
+            a {
+                color: #ccc;
+
+                &:hover {
+                    color: #fff;
+                }
+            }
+        }
     }
 }

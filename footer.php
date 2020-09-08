@@ -18,11 +18,15 @@
 		<div class="col-full">
 
 			<div class="address">
-				<p>Courses and Jobs Advertiser<br>
-				Address Line 1<br>
-				Address Line 2<br>
-				Address Line 3<br>
-				Address Line 4</p>
+				<p>3 Oafield House<br>
+				Ilford<br>
+				Essex<br>
+				IG1 1EF<br>
+				020 3475 5499</p>
+			</div>
+
+			<div class="links">
+				<p><a href="<?php echo get_site_url(); ?>/terms-and-conditions">Terms and Conditions</a></p>
 			</div>
 
 			<?php

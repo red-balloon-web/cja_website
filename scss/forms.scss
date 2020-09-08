@@ -37,6 +37,10 @@ textarea {
     padding: 12px;
 }
 
+input[type="submit"] {
+    line-height: 1.618;
+}
+
 a:focus, 
 input:focus, 
 textarea:focus, 
