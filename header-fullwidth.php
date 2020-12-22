@@ -1,13 +1,8 @@
-<?php
-/**
- * The header for our theme.
- *
- * Displays all of the <head> section and everything up till <div id="content">
- *
- * @package storefront
- */
+<!-- 
+This is the header for the front page.
+The difference is the opening div tags at the end, which are allowed to be full width so we can have a full width frontpage -->
 
-?><!doctype html>
+<!doctype html>
 <html <?php language_attributes(); ?>>
 <head>
 <meta charset="<?php bloginfo( 'charset' ); ?>">
@@ -36,20 +31,22 @@
 
 		<?php include('inc/navigation/mobile-menu.php'); ?>
 		<div class="col-full header-top">
-			<div class="logged-in-message">
-				<?php
+			
+			<?php 
+			// Display top of screen login box if we are displaying full homepage
+			if (get_option('cja_display_homepage')) { ?>
+				<div class="logged-in-message"><?php
 					$cja_current_user = new CJA_User;
 					if ($cja_current_user->is_logged_in) {
 						if ($cja_current_user->company_name) {
 						?><p>Logged in as <?php echo $cja_current_user->company_name;
-						} else if ($cja_current_user->full_name) {
+						} else if ($cja_current_user->first_name) {
 							?><p>Logged in as <?php echo $cja_current_user->full_name;
 						} else {
 							?><p>Logged in as <?php echo $cja_current_user->login_name; 
 						}
 						?>&nbsp;&nbsp;<a href="<?php echo wp_logout_url( home_url() ); ?>"><i class="fas fa-sign-out-alt"></i></a><?php
-					} else {
-						?>
+					} else { ?>
 						<form action="<?php echo get_site_url(); ?>/wp-login.php?redirect_to=<?php echo get_site_url() . '/' . $cja_config['user-details-page-slug']; ?>" method="post" class="cja_home_login">
 							<div class="header_login_form">
 								<div class="username">
@@ -66,46 +63,51 @@
 							</div>
 						</form>
 						<div class="header_login_button">
-							<a href="<?php echo get_site_url(); ?>/my-account" class="cja_button cja_button--home_login">Create Account / Log In</a>
-						</div>
-					<?php
-					}
-				?>
+							<a href="<?php echo get_site_url(); ?>/my-account" class="cja_button cja_button--home_login"><!--Create Account / -->Log In</a>
+						</div><?php
+					} ?>
+				</div><?php 
+			} 
+			
+			// Logo and site title ?>
+			<div class="logo-title">
+				<img src="<?php echo get_stylesheet_directory_uri(); ?>/images/logo2.jpg" class="logo"><h2 class="cja_site_title">Courses and Jobs Advertiser</h2>
 			</div>
-			<h2 class="cja_site_title">Courses and Jobs Advertiser</h2>
 		</div>
 		<div class="col-full">
 
-		<?php
-		/**
-		 * Functions hooked into storefront_header action
-		 *
-		 * @hooked storefront_header_container                 - 0
-		 * @hooked storefront_skip_links                       - 5
-		 * @hooked storefront_social_icons                     - 10
-		 * @hooked storefront_site_branding                    - 20
-		 * @hooked storefront_secondary_navigation             - 30
-		 * @hooked storefront_product_search                   - 40
-		 * @hooked storefront_header_container_close           - 41
-		 * @hooked storefront_primary_navigation_wrapper       - 42
-		 * @hooked storefront_primary_navigation               - 50
-		 * @hooked storefront_header_cart                      - 60
-		 * @hooked storefront_primary_navigation_wrapper_close - 68
-		 */
-		//do_action( 'storefront_header' );
+			<?php
+			/**
+			 * Functions hooked into storefront_header action LEFT THIS FOR REFERENCE
+			 *
+			 * @hooked storefront_header_container                 - 0
+			 * @hooked storefront_skip_links                       - 5
+			 * @hooked storefront_social_icons                     - 10
+			 * @hooked storefront_site_branding                    - 20
+			 * @hooked storefront_secondary_navigation             - 30
+			 * @hooked storefront_product_search                   - 40
+			 * @hooked storefront_header_container_close           - 41
+			 * @hooked storefront_primary_navigation_wrapper       - 42
+			 * @hooked storefront_primary_navigation               - 50
+			 * @hooked storefront_header_cart                      - 60
+			 * @hooked storefront_primary_navigation_wrapper_close - 68
+			 */
+			//do_action( 'storefront_header' );
 
-		cja_primary_navigation();
-		$cja_current_user = new CJA_User;
-		if ($cja_current_user->role == 'advertiser') {
-			storefront_header_cart();
-		}
-		?>
-</div>
+			// display the menu if we are displaying full homepage (controlled in theme options)
+				if (get_option('cja_display_homepage')) {
+				cja_primary_navigation();
+				$cja_current_user = new CJA_User;
+				if ($cja_current_user->role == 'advertiser') {
+					storefront_header_cart();
+				}
+			} ?>
+		</div>
 	</header><!-- #masthead -->
 
 	<?php
 	/**
-	 * Functions hooked in to storefront_before_content
+	 * Functions hooked in to storefront_before_content LEFT THIS FOR REFERENCE
 	 *
 	 * @hooked storefront_header_widget_region - 10
 	 * @hooked woocommerce_breadcrumb - 10
@@ -116,8 +118,9 @@
 	<!--<div id="content" class="site-content" tabindex="-1">
 		<div class="col-full">-->
 
-		<div>
-		<div>
+		<!-- replace above opening div tags with no id or class to create fullwidth -->
+	<div>
+	<div>
 
-		<?php
-		do_action( 'storefront_content_top' );
+	<?php
+	do_action( 'storefront_content_top' );

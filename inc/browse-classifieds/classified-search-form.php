@@ -2,13 +2,15 @@
 
 if ($_GET['edit-search']) { 
     $cja_classifiedsearch = new CJA_Classified_Advert;
-    $cja_classifiedsearch->update_from_cookies();
+    // $cja_classifiedsearch->update_from_cookies(); // disabled by client
 
     ?>
 
 
 
     <h1>Edit My Classifieds Search</h1>
+
+    <!--<p style="text-align: center; font-style: italic; color: #666; margin-bottom: 40px;">Please remember to set any fields you no longer wish to search by back to "any".</p>-->
 
 
     <form action="<?php echo get_the_permalink(); ?>" method="post" id="edit_classified_search_form">
@@ -41,29 +43,17 @@ if ($_GET['edit-search']) {
             <option value="notices" <?php if ($cja_classifiedsearch->category == 'notices') { echo 'selected'; } ?>>Notices</option>
             <option value="events" <?php if ($cja_classifiedsearch->category == 'events') { echo 'selected'; } ?>>Events</option>
             <option value="urgent_jobs" <?php if ($cja_classifiedsearch->category == 'urgent_jobs') { echo 'selected'; } ?>>Urgent Jobs</option>
-        </select>
-            <!--
-        <p class="label">Advert Subcategory</p>
-        <select name="subcategory" form="edit_classified_search_form">
-            <option value="">-- Any --</option>
-            <option value="motors" <?php if ($cja_classifiedsearch->subcategory == 'motors') { echo 'selected'; } ?>>Motors</option>
-            <option value="properties" <?php if ($cja_classifiedsearch->subcategory == 'properties') { echo 'selected'; } ?>>Properties</option>
-            <option value="restaurants" <?php if ($cja_classifiedsearch->subcategory == 'restaurants') { echo 'selected'; } ?>>Restaurants</option>
-            <option value="pets" <?php if ($cja_classifiedsearch->subcategory == 'pets') { echo 'selected'; } ?>>Pets</option>
-            <option value="plumbers" <?php if ($cja_classifiedsearch->subcategory == 'plumbers') { echo 'selected'; } ?>>Plumbers</option>
-            <option value="news_events" <?php if ($cja_classifiedsearch->subcategory == 'news_events') { echo 'selected'; } ?>>News and Events</option>
-        </select>
-        -->
-
-        <?php if ($cja_user->postcode) { ?>
+        </select><?php 
+        
+        if ($cja_user->postcode) { ?>
             <p class="label">Order Results By</p>
             <select name="order_by" form="edit_classified_search_form">
                 <option value="date">Newest Adverts First</option>
                 <option value="distance" <?php if ($cja_classifiedsearch->order_by == 'distance') { echo 'selected'; } ?>>Closest Adverts First</option>
-            </select>
-        <?php } else { ?>
-            <input type="hidden" name="order_by" value="date">
-        <?php } ?>
+            </select><?php 
+        } else { ?>
+            <input type="hidden" name="order_by" value="date"><?php 
+        } ?>
 
         <input type="hidden" name="update_classified_search" value="true">
         <input type="hidden" name="cja_set_classified_cookies" value="true">
@@ -71,9 +61,9 @@ if ($_GET['edit-search']) {
         <p>
             <input type="submit" class="cja_button cja_button--2" value="Search Classifieds">
         </p>
-    </form>
+    </form><?php
 
-    <?php
+    // Don't display the search results
     $display_search = false;
 }
 

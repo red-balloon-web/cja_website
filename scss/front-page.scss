@@ -22,6 +22,14 @@
             border: 3px solid black;
             border-radius: 20px;
             padding: 20px;
+
+            p {
+                margin-bottom: 25px; /* temporary for the holding page */
+
+                &.label {
+                    margin-bottom: 2px; /* little hack because now we want the holding page to turn on or off */
+                }
+            }
         }
     }
 
@@ -157,4 +165,84 @@
     width: 100%;
     font-size: 80px;
     font-weight: 400;
+}
+
+.cja_featureboxes {
+    min-height: 400px; /* remove this */
+    padding: 50px 0;
+    background-color: #c06457;
+
+    h1 {
+        font-weight: 500;
+        color: black;
+        margin-top: 10px;
+        margin-bottom: 50px;
+    }
+
+    .col-full {
+        display: flex;
+        justify-content: space-between;
+
+        .box {
+            border: 2px solid black;
+            border-radius: 20px;
+            background-color: #facc39;
+            width: 45%;
+            padding: 40px 10px;
+
+            h2 {
+                margin: 0;
+                font-size: 1.45rem;
+                font-weight: 500;
+            }
+
+            p.and {
+                margin: 0;
+                text-align: center;
+            }
+
+            p.button {
+                display: block;
+                background: none;
+                text-align: center;
+                margin-bottom: 0;
+
+                a {
+                    border: 1px solid #000;
+                    background-color: #548c51;
+                    color: #fff;
+                    border-radius: 5px;
+                }
+            }
+
+            ul {
+                margin-top: 30px;
+                margin-bottom: 30px;
+
+                li {
+                    margin-bottom: 8px;
+
+                    .fa-li {
+                        color: green;
+                    }
+                }
+            }
+        }
+
+        @media (max-width: 767px) {
+            flex-direction: column;
+
+            .box {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+        }
+    }
+}
+
+p.free_account_link {
+    text-align: center;
+    font-weight: 500;
+    margin-top: 70px;
+    font-size: 20px;
 }

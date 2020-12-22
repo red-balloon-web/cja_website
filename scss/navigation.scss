@@ -81,3 +81,12 @@ button.menu-toggle:before,
 button.menu-toggle::after {
     display: none;
 }
+
+.handheld-navigation .dropdown-toggle {
+    color: #ccc;
+}
+
+.cja_mobile-navigation.toggled {
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 20px;
+}

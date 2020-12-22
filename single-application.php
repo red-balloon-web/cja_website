@@ -1,40 +1,31 @@
-<?php get_header(); ?>
+<?php 
 
-	<?php			
-	// Set up current user object
-	$cja_current_user_obj = new CJA_User;
-	?>
+get_header();
 
-	<div id="primary" class="content-area">
-		<main id="main" class="site-main" role="main">
+// Set up current user object
+$cja_current_user_obj = new CJA_User; ?>
 
+<div id="primary" class="content-area">
+	<main id="main" class="site-main" role="main"><?php
 
-		<?php
 		while ( have_posts() ) :
 			the_post();
-			
 			
 			$cja_current_application = new CJA_Application(get_the_ID());
 			$cja_current_ad = new CJA_Advert($cja_current_application->advert_ID);
 			$cja_current_advertiser = new CJA_User($cja_current_application->advertiser_ID);
-			$cja_current_applicant = new CJA_User($cja_current_application->applicant_ID);
+			$cja_current_applicant = new CJA_User($cja_current_application->applicant_ID); ?>
 
+			<h1>View Job Application</h1><?php 
 			
-			/*include('inc/single-application/display-options.php');*/
+			include('inc/templates/application-details.php');
+			include('inc/templates/applicant-details.php');
+			include('inc/templates/job-details.php');
+			include('inc/templates/company-details.php'); ?>
 
-			?>
-			<!--<hr>-->
-			<h1>View Job Application</h1>
+			<hr><?php 
 			
-			<?php include('inc/templates/application-details.php'); ?>
-			<hr>
-			<?php include('inc/templates/applicant-details.php'); ?>
-			<hr>
-			<?php include('inc/templates/job-details.php'); ?>
-			<hr>
-			<?php include('inc/templates/company-details.php'); ?>
-			<hr>
-			<?php /**
+			/**
 			 * DISPLAY OPTIONS
 			 * 
 			 *  - Archive (jobseeker)
@@ -42,8 +33,7 @@
 			 */
 			include('inc/single-application/display-options.php');
 
-		endwhile; // End of the loop.
-		?>
+		endwhile; // End of the loop. ?>
 
 		</main><!-- #main -->
 	</div><!-- #primary -->

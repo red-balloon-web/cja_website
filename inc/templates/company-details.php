@@ -1,8 +1,32 @@
 <div class="application_box">
-    <h4>About <?php echo $cja_current_ad->author_human_name; ?></h4>
-    <p class="cja_listing_item">Contact person: <strong><?php echo $cja_current_advertiser->contact_person; ?></strong></p>
-    <p class="cja_listing_item">Phone Number: <strong><?php echo $cja_current_advertiser->phone; ?></strong></p>
-    <p class="cja_listing_item">Address: <strong><?php echo wpautop($cja_current_advertiser->address); ?></strong></p>
-    <h4>Company Description</h4>
-    <div class="cja_description"><?php echo wpautop($cja_current_advertiser->company_description); ?></div>
+
+    <h2 class="form_section_heading">About The Advertiser</h2>
+
+        <table class="display_table">
+            <tr>
+                <td>Organisation Name</td>
+                <td><?php echo $cja_current_advertiser->display_field('company_name'); ?></td>
+            </tr>
+            <tr>
+                <td>Contact Person</td>
+                <td><?php echo $cja_current_advertiser->display_field('contact_person'); ?></td>
+            </tr>
+            <tr>
+                <td>Phone Number</td>
+                <td><?php echo $cja_current_advertiser->display_field('phone'); ?></td>
+            </tr>
+            <tr>
+                <td>Address</td>
+                <td><?php echo $cja_current_advertiser->display_field('address'); ?></td>
+            </tr>
+            <tr>
+                <td>Postcode</td>
+                <td><?php echo $cja_current_advertiser->display_field('postcode'); ?></td>
+            </tr>
+        </table>
+
+    <h2 class="form_section_heading">Advertiser Profile</h2>
+    <div class="cja_description">
+        <?php echo $cja_current_advertiser->display_field('company_description'); ?>
+    </div>
 </div>

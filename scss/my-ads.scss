@@ -64,7 +64,7 @@ a.add-credits-to-cart {
     display: flex;
     justify-content: center;
     align-items: center;
-    visibility: hidden;
+    display: none;
 
     .cja_are_sure_modal {
         padding: 30px 60px;

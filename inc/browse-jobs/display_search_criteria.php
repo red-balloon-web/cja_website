@@ -42,5 +42,10 @@
         } else if ($cja_jobsearch->order_by == 'distance') {
             echo 'Closest Jobs First';
         } ?></strong></p>
+    <?php if ($cja_jobsearch->show_applied) {
+        ?><p>Include jobs I have already applied for</p><?php
+    } else {
+        ?><p>Exclude jobs I have already applied for</p><?php
+    } ?>
 
 </div>

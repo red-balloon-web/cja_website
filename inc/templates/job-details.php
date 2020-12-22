@@ -1,29 +1,105 @@
 <div class="application_box">
-    <!--<p class="cja_listing_item job_description">Job Description:</p>--> 
-    <h4>Job Description</h4>
-    <div class="cja_description"><?php echo wpautop($cja_current_ad->content); ?></div>
-    <hr>
-    <h4>Job Details</h4>
-    <p class="cja_listing_item">Salary: £<strong><?php echo $cja_current_ad->salary_numeric; ?> per <?php echo $cja_current_ad->salary_per; ?></strong></p>
-    <p class="cja_listing_item">Job Type: <strong><?php echo $cja_current_ad->return_human('job_type'); ?></strong></p>
-    <p class="cja_listing_item">Sector: <strong><?php echo $cja_current_ad->return_human('sector'); ?></strong></p>
-    <p class="cja_listing_item">Contact person: <strong><?php echo $cja_current_ad->contact_person; ?></strong></p>
-    <p class="cja_listing_item">Contact phone number: <strong><?php echo $cja_current_ad->contact_phone_number; ?></strong></p>
-    <p class="cja_listing_item">Postcode: <strong><?php echo $cja_current_ad->postcode; ?></strong></p>
-    <p class="cja_listing_item">Career level: <strong><?php echo $cja_current_ad->return_human('career_level'); ?></strong></p>
-    <p class="cja_listing_item">Experience required: <strong><?php echo $cja_current_ad->return_human('experience_required'); ?></strong></p>
-    <p class="cja_listing_item">Employer type: <strong><?php echo $cja_current_ad->return_human('employer_type'); ?></strong></p>
-    <p class="cja_listing_item">Minimum qualification required: <strong><?php echo $cja_current_ad->return_human('minimum_qualification'); ?></strong></p>
-    <p class="cja_listing_item">DBS required: <strong><?php echo $cja_current_ad->return_human('dbs_required'); ?></strong></p>
-    <p class="cja_listing_item">Payment frequency: <strong><?php echo $cja_current_ad->return_human('payment_frequency'); ?></strong></p>
-    <p class="cja_listing_item">Shift work: <strong><?php echo $cja_current_ad->return_human('shift_work'); ?></strong></p>
-    <?php if ($cja_current_ad->shift_work == 'yes') { ?>
-        <p class="cja_listing_item">Shifts: <strong><?php echo $cja_current_ad->return_human('shifts'); ?></strong></p>
+
+    <?php if ($cja_current_ad->photo_url) { ?>
+        <img src="<?php echo $cja_current_ad->photo_url; ?>" alt="" style="display: block; width: 100%; max-width: 500px; height: auto; margin-left: auto; margin-right: auto; margin-bottom: 40px">
     <?php } ?>
-    <p class="cja_listing_item">Location options: <strong><?php echo $cja_current_ad->return_human('location_options'); ?></strong></p>
-    <p class="cja_listing_item">Deadline: <strong><?php echo $cja_current_ad->return_human('deadline'); ?></strong></p>
-    <?php if ($cja_current_ad->job_spec_url) { ?>
-        <p class="cja_listing_item"><a class="cja_button" href="<?php echo $cja_current_ad->job_spec_url; ?>" target="_blank">Download Job Specification</a></p>
+    <!--<p class="cja_listing_item job_description">Job Description:</p>--> 
+    <h2 class="form_section_heading">Job Title and Description</h2>
+    <h4><strong><?php echo $cja_current_ad->title; ?></strong></h4>
+    <div class="cja_description"><?php echo wpautop($cja_current_ad->content); ?></div>
+    <h2 class="form_section_heading">Job Details</h2>
+
+    <table class="display_table">
+        <tr>
+            <td>Salary</td>
+            <td>£<?php echo $cja_current_ad->salary_numeric; ?> per <?php echo $cja_current_ad->salary_per; ?></td>
+        </tr>
+        <tr>
+            <td>Payment Frequency</td>
+            <td><?php echo $cja_current_ad->display_field('payment_frequency'); ?></td>
+        </tr>
+        <tr>
+            <td>Deadline</td>
+            <td><?php echo $cja_current_ad->display_field('deadline'); ?></td>
+        </tr>
+        <tr>
+            <td>Sector</td>
+            <td><?php echo $cja_current_ad->display_field('sector'); ?></td>
+        </tr>
+        <tr>
+            <td>Job Type</td>
+            <td><?php echo $cja_current_ad->display_field('job_type'); ?></td>
+        </tr>
+        <tr>
+            <td>Career Level</td>
+            <td><?php echo $cja_current_ad->display_field('career_level'); ?></td>
+        </tr>
+        <tr>
+            <td>Experience Required</td>
+            <td><?php echo $cja_current_ad->display_field('experience_required'); ?></td>
+        </tr>
+        <tr>
+            <td>Minimum Qualification Required</td>
+            <td><?php echo $cja_current_ad->display_field('minimum_qualification'); ?></td>
+        </tr>
+        <tr>
+            <td>DBS Required</td>
+            <td><?php echo $cja_current_ad->display_field('dbs_required'); ?></td>
+        </tr>
+        <tr>
+            <td>Shift Work</td>
+            <td><?php echo $cja_current_ad->display_field('shift_work'); ?></td>
+        </tr>
+        <?php if ($cja_current_ad->shift_work == 'yes') { ?>
+            <tr>
+                <td>Shifts</td>
+                <td><?php echo $cja_current_ad->display_field('shifts'); ?></td>
+            </tr>
+        <?php } ?>
+        <tr>
+            <td>Location Options</td>
+            <td><?php echo $cja_current_ad->display_field('location_options'); ?></td>
+        </tr>
+        <tr>
+            <td>Employer Type</td>
+            <td><?php echo $cja_current_ad->display_field('employer_type'); ?></td>
+        </tr>
+        <tr>
+            <td>Postcode</td>
+            <td><?php echo $cja_current_ad->display_field('postcode'); ?></td>
+        </tr>
+        <tr>
+            <td>Contact Person</td>
+            <td><?php echo $cja_current_ad->display_field('contact_person'); ?></td>
+        </tr>
+        <tr>
+            <td>Contact Phone Number</td>
+            <td><?php echo $cja_current_ad->display_field('contact_phone_number'); ?></td>
+        </tr>
+    </table>
+
+    <h2 class="form_section_heading">Additional Information</h2>
+    <?php $cja_current_ad->display_field('more_information'); ?>
+
+    <?php 
+    
+    if ($cja_current_ad->files_array) { ?>
+        <h2 class="form_section_heading">Attachments</h2>
+        <table><?php
+            foreach ($cja_current_ad->files_array as $file) {?>
+                <!--<tr>
+                    <td><a href="<?php echo $file['url']; ?>" target="_blank"><?php echo $file['name']; ?></a></td>
+                </tr>   -->      
+                <tr>
+                    <td>
+                        <?php echo $file['name']; ?>
+                    </td>
+                    <td style="text-align: right">
+                        <a class="cja_button" href="<?php echo $file['url']; ?>" target="_blank">View / Download Attachment</a>
+                    </td>
+                </tr>           
+            <?php } ?>  
+        </table>
     <?php } ?>
 
 </div>

@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 <?php
 
 // CREATE NEW ACCOUNT IF POST DATA SENT
-if ($_POST['createaccount']) {
+if ($_POST['createaccount'] && $_POST['email']) {
 
 	$username = $_POST['username'];
 	$email = $_POST['email'];
@@ -41,14 +41,21 @@ if ($_POST['createaccount']) {
 	$result = wp_insert_user($userdata);
 
 	if (is_int($result)) {
+		
+		// Send new user email
+		// wp_new_user_notification($result,'','both');
+
 		// Give new user 1 credit
 		add_user_meta($result, 'cja_credits', 1, true);
+		add_user_meta($result, 'cja_classified_credits', 1, true);
 		?><p class="cja_alert cja_alert--success"><strong><?php echo $username; ?></strong>, Your Account Has Been Created!<br>Please use your password to login!</p><?php
 		$freshaccountcreation = true;
 	} else { ?>
 
 	<p class="cja_alert cja_alert--red"><?php echo $result->get_error_message(); ?></p>
 	<?php }
+} else if ($_POST['createaccount'] && !$_POST['email']) {
+	?><p class="cja_alert cja_alert--red">Please include an email address</p><?php
 }
 
 // DISPLAY ERROR MESSAGE IF LOGIN FAILED
@@ -88,33 +95,35 @@ if ($_GET['login']) {
 	</form>
 	</div>
 
+	<!-- disabled by client
 	<div class="new-user-account">
-	<h4 class="account_create">Create an Account</h4>
-	<form action="<?php echo get_site_url() . '/my-account' ?>" method="post" class="cja_home_create">
-		<div class="topbox">
-			<div class="username">
-				<p>Username</p>
-				<input type="text" name="username">
+		<h4 class="account_create">Create an Account</h4>
+		<form action="<?php echo get_site_url() . '/my-account' ?>" method="post" class="cja_home_create">
+			<div class="topbox">
+				<div class="username">
+					<p>Username</p>
+					<input type="text" name="username">
+				</div>
+				<div class="password">
+					<p>Password</p>
+					<input type="password" name="password">
+				</div>
 			</div>
-			<div class="password">
-				<p>Password</p>
-				<input type="password" name="password">
+			<p>Email Address</p>
+			<input type="text" name="email">
+			<div class="rolebox">
+				<div class="role_option">
+					<input type="radio" name="role" value="jobseeker" checked> I am looking for a job or course</input>
+				</div>
+				<div class="role_option">
+					<input type="radio" name="role" value="advertiser"> I am an employer or course provider</input>
+				</div>
 			</div>
-		</div>
-		<p>Email Address</p>
-		<input type="text" name="email">
-		<div class="rolebox">
-			<div class="role_option">
-				<input type="radio" name="role" value="jobseeker" checked> I am looking for a job or course</input>
-			</div>
-			<div class="role_option">
-				<input type="radio" name="role" value="employer"> I am an employer or course provider</input>
-			</div>
-		</div>
-		<input type="hidden" name="createaccount" value="true">
-		<p class="input-right"><input class="cja_button cja_button--home_login" type="submit" value="Create Free Account"></p>
-	</form>
+			<input type="hidden" name="createaccount" value="true">
+			<p class="input-right"><input class="cja_button cja_button--home_login" type="submit" value="Create Free Account"></p>
+		</form>
 	</div>
+	-->
 </div>
 
 <?php

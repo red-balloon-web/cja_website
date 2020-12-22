@@ -18,7 +18,7 @@
                     'container_class' => 'handheld-navigation',
                 )
             );
-        } else if ($cja_current_user_obj->role == 'advertiser') {
+        } else if ($cja_current_user_obj->role == 'advertiser' || $cja_current_user_obj->role == 'administrator') {
             wp_nav_menu(
                 array(
                     'theme_location' => 'advertiser-primary',

@@ -4,3 +4,29 @@
     //padding: 10px 10px 0 10px;
     margin-bottom: 30px;
 }
+
+.application-filter-options {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 30px;
+
+    form {
+        margin-bottom: 0;
+
+        p {
+            margin-bottom: 0;
+            text-align: right;
+
+            select,
+            input {
+                margin-bottom: 0;
+            }
+
+            select {
+                margin-right: 10px;
+            }
+        }
+    }
+}
+

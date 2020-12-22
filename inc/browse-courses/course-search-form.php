@@ -2,13 +2,15 @@
 
 if ($_GET['edit-search']) { 
     $cja_coursesearch = new CJA_Course_Advert;
-    $cja_coursesearch->update_from_cookies();
+    // $cja_coursesearch->update_from_cookies();
 
     ?>
 
 
 
     <h1>Edit My Course Search</h1>
+
+    <!--<p style="text-align: center; font-style: italic; color: #666; margin-bottom: 40px;">Please remember to set any fields you no longer wish to search by back to "any".</p>-->
 
 
     <form action="<?php echo get_the_permalink(); ?>" method="post" id="edit_course_search_form">
@@ -424,6 +426,8 @@ if ($_GET['edit-search']) {
         <?php } else { ?>
             <input type="hidden" name="order_by" value="date">
         <?php } ?>
+
+        <p><input type="checkbox" name="show_applied" <?php if ($cja_coursesearch->show_applied) { echo 'checked'; } ?>> Include courses I have already applied for</p>
 
         <input type="hidden" name="update_course_search" value="true">
         <input type="hidden" name="cja_set_course_cookies" value="true">

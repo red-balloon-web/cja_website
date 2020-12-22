@@ -78,5 +78,10 @@
         } else if ($cja_coursesearch->order_by == 'distance') {
             echo 'Closest Courses First';
         } ?></strong></p>
+    <?php if ($cja_coursesearch->show_applied) {
+        ?><p>Include courses I have already applied for</p><?php
+    } else {
+        ?><p>Exclude courses I have already applied for</p><?php
+    } ?>
 
 </div>

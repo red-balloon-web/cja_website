@@ -23,6 +23,7 @@
 
 <body <?php body_class(); ?>>
 
+<!-- Are you sure modal div (appears when user clicks on delete ad, etc. -->
 <div id="cja_are_sure_modal_wrapper">
 	<div class="cja_are_sure_modal">
 		<p><strong>Are You Sure?</strong></p>
@@ -43,52 +44,53 @@
 
 	<header id="masthead" class="site-header" role="banner" style="<?php storefront_header_styles(); ?>">
 
-		<?php include('inc/navigation/mobile-menu.php'); ?>
-		<div class="col-full header-top">
-			<div class="logged-in-message">
-				<?php
-					$cja_current_user = new CJA_User;
-					if ($cja_current_user->is_logged_in) {
-						if ($cja_current_user->company_name) {
-						?><p>Logged in as <?php echo $cja_current_user->company_name;
-						} else if ($cja_current_user->first_name) {
-							?><p>Logged in as <?php echo $cja_current_user->full_name;
-						} else {
-							?><p>Logged in as <?php echo $cja_current_user->login_name; 
-						}
-						?>&nbsp;&nbsp;<a href="<?php echo wp_logout_url( home_url() ); ?>"><i class="fas fa-sign-out-alt"></i></a><?php
-					} else {
-						?>
+		<!-- mobile menu --><?php 
+		include('inc/navigation/mobile-menu.php'); ?>
 
-						<form action="<?php echo get_site_url(); ?>/wp-login.php?redirect_to=<?php echo get_site_url() . '/' . $cja_config['user-details-page-slug']; ?>" method="post" class="cja_home_login">
-							<div class="header_login_form">
-								<div class="username">
-									<p>Username</p>
-									<input type="text" name="log">
-								</div>
-								<div class="password">
-									<p>Password</p>
-									<input type="password" name="pwd">
-								</div>
-								<div class="login">
-									<p class="input-right"><input class="cja_button cja_button--home_login" name="wp-submit" type="submit" value="Log In"></p>
-								</div>
-							</div>
-						</form>
-						<div class="header_login_button">
-							<a href="<?php echo get_site_url(); ?>/my-account" class="cja_button cja_button--home_login">Create Account / Log In</a>
-						</div>
-					<?php
+		<!-- login box at top of page -->
+		<div class="col-full header-top">
+			<div class="logged-in-message"><?php
+				$cja_current_user = new CJA_User;
+				if ($cja_current_user->is_logged_in) {
+					if ($cja_current_user->company_name) {
+					?><p>Logged in as <?php echo $cja_current_user->company_name;
+					} else if ($cja_current_user->first_name) {
+						?><p>Logged in as <?php echo $cja_current_user->full_name;
+					} else {
+						?><p>Logged in as <?php echo $cja_current_user->login_name; 
 					}
-				?>
+					?>&nbsp;&nbsp;<a href="<?php echo wp_logout_url( home_url() ); ?>"><i class="fas fa-sign-out-alt"></i></a><?php
+				} else { ?>
+
+					<form action="<?php echo get_site_url(); ?>/wp-login.php?redirect_to=<?php echo get_site_url() . '/' . $cja_config['user-details-page-slug']; ?>" method="post" class="cja_home_login">
+						<div class="header_login_form">
+							<div class="username">
+								<p>Username</p>
+								<input type="text" name="log">
+							</div>
+							<div class="password">
+								<p>Password</p>
+								<input type="password" name="pwd">
+							</div>
+							<div class="login">
+								<p class="input-right"><input class="cja_button cja_button--home_login" name="wp-submit" type="submit" value="Log In"></p>
+							</div>
+						</div>
+					</form>
+					<div class="header_login_button">
+						<a href="<?php echo get_site_url(); ?>/my-account" class="cja_button cja_button--home_login"><!--Create Account / -->Log In</a>
+					</div><?php
+				} ?>
 			</div>
-			<h2 class="cja_site_title">Courses and Jobs Advertiser</h2>
+			<div class="logo-title">
+				<img src="<?php echo get_stylesheet_directory_uri(); ?>/images/logo2.jpg" class="logo"><h2 class="cja_site_title">Courses and Jobs Advertiser</h2>
+			</div>
 		</div>
 		<div class="col-full">
 
 		<?php
 		/**
-		 * Functions hooked into storefront_header action
+		 * Functions hooked into storefront_header action - LEFT THIS FOR REFERENCE
 		 *
 		 * @hooked storefront_header_container                 - 0
 		 * @hooked storefront_skip_links                       - 5
@@ -106,12 +108,10 @@
 
 		cja_primary_navigation();
 		$cja_current_user = new CJA_User;
-		if ($cja_current_user->role == 'advertiser') {
+		if ($cja_current_user->role == 'advertiser' || $cja_current_user->role == 'administrator') {
 			storefront_header_cart();
-		}
-		?>
-
-</div>
+		} ?>
+	</div>
 
 	</header><!-- #masthead -->
 
@@ -126,17 +126,13 @@
 	?>
 
 	<div id="content" class="site-content" tabindex="-1">
-		<div class="col-full">
+		<div class="col-full"><?php 
 
-		<?php 
-
-		if (!get_option('cja_charge_users') && get_option('cja_free_ads_message')) {
+		// display message if adverts are currently set to be free
+		if (is_user_logged_in() && !get_option('cja_charge_users') && get_option('cja_free_ads_message')) {
 			?><div class="cja_free_ads_message">
 				<p><?php echo get_option('cja_free_ads_message'); ?></p>
 			</div><?php
-		}
-
-		?>
-
-		<?php
+		} 
+		
 		do_action( 'storefront_content_top' );

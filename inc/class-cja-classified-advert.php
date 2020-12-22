@@ -28,6 +28,8 @@ class CJA_Classified_Advert {
     public $class_photo_filename;
     public $class_photo_url;
 
+    public $files_array = array();
+
     // For search
     public $order_by = 'date';
     public $max_distance;
@@ -60,6 +62,8 @@ class CJA_Classified_Advert {
             $this->phone = get_post_meta($id, 'cja_phone', true);
             $this->class_photo_filename = get_post_meta($id, 'cja_class_photo_filename', true);
             $this->class_photo_url = get_post_meta($id, 'cja_class_photo_url', true);
+
+            $this->files_array = unserialize(get_post_meta($id, 'files_array', true));
         }
     }
 
@@ -109,6 +113,12 @@ class CJA_Classified_Advert {
         if ($_POST['order_by']) {
             $this->order_by = $_POST['order_by'];
         }
+
+        if ($_POST['delete_photo']) {
+            $this->class_photo_filename = '';
+            $this->class_photo_url = '';
+        }
+
         if ( $_FILES['class_photo']['size'] != 0 ) {
             
             $info = getimagesize($_FILES['class_photo']['tmp_name']);
@@ -132,6 +142,44 @@ class CJA_Classified_Advert {
             $this->class_photo_filename = $uploadedfile['name'];
             $this->class_photo_url = $movefile['url'];
         }
+
+        //files
+        if ( $_POST['delete_files'] ) {
+            foreach ($_POST['delete_files'] as $delete_file) {
+                foreach ($this->files_array as $key => $value) {
+                    if ($delete_file == $value['url']) {
+                        unset($this->files_array[$key]);
+                    }
+                }
+            }
+        }
+
+        if ( $_FILES['files']['size'][0] != 0 ) {
+            if ( ! function_exists( 'wp_handle_upload' ) ) {
+                require_once( ABSPATH . 'wp-admin/includes/file.php' );
+            }
+            $files = $_FILES['files'];
+            foreach ($files['name'] as $key => $value) {
+                if ($files['name'][$key]) {
+                    $file = array(
+                    'name'     => $files['name'][$key],
+                    'type'     => $files['type'][$key],
+                    'tmp_name' => $files['tmp_name'][$key],
+                    'error'    => $files['error'][$key],
+                    'size'     => $files['size'][$key]
+                    );
+                    $upload_overrides = array(
+                        'test_form' => false
+                    );
+                    $movefile = wp_handle_upload($file, $upload_overrides);
+                    $new_file_data = array(
+                        'name' => $files['name'][$key],
+                        'url' => $movefile['url']
+                    );
+                    $this->files_array[] = $new_file_data;
+                }
+            }
+        }
     }
     
     // Update all properties in the WP database
@@ -154,6 +202,8 @@ class CJA_Classified_Advert {
         update_post_meta($this->id, 'cja_phone', $this->phone);
         update_post_meta($this->id, 'cja_class_photo_url', $this->class_photo_url);
         update_post_meta($this->id, 'cja_class_photo_filename', $this->class_photo_filename);
+
+        update_post_meta($this->id, 'files_array', serialize($this->files_array));
     }
 
     // Activate the advert
@@ -161,6 +211,15 @@ class CJA_Classified_Advert {
         $this->status = 'active';
         $this->activation_date = strtotime(date('j F Y'));
         $this->expiry_date = strtotime(date("j F Y", strtotime("+1 month", strtotime(date('j F Y')))));
+        $this->send_approval_email();
+    }
+
+    private function send_approval_email() {
+        $advertiser = new CJA_User($this->author);
+        $to = $advertiser->email;
+        $subject = 'Your advert has been approved';
+        $message = 'Your advert for ' . $this->title . ' has been approved and is now live.';
+        wp_mail($to, $subject, $message);
     }
 
     // Extend the advert

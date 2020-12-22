@@ -1,8 +1,6 @@
 #masthead.site-header {
-    background-color: #a2d0e6;
-    /*background-color: #facc39;*/
-    background-color: #3f3d5f;
     background-color: #3d485f;
+    min-height: 150px;
 
     padding-top: 10px;
     margin-bottom: 50px;
@@ -99,6 +97,17 @@
             }
         }
 
+        .logo-title {
+            display: flex;
+            align-items: center;
+
+            .logo {
+                width: 80px;
+                height: auto;
+                margin-right: 17px;
+            }
+        }
+
         .cja_site_title {
             font-size: 2rem;
             text-align: left;
@@ -106,7 +115,7 @@
             display: inline-block;
             color: #fff;
             font-family: 'Catamaran';
-            margin-top: 17px;
+            /*margin-top: 17px; */
 
             @media (max-width: 767px) {
                 margin-bottom: 10px;
@@ -141,7 +150,7 @@
 .site-footer {
     background-color: #3d485f;
     color: #ccc;
-    padding: 20px 0;
+    padding: 40px 0 10px 0;
 
     .col-full {
     display: flex;
@@ -150,6 +159,10 @@
         .address {
             font-size: .8rem;
             width: 25%;
+
+            @media (max-width: 767px) {
+                width: 50%;
+            }
         }
 
         .links {
@@ -162,6 +175,15 @@
                     color: #fff;
                 }
             }
+        }
+    }
+
+    .col-full.copyright {
+        display: block;
+        p {
+            font-size: .8rem;
+            text-align: center;
+            margin-top: 20px;
         }
     }
 }

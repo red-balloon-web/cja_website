@@ -42,6 +42,12 @@ class CJA_Advert {
     public $deadline; // YYYY-MM-DD
     public $job_spec_filename;
     public $job_spec_url;
+    public $can_apply_online;
+    public $show_applied;
+
+    public $files_array = array();
+    public $photo_filename;
+    public $photo_url;
 
     // For search
     public $order_by = 'date';
@@ -90,12 +96,553 @@ class CJA_Advert {
             $this->job_spec_url = get_post_meta($id, 'cja_job_spec_url', true);
 
             $this->hourly_equivalent_rate = $this->get_hourly_equivalent_rate();
+            $this->can_apply_online = get_post_meta($id, 'cja_can_apply_online', true);
+
+            $this->files_array = unserialize(get_post_meta($id, 'files_array', true));
+
+            $this->photo_filename = get_post_meta($id, 'photo_filename', true);
+            $this->photo_url = get_post_meta($id, 'photo_url', true);
+            $this->more_information = get_post_meta($id, 'more_information', true);
         }
     }
+
+    /* FORM FIELDS */
+
+    public $form_fields = array(
+        "can_apply_online" => array(
+            "meta_field" => true,
+            "label" => "Allow applicants to apply online",
+            "meta_label" => "cja_can_apply_online",
+            "type" => "checkbox",
+            "value" => "true"
+        ),
+        "salary_per" => array(
+            "meta_field" => true,
+            "label" => "",
+            "meta_label" => "cja_salary_per",
+            "type" => "select",
+            "options" => array(
+                array(
+                    "label" => "per hour",
+                    "value" => "hour"
+                ),
+                array(
+                    "label" => "per day",
+                    "value" => "day"
+                ),
+                array(
+                    "label" => "per annum",
+                    "value" => "year"
+                )
+            )
+        ),
+        "job_type" => array(
+            "meta_field" => true,
+            "label" => "Job Type",
+            "meta_label" => "cja_job_type",
+            "type" => "select",
+            "options" => array(
+                array(
+                    "label" => "Full Time",
+                    "value" => "full_time"
+                ),
+                array(
+                    "label" => "Part Time",
+                    "value" => "part_time"
+                ),
+                array(
+                    "label" => "Freelance",
+                    "value" => "freelance"
+                ),
+                array(
+                    "label" => "Internship",
+                    "value" => "intern"
+                ),
+                array(
+                    "label" => "Temporary",
+                    "value" => "temporary"
+                ),
+                array(
+                    "label" => "Volunteer",
+                    "value" => "volunteer"
+                ),
+                array(
+                    "label" => "Work-based Learning",
+                    "value" => "work_based_learning"
+                ),
+                array(
+                    "label" => "Other",
+                    "value" => "other"
+                ),
+            )
+        ),
+        "sector" => array(
+            "meta_field" => true,
+            "type" => "select",
+            "meta_label" => "cja_sector",
+            "label" => "Sector",
+            "options" => array(
+                array(
+                    "label" => "Accountancy, Business and Finance",
+                    "value" => "accountancy_business_finance"
+                ),
+                array(
+                    "label" => "Business, Consulting and Management",
+                    "value" => "business_consulting_management"
+                ),
+                array(
+                    "label" => "Charity and Voluntary Work",
+                    "value" => "charity_voluntary"
+                ),
+                array(
+                    "label" => "Creative Arts and Design",
+                    "value" => "creative_design"
+                ),
+                array(
+                    "label" => "Energy and Utilities",
+                    "value" => "energy_utilities"
+                ),
+                array(
+                    "label" => "Engineering and Manufacturing",
+                    "value" => "engineering_manufacturing"
+                ),
+                array(
+                    "label" => "Environment and Agriculture",
+                    "value" => "environment_agriculture"
+                ),
+                array(
+                    "label" => "Healthcare",
+                    "value" => "healthcare"
+                ),
+                array(
+                    "label" => "Hospitality and Events Management",
+                    "value" => "hospitality_events"
+                ),
+                array(
+                    "label" => "Information Technology",
+                    "value" => "information_technology"
+                ),
+                array(
+                    "label" => "Law",
+                    "value" => "law"
+                ),
+                array(
+                    "label" => "Law Enforcement and Security",
+                    "value" => "law_enforcement_security"
+                ),
+                array(
+                    "label" => "Leisure, Sport and Tourism",
+                    "value" => "leisure_sport_tourism"
+                ),
+                array(
+                    "label" => "Marketing, Advertising and PR",
+                    "value" => "marketing_advertising_pr"
+                ),
+                array(
+                    "label" => "Media and Internet",
+                    "value" => "media_internet"
+                ),
+                array(
+                    "label" => "Property and Construction",
+                    "value" => "property_construction"
+                ),
+                array(
+                    "label" => "Public Services and Administration",
+                    "value" => "public_services_administration"
+                ),
+                array(
+                    "label" => "Recruitment and HR",
+                    "value" => "recruitment_hr"
+                ),
+                array(
+                    "label" => "Retail",
+                    "value" => "retail"
+                ),
+                array(
+                    "label" => "Sales",
+                    "value" => "sales"
+                ),
+                array(
+                    "label" => "Science and Pharmaceuticals",
+                    "value" => "science_pharmaceuticals"
+                ),
+                array(
+                    "label" => "Social Care",
+                    "value" => "social_care"
+                ),
+                array(
+                    "label" => "Teacher Training and Education",
+                    "value" => "teacher_education"
+                ),
+                array(
+                    "label" => "Transport and Logistics",
+                    "value" => "transport_logistics"
+                ),
+            )
+        ),
+        "contact_person" => array(
+            "meta_field" => true,
+            "label" => "Contact Person",
+            "meta_label" => "cja_contact_person",
+            "type" => "text"
+        ),
+        "contact_phone_number" => array(
+            "meta_field" => true,
+            "label" => "Contact Phone Number",
+            "meta_label" => "cja_contact_phone_number",
+            "type" => "text"
+        ),
+        "postcode" => array(
+            "meta_field" => true,
+            "label" => "Postcode",
+            "meta_label" => "cja_postcode",
+            "type" => "text"
+        ),
+        "career_level" => array(
+            "meta_field" => true,
+            "label" => "Career Level",
+            "meta_label" => "cja_career_level",
+            "type" => "select",
+            "options" => array(
+                array(
+                    "label" => "Student",
+                    "value" => "student"
+                ),
+                array(
+                    "label" => "Intern",
+                    "value" => "intern"
+                ),
+                array(
+                    "label" => "Trainee",
+                    "value" => "trainee"
+                ),
+                array(
+                    "label" => "Entry Level",
+                    "value" => "entry_level"
+                ),
+                array(
+                    "label" => "General Staff",
+                    "value" => "general_staff"
+                ),
+                array(
+                    "label" => "Apprentice",
+                    "value" => "apprentice"
+                ),
+                array(
+                    "label" => "Team Leader",
+                    "value" => "team_leader"
+                ),
+                array(
+                    "label" => "Manager",
+                    "value" => "manager"
+                ),
+                array(
+                    "label" => "Consultant",
+                    "value" => "consultant"
+                ),
+                array(
+                    "label" => "Executive",
+                    "value" => "executive"
+                ),
+            )
+        ),
+        "experience_required" => array(
+            "meta_field" => true,
+            "label" => "Experience Required",
+            "meta_label" => "cja_experience_required",
+            "type" => "select",
+            "options" => array(
+                array(
+                    "label" => "None",
+                    "value" => "none"
+                ),
+                array(
+                    "label" => " Up to 3 Months",
+                    "value" => "3months"
+                ),
+                array(
+                    "label" => "Up to 6 Months",
+                    "value" => "6months"
+                ),
+                array(
+                    "label" => "Up to 1 Year",
+                    "value" => "1year"
+                ),
+                array(
+                    "label" => "Up to 2 Years",
+                    "value" => "2years"
+                ),
+                array(
+                    "label" => "Up to 3 Years",
+                    "value" => "3years"
+                ),
+                array(
+                    "label" => "Up to 4+ Years",
+                    "value" => "4years"
+                )
+            )
+        ),
+        "employer_type" => array(
+            "meta_field" => true,
+            "label" => "Employer Type",
+            "meta_label" => "cja_employer_type",
+            "type" => "select",
+            "options" => array(
+                array(
+                    "label" => "University",
+                    "value" => "university"
+                ),
+                array(
+                    "label" => "College",
+                    "value" => "college"
+                ),
+                array(
+                    "label" => "Private Training Provider",
+                    "value" => "private_training_provider"
+                ),
+                array(
+                    "label" => "Private Individual",
+                    "value" => "private_individual"
+                ),
+                array(
+                    "label" => "Recruitment Agency",
+                    "value" => "recruitment_agency"
+                ),
+                array(
+                    "label" => "Employer (large)",
+                    "value" => "employer_large"
+                ),
+                array(
+                    "label" => "Employer (medium)",
+                    "value" => "employer_medium"
+                ),
+                array(
+                    "label" => "Employer (small)",
+                    "value" => "employer_small"
+                ),
+                array(
+                    "label" => "Sole Trader",
+                    "value" => "sole_trader"
+                ),
+                array(
+                    "label" => "Charity",
+                    "value" => "charity"
+                ),
+                array(
+                    "label" => "Government Organisation",
+                    "value" => "government_organisation"
+                ),
+                array(
+                    "label" => "Other",
+                    "value" => "other"
+                ),
+            )
+        ),
+        "minimum_qualification" => array(
+            "meta_field" => true,
+            "label" => "Minimum Qualificiation Required",
+            "meta_label" => "cja_minimum_qualification",
+            "type" => "select",
+            "options" => array(
+                array(
+                    "label" => "GCSE's",
+                    "value" => "gcse"
+                ),
+                array(
+                    "label" => "A Levels",
+                    "value" => "alevels"
+                ),
+                array(
+                    "label" => "Award",
+                    "value" => "award"
+                ),
+                array(
+                    "label" => "Certificate",
+                    "value" => "certificate"
+                ),
+                array(
+                    "label" => "Diploma",
+                    "value" => "diploma"
+                ),
+                array(
+                    "label" => "Studying towards a Degree",
+                    "value" => "studying_degree"
+                ),
+                array(
+                    "label" => "Degree",
+                    "value" => "degree"
+                ),
+                array(
+                    "label" => "Masters Degree",
+                    "value" => "masters_degree"
+                ),
+                array(
+                    "label" => "Doctorate Degree",
+                    "value" => "doctorate_degree"
+                )
+            )
+        ),
+        "dbs_required" => array(
+            "meta_field" => true,
+            "label" => "DBS Required",
+            "meta_label" => "cja_dbs_required",
+            "type" => "select",
+            "options" => array(
+                array(
+                    "label" => "Yes",
+                    "value" => "yes"
+                ),
+                array(
+                    "label" => "No",
+                    "value" => "no"
+                ),
+                array(
+                    "label" => "Can Be Arranged",
+                    "value" => "arranged"
+                )
+            )
+        ),
+        "dbs_required" => array(
+            "meta_field" => true,
+            "label" => "DBS Required",
+            "meta_label" => "cja_dbs_required",
+            "type" => "select",
+            "options" => array(
+                array(
+                    "label" => "Yes",
+                    "value" => "yes"
+                ),
+                array(
+                    "label" => "No",
+                    "value" => "no"
+                ),
+                array(
+                    "label" => "Can Be Arranged",
+                    "value" => "arranged"
+                )
+            )
+        ),
+        "payment_frequency" => array(
+            "meta_field" => true,
+            "label" => "Payment Frequency",
+            "meta_label" => "cja_payment_frequency",
+            "type" => "select",
+            "options" => array(
+                array(
+                    "label" => "Hourly",
+                    "value" => "hourly"
+                ),
+                array(
+                    "label" => "Daily",
+                    "value" => "daily"
+                ),
+                array(
+                    "label" => "Weekly",
+                    "value" => "weekly"
+                ),
+                array(
+                    "label" => "Fortnightly",
+                    "value" => "fortnightly"
+                ),
+                array(
+                    "label" => "Monthly",
+                    "value" => "monthly"
+                ),
+                array(
+                    "label" => "To Be Discussed",
+                    "value" => "to_be_discussed"
+                )
+            )
+        ),
+        "shift_work" => array(
+            "meta_field" => true,
+            "label" => "Shift Work",
+            "meta_label" => "cja_shift_work",
+            "type" => "select",
+            "options" => array(
+                array(
+                    "label" => "Yes",
+                    "value" => "yes"
+                ),
+                array(
+                    "label" => "No",
+                    "value" => "no"
+                )
+            )
+        ),
+        "shifts" => array(
+            "meta_field" => true,
+            "is_array" => true,
+            "label" => "Shifts (if applicable)",
+            "meta_label" => "cja_shifts",
+            "type" => "checkboxes",
+            "options" => array(
+                array(
+                    "label" => "Morning",
+                    "value" => "morning"
+                ),
+                array(
+                    "label" => "Afternoon",
+                    "value" => "afternoon"
+                ),
+                array(
+                    "label" => "Evening",
+                    "value" => "evening"
+                ),
+                array(
+                    "label" => "Night",
+                    "value" => "night"
+                )
+            )
+        ),
+        "location_options" => array(
+            "meta_field" => true,
+            "label" => "Location Options",
+            "meta_label" => "cja_location_options",
+            "type" => "select",
+            "options" => array(
+                array(
+                    "label" => "On Premises",
+                    "value" => "on_premises"
+                ),
+                array(
+                    "label" => "Remotely",
+                    "value" => "remotely"
+                ),
+                array(
+                    "label" => "On Premises and Remotely",
+                    "value" => "both"
+                )
+            )
+        ),
+        "deadline" => array(
+            "meta_field" => true,
+            "label" => "Deadline",
+            "meta_label" => "cja_deadline",
+            "type" => "date"
+        ),
+        "more_information" => array(
+            "meta_field" => true,
+            "label" => "More Information",
+            "meta_label" => "more_information",
+            "type" => "textarea"
+        )
+
+    );
 
     /**
      * PUBLIC FUNCTIONS
      */
+
+    // Display form field
+    public function display_form_field($field, $do_label = true, $search_field = false) {
+        include('display_form_field.php');
+    }
+
+    // Display field
+    public function display_field($field) {
+        include('display_field.php');
+    }
 
     // Create a new WP Post
     public function create() {
@@ -114,19 +661,38 @@ class CJA_Advert {
         if ($_POST['ad-title']) {
             $this->title = $_POST['ad-title'];
         }
+
+        // meta fields
+        foreach($this->form_fields as $field => $value) {
+            if ($this->form_fields[$field]['type'] == 'checkbox') {
+                $this->$field = false; // blank checkbox value first
+            }
+            if (isset($_POST[$field])) {
+                $this->$field = $_POST[$field];
+                if ($field == 'salary_numeric') {
+                    $sal_num = (float) filter_var( $_POST['salary_numeric'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION );
+                    $this->salary_numeric = $sal_num;
+                }
+            }
+        }
+
+
         if (array_key_exists('salary_numeric',$_POST)) {
             $sal_num = (float) filter_var( $_POST['salary_numeric'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION );
             $this->salary_numeric = $sal_num;
         }
+/*
         if (array_key_exists('salary_per',$_POST)) {
             $this->salary_per = $_POST['salary_per'];
         }
+*/
         if (array_key_exists('max_distance',$_POST)) {
             $this->max_distance = $_POST['max_distance'];
         }
         if (array_key_exists('ad-content',$_POST)) {
             $this->content = $_POST['ad-content'];
         }
+/*
         if (array_key_exists('job_type',$_POST)) {
             $this->job_type = $_POST['job_type'];
         }
@@ -172,9 +738,24 @@ class CJA_Advert {
         if (array_key_exists('deadline',$_POST)) {
             $this->deadline = $_POST['deadline'];
         }
+*/
         if (array_key_exists('order_by',$_POST)) {
             $this->order_by = $_POST['order_by'];
         }
+        /*
+        if (array_key_exists('can_apply_online', $_POST)) {
+            $this->can_apply_online = $_POST['can_apply_online'];
+        } else {
+            $this->can_apply_online = NULL;
+        }
+        */
+        if (array_key_exists('show_applied', $_POST)) {
+            $this->show_applied = 'true';
+        } else {
+            $this->show_applied = NULL;
+        }
+
+        /*
         if ( $_FILES['job_specification']['size'] != 0 ) {
             if ( ! function_exists( 'wp_handle_upload' ) ) {
                 require_once( ABSPATH . 'wp-admin/includes/file.php' );
@@ -188,6 +769,78 @@ class CJA_Advert {
             $this->job_spec_filename = $uploadedfile['name'];
             $this->job_spec_url = $movefile['url'];
         }
+        */
+
+        // photo
+
+        if ($_POST['delete_photo']) {
+            $this->photo_filename = '';
+            $this->photo_url = '';
+        }
+
+        if ( $_FILES['photo']['size'] != 0 ) {
+            
+            $info = getimagesize($_FILES['photo']['tmp_name']);
+            if ($info === FALSE) {
+                return 'filetype_error';
+            }
+            
+            if (($info[2] !== IMAGETYPE_GIF) && ($info[2] !== IMAGETYPE_JPEG) && ($info[2] !== IMAGETYPE_PNG)) {
+                return 'filetype_error';
+            }
+    
+            if ( ! function_exists( 'wp_handle_upload' ) ) {
+                require_once( ABSPATH . 'wp-admin/includes/file.php' );
+            }
+            $uploadedfile = $_FILES['photo'];
+    
+            $upload_overrides = array(
+                'test_form' => false
+            );
+            $movefile = wp_handle_upload( $uploadedfile, $upload_overrides );
+            $this->photo_filename = $uploadedfile['name'];
+            $this->photo_url = $movefile['url'];
+        }
+
+
+        //files
+        if ( $_POST['delete_files'] ) {
+            foreach ($_POST['delete_files'] as $delete_file) {
+                foreach ($this->files_array as $key => $value) {
+                    if ($delete_file == $value['url']) {
+                        unset($this->files_array[$key]);
+                    }
+                }
+            }
+        }
+        
+        if ( $_FILES['files']['size'][0] != 0 ) {
+            if ( ! function_exists( 'wp_handle_upload' ) ) {
+                require_once( ABSPATH . 'wp-admin/includes/file.php' );
+            }
+            $files = $_FILES['files'];
+            foreach ($files['name'] as $key => $value) {
+                if ($files['name'][$key]) {
+                    $file = array(
+                    'name'     => $files['name'][$key],
+                    'type'     => $files['type'][$key],
+                    'tmp_name' => $files['tmp_name'][$key],
+                    'error'    => $files['error'][$key],
+                    'size'     => $files['size'][$key]
+                    );
+                    $upload_overrides = array(
+                        'test_form' => false
+                    );
+                    $movefile = wp_handle_upload($file, $upload_overrides);
+                    $new_file_data = array(
+                        'name' => $files['name'][$key],
+                        'url' => $movefile['url']
+                    );
+                    $this->files_array[] = $new_file_data;
+                }
+            }
+        }
+        
     }
 
     // Update all properties in the WP database
@@ -204,7 +857,21 @@ class CJA_Advert {
         update_post_meta($this->id, 'cja_ad_activation_date', $this->activation_date);
 
         // form fields
+        foreach($this->form_fields as $field => $value) {
+            if ($this->form_fields[$field]['is_array']) {
+                update_post_meta($this->id, $this->form_fields[$field]['meta_label'], serialize($this->$field));
+            } else {
+                update_post_meta($this->id, $this->form_fields[$field]['meta_label'], $this->$field);
+            }
+        }
         update_post_meta($this->id, 'cja_salary_numeric', $this->salary_numeric);
+
+        update_post_meta($this->id, 'files_array', serialize($this->files_array));
+
+        update_post_meta($this->id, 'photo_filename', $this->photo_filename);
+        update_post_meta($this->id, 'photo_url', $this->photo_url);
+        
+        /*
         update_post_meta($this->id, 'cja_salary_per', $this->salary_per);
         update_post_meta($this->id, 'cja_hourly_equivalent_rate', $this->get_hourly_equivalent_rate());
         update_post_meta($this->id, 'cja_job_type', $this->job_type);
@@ -222,6 +889,9 @@ class CJA_Advert {
         update_post_meta($this->id, 'cja_shifts', serialize($this->shifts));
         update_post_meta($this->id, 'cja_location_options', $this->location_options);
         update_post_meta($this->id, 'cja_deadline', $this->deadline);
+        update_post_meta($this->id, 'cja_can_apply_online', $this->can_apply_online);
+        */
+
         update_post_meta($this->id, 'cja_job_spec_filename', $this->job_spec_filename);
         update_post_meta($this->id, 'cja_job_spec_url', $this->job_spec_url);
     }
@@ -231,6 +901,15 @@ class CJA_Advert {
         $this->status = 'active';
         $this->activation_date = strtotime(date('j F Y'));
         $this->expiry_date = strtotime(date("j F Y", strtotime("+1 month", strtotime(date('j F Y')))));
+        $this->send_approval_email();
+    }
+
+    private function send_approval_email() {
+        $advertiser = new CJA_User($this->author);
+        $to = $advertiser->email;
+        $subject = 'Your advert has been approved';
+        $message = 'Your advert for ' . $this->title . ' has been approved and is now live.';
+        wp_mail($to, $subject, $message);
     }
 
     // Extend the advert
@@ -260,6 +939,7 @@ class CJA_Advert {
         $this->location_options = $_COOKIE[ get_current_user_id() . '_location_options'];
         $this->order_by = $_COOKIE[ get_current_user_id() . '_order_by'];
         if (!$this->order_by) { $this->order_by = 'date'; }
+        $this->show_applied = $_COOKIE[ get_current_user_id() . '_show_applied'];
     }
 
     // Build WP Query from search values
