@@ -11,10 +11,12 @@ $cja_current_user = new CJA_User;
 <h2 class="form_section_heading">Title and Description</h2>
 
 <div class="form_flexbox_2">
-    <div>
-        <p class="label">Opportunity Title</p>
-        <input type="text" name="ad-title" value="<?php echo ($cja_edit_ad->title); ?>">
-    </div>
+    <?php if (!is_admin()) { ?>
+        <div>
+            <p class="label">Opportunity Title</p>
+            <input type="text" name="ad-title" value="<?php echo ($cja_edit_ad->title); ?>">
+        </div>
+    <?php } ?>
     <div>
         <?php $cja_edit_ad->display_form_field('deadline'); ?>
     </div>
@@ -94,7 +96,7 @@ $cja_current_user = new CJA_User;
     <div>
         <p class="label">Contact Person</p>
         <input type="text" name="contact_person" value="<?php     
-            if ($_GET['edit-ad']) {
+            if ($_GET['edit-ad'] || is_admin()) {
                 echo ($cja_edit_ad->contact_person); 
             } else {
                 echo ($cja_current_user->contact_person);
@@ -104,7 +106,7 @@ $cja_current_user = new CJA_User;
     <div>
         <p class="label">Contact Phone Number</p>
         <input type="text" name="contact_phone_number" value="<?php 
-            if ($_GET['edit-ad']) {
+            if ($_GET['edit-ad'] || is_admin()) {
                 echo ($cja_edit_ad->contact_phone_number);
             } else {
                 echo ($cja_current_user->phone);

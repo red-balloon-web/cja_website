@@ -1,5 +1,8 @@
 <div class="cja_search_criteria">
 
+    <?php if ($cja_jobsearch->cja_id) { ?>
+        <p>Job ID: <strong><?php echo $cja_jobsearch->cja_id; ?></strong></p>
+    <?php } ?>
     <?php if ($cja_jobsearch->salary_numeric) { ?>
         <p>Minimum salary: <strong>£<?php echo $cja_jobsearch->salary_numeric; ?> per <?php echo $cja_jobsearch->salary_per; ?></strong></p>
     <?php } ?>

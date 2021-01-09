@@ -4,15 +4,17 @@
 
 $cja_current_user = new CJA_User;
 
-?>
 
-<p class="label">Advert Title</p>
-<input type="text" name="ad-title" value="<?php echo ($cja_edit_ad->title); ?>">
+if (!is_admin()) { ?>
+    <p class="label">Advert Title</p>
+    <input type="text" name="ad-title" value="<?php echo ($cja_edit_ad->title); ?>"><?php
+} ?>
+
 
 <div class="form_flexbox_2">
     <div>
         <p class="label">Advert Category</p>
-        <select name="category" form="edit_ad_form">
+        <select name="category">
             <option value="for_sale" <?php if ($cja_edit_ad->category == 'for_sale') { echo 'selected'; } ?>>For Sale</option>
             <option value="for_hire" <?php if ($cja_edit_ad->category == 'for_hire') { echo 'selected'; } ?>>For Hire</option>
             <option value="motors" <?php if ($cja_edit_ad->category == 'motors') { echo 'selected'; } ?>>Motors</option>

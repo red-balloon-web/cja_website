@@ -88,6 +88,11 @@ class CJA_Classified_Advert {
         if ($_POST['ad-title']) {
             $this->title = $_POST['ad-title'];
         }
+
+        if ($_POST['cja_id']) {
+            $this->cja_id = $_POST['cja_id'];
+        }
+
         if ($_POST['category']) {
             $this->category = $_POST['category'];
         }
@@ -253,6 +258,14 @@ class CJA_Classified_Advert {
             'posts_per_page' => -1
         );
 
+        // If we are searching by ID return the query straight away
+        if ($this->cja_id) {
+            $wp_query_args['p'] = strip_cja_code($this->cja_id);
+            $wp_query_args['meta_key'] = 'cja_ad_status';
+            $wp_query_args['meta_value'] = 'active';
+            return $wp_query_args;
+        }
+
         $meta_query = array();
         $meta_query['order-clause'] = array(
             'key' => 'cja_ad_activation_date',
@@ -336,13 +349,19 @@ class CJA_Classified_Advert {
 
     // Return number of days since the ad was activated
     private function get_days_old() {
-        $diff = strtotime(date("j F Y")) - $this->activation_date;
-        return abs(round($diff / 86400));
+        if ($this->activation_date) {
+            $diff = strtotime(date("j F Y")) - $this->activation_date;
+            return abs(round($diff / 86400));
+        } else {
+            return false;
+        }
     }
 
     // Return human friendly author (company) name 
     private function get_human_name() {
-        return get_user_meta($this->author, 'company_name', true);
+        //return get_user_meta($this->author, 'company_name', true);
+        $advertiser = new CJA_User($this->author);
+        return $advertiser->display_name();
     }
 
     // Is the ad by the current user

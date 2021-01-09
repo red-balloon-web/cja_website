@@ -12,7 +12,7 @@ h1, h2,
     font-weight: 300;
 
     &.with-subtitle {
-        margin-bottom: 8px;
+        margin-bottom: 0;
     }
 
     &.cja_margin_top {
@@ -180,6 +180,12 @@ p.header_subtitle {
     margin-bottom: 40px;
     color: #666;
     text-align: center;
+}
+
+p.cja_code {
+    margin: 0;
+    font-size: .9rem;
+    color: #999;
 }
 
 .muted {

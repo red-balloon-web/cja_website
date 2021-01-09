@@ -15,7 +15,8 @@ $cja_current_user_obj = new CJA_User; ?>
 			$cja_current_advertiser = new CJA_User($cja_current_application->advertiser_ID);
 			$cja_current_applicant = new CJA_User($cja_current_application->applicant_ID); ?>
 
-			<h1>View Course Application</h1><?php 
+			<h1 class="with-subtitle">View Course Application</h1>
+			<p class="cja_center cja_code"><?php echo get_cja_code($cja_current_ad->id); ?></p><?php 
 			include('inc/templates/course-application-details.php');
 			include('inc/templates/applicant-details.php');
 			include('inc/templates/course-details.php');

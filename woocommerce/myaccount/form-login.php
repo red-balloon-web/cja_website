@@ -95,7 +95,7 @@ if ($_GET['login']) {
 	</form>
 	</div>
 
-	<!-- disabled by client
+	<!-- disabled by client -->
 	<div class="new-user-account">
 		<h4 class="account_create">Create an Account</h4>
 		<form action="<?php echo get_site_url() . '/my-account' ?>" method="post" class="cja_home_create">
@@ -123,7 +123,7 @@ if ($_GET['login']) {
 			<p class="input-right"><input class="cja_button cja_button--home_login" type="submit" value="Create Free Account"></p>
 		</form>
 	</div>
-	-->
+	<!-- -->
 </div>
 
 <?php

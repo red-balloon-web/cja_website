@@ -27,6 +27,10 @@
             <td>Age Category</td>
             <td><?php echo $cja_current_applicant->age_category; ?></td>
         </tr>
+        <tr>
+            <td>ID</td>
+            <td><?php echo get_cja_user_code($cja_current_applicant->id); ?></td>
+        </tr>
     </table>
 
     <h2 class="form_section_heading">Education</h2>

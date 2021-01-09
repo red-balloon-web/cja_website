@@ -1,5 +1,8 @@
 <div class="cja_search_criteria">
 
+    <?php if ($cja_coursesearch->cja_id) { ?>
+        <p>Course ID: <strong><?php echo $cja_coursesearch->cja_id; ?></strong></p>
+    <?php } ?>
     <?php if ($cja_coursesearch->max_distance) { ?>
         <p>Maximum Distance: <strong><?php echo $cja_coursesearch->max_distance; ?> miles</strong></p>
     <?php } ?>

@@ -23,6 +23,10 @@
                 <td>Postcode</td>
                 <td><?php echo $cja_current_advertiser->display_field('postcode'); ?></td>
             </tr>
+            <tr>
+                <td>ID</td>
+                <td><?php echo get_cja_user_code($cja_current_advertiser->id); ?></td>
+            </tr>
         </table>
 
     <h2 class="form_section_heading">Advertiser Profile</h2>

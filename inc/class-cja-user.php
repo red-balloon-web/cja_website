@@ -31,6 +31,7 @@ class CJA_User {
     public $is_student;
 
     public $files_array = array();
+    public $pending_files_array = array();
     public $photo_filename;
     public $photo_url;
 
@@ -721,9 +722,13 @@ class CJA_User {
         $this->full_name = $this->first_name . ' ' . $this->last_name;
 
         $this->files_array = unserialize(get_user_meta($this->id, 'files_array', true));
+        $this->pending_files_array = unserialize(get_user_meta($this->id, 'pending_files_array', true));
 
         $this->photo_filename = get_user_meta($this->id, 'photo_filename', true);
         $this->photo_url = get_user_meta($this->id, 'photo_url', true);
+        $this->description_approved = get_user_meta($this->id, 'description_approved', true);
+        $this->pending_description = get_user_meta($this->id, 'pending_description', true);
+        $this->files_approved = get_user_meta($this->id, 'files_approved', true);
     }
 
     /**
@@ -742,13 +747,34 @@ class CJA_User {
 
     // Update object from $_POST data
     public function updateFromForm() {
+
+        // CJA ID if searching by CJA ID
+        if ($_POST['cja_id']) {
+            $this->cja_id = $_POST['cja_id'];
+        }
         
         // Go through form fields
         foreach($this->form_fields as $field => $value) {
             if ($this->form_fields[$field]['type'] == 'checkbox' || $this->form_fields[$field]['type'] == 'checkboxes') {
                 $this->$field = false; // blank checkbox value first
             }
-            if (isset($_POST[$field])) {
+            // If user has updated their description, update the pending field not the actual one and email admin
+            if ($field == 'company_description') {
+                //if it's not been added from the admin screen
+                if (!$_POST['cja_update_user_admin']) {
+                    if ($this->company_description != stripslashes($_POST['company_description'])) {
+                        $this->pending_description = $_POST['company_description'];
+                        $this->description_approved = 'pending';
+                        $email_message = "There is a new profile awaiting approval at Courses and Jobs Advertiser";
+                        $additional_headers = "CC: " . get_option('approval_notification_cc');
+                        wp_mail(get_option('admin_email'), 'New Profile Awaiting Approval', $email_message, $additional_headers);
+                    } 
+                } else {
+                    $this->company_description = $_POST['company_description'];
+                }
+            }
+            // Update other form fields
+            if (isset($_POST[$field]) && $field != 'company_description') {
                 $this->$field = $_POST[$field];
             }
         }
@@ -823,6 +849,19 @@ class CJA_User {
                 }
             }
         }
+
+        if ( $_POST['delete_pending_files'] ) {
+            foreach ($_POST['delete_pending_files'] as $delete_file) {
+                foreach ($this->pending_files_array as $key => $value) {
+                    if ($delete_file == $value['url']) {
+                        unset($this->pending_files_array[$key]);
+                    }
+                }
+            }
+            if (empty($this->pending_files_array)) {
+                $this->files_approved = 'approved';
+            }
+        }
         
         if ( $_FILES['files']['size'][0] != 0 ) {
             if ( ! function_exists( 'wp_handle_upload' ) ) {
@@ -846,7 +885,16 @@ class CJA_User {
                         'name' => $files['name'][$key],
                         'url' => $movefile['url']
                     );
-                    $this->files_array[] = $new_file_data;
+                    // make it pending if from front end otherwise just update
+                    if (!$_POST['cja_update_user_admin']) {
+                        $this->pending_files_array[] = $new_file_data;
+                        $this->files_approved = 'pending';
+                        $email_message = "There is a new attachment awaiting approval at Courses and Jobs Advertiser";
+                        $additional_headers = "CC: " . get_option('approval_notification_cc');
+                        wp_mail(get_option('admin_email'), 'New Attachment Awaiting Approval', $email_message, $additional_headers);
+                    } else {
+                        $this->files_array[] = $new_file_data;
+                    }
                 }
             }
         }
@@ -870,8 +918,12 @@ class CJA_User {
         }
 
         update_user_meta($this->id, 'files_array', serialize($this->files_array));
+        update_user_meta($this->id, 'pending_files_array', serialize($this->pending_files_array));
         update_user_meta($this->id, 'photo_filename', $this->photo_filename);
         update_user_meta($this->id, 'photo_url', $this->photo_url);
+        update_user_meta($this->id, 'description_approved', $this->description_approved);
+        update_user_meta($this->id, 'pending_description', $this->pending_description);
+        update_user_meta($this->id, 'files_approved', $this->files_approved);
         
         /*
         update_user_meta($this->id, 'company_name', $this->company_name);
@@ -942,8 +994,15 @@ class CJA_User {
     // Build WP User Query
     public function build_wp_query() {
         $return_wp_query = array(
-            'role' => 'jobseeker'
+            'role' => 'jobseeker',
+            //'include' => array(23)
         );
+
+        // If we are searching by ID set the ID 
+        if ($this->cja_id) {
+            $return_wp_query['include'] = array(strip_cja_code($this->cja_id));
+        }
+
         $meta_query = array();
 
         if ($this->opportunity_required) {

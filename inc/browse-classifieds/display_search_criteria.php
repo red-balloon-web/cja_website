@@ -1,5 +1,9 @@
 <div class="cja_search_criteria"><?php 
 
+    if ($cja_classifiedsearch->cja_id) { ?>
+    <p>Advert ID: <strong><?php echo $cja_classifiedsearch->cja_id; ?></strong></p>
+    <?php }
+
     if ($cja_classifiedsearch->max_distance) { ?>
         <p>Maximum Distance: <strong><?php echo $cja_classifiedsearch->max_distance; ?> miles</strong></p><?php 
     }

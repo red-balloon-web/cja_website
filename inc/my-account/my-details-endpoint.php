@@ -12,8 +12,17 @@
     <h1 class="with-subtitle">Your Profile</h1>
     <p class="header_subtitle">These are the details that will appear on your adverts</p>
     <form action="<?php echo $cja_config['user-details-page-slug']; ?>" class="smart_form" method="post" enctype="multipart/form-data">
-        <?php $cja_current_user_obj->display_form_field('company_name'); ?>
-        <?php $cja_current_user_obj->display_form_field('company_description'); ?>
+        <p style="color: #666">ID: <?php echo get_cja_user_code($cja_current_user_obj->id); ?></p>
+        <?php $cja_current_user_obj->display_form_field('company_name');
+
+        // Show the actual or pending description
+        if ($cja_current_user_obj->description_approved == 'pending') { ?>
+            <textarea name="company_description" cols="30" rows="10"><?php echo $cja_current_user_obj->pending_description; ?></textarea>
+            <p style="margin-top: 0; color: #A00">Your profile is pending approval by our admin team. You will be notified by email when it is approved.</p><?php
+        } else {
+            $cja_current_user_obj->display_form_field('company_description', false); 
+        } ?>
+        
         <div class="form_flexbox_2">
             <div><?php $cja_current_user_obj->display_form_field('contact_person'); ?></div>
             <div><?php $cja_current_user_obj->display_form_field('phone'); ?></div>
@@ -31,6 +40,7 @@
     <h1>Your Profile</h1>
     <!--<p class="header_subtitle">These Details Will Be Sent with Your Applications</p>-->
     <form id="edit_user_form" class="smart_form" action="<?php echo $cja_config['user-details-page-slug']; ?>" method="post" enctype="multipart/form-data">
+        <p style="color: #666">ID: <?php echo get_cja_user_code($cja_current_user_obj->id); ?></p>
 
         <div class="form_flexbox_2">
             <div><?php $cja_current_user_obj->display_form_field('first_name'); ?></div>
@@ -101,7 +111,16 @@
         $cja_current_user_obj->display_form_field('is_student'); ?>
         <h2 class="form_section_heading">Profile and CV</h2>
         <p class="label">My Profile<br><em style="color: #999">Tell employers and course providers a bit about yourself and why they should choose you</em></p><?php
-        $cja_current_user_obj->display_form_field('company_description', false); ?>
+        
+        // Show the actual or pending description
+        if ($cja_current_user_obj->description_approved == 'pending') { ?>
+            <textarea name="company_description" cols="30" rows="10"><?php echo $cja_current_user_obj->pending_description; ?></textarea>
+            <p style="margin-top: 0; color: #A00">Your profile is pending approval by our admin team. You will be notified by email when it is approved.</p><?php
+        } else {
+            $cja_current_user_obj->display_form_field('company_description', false); 
+        }
+        
+        ?>
 
         <h2 class="form_section_heading mb-0">Attachments</h2>
         <p class="muted">Any other documents you want employers or course providers to see e.g. your CV, portfolio etc.</p>
@@ -114,6 +133,21 @@
                     ?><tr>
                         <td><?php echo $file['name']; ?></td>
                         <td class="center"><input type="checkbox" name="delete_files[]" value="<?php echo $file['url']; ?>"></td>
+                        </tr>
+                    <?php
+                }
+                echo '</table>';
+            }
+
+            if ($cja_current_user_obj->pending_files_array) { ?>
+
+                <p style="color: #900">The following files are pending approval by our admin team</p><?php
+                echo '<table class="attachments_table">';
+                echo '<thead><td>File</td><td class="center">Delete</td></thead>';
+                foreach($cja_current_user_obj->pending_files_array as $file) {
+                    ?><tr>
+                        <td><?php echo $file['name']; ?></td>
+                        <td class="center"><input type="checkbox" name="delete_pending_files[]" value="<?php echo $file['url']; ?>"></td>
                         </tr>
                     <?php
                 }

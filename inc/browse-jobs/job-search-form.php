@@ -15,6 +15,11 @@ if ($_GET['edit-search']) {
 
     <form action="<?php echo get_the_permalink(); ?>" method="post" id="edit_search_form">
 
+        <p class="label">Search by ID</p>
+        <input type="text" name="cja_id">
+
+        <hr>
+
         <?php if ($cja_user->postcode) { ?>
             <p class="label">Maximum Distance from my Postcode:</p>
             <select name="max_distance" form="edit_search_form">

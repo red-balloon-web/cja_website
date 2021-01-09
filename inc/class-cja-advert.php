@@ -1,5 +1,6 @@
 <?php
 
+// Despite its name this class is for job adverts ONLY
 class CJA_Advert {
 
     /**
@@ -662,6 +663,10 @@ class CJA_Advert {
             $this->title = $_POST['ad-title'];
         }
 
+        if ($_POST['cja_id']) {
+            $this->cja_id = $_POST['cja_id'];
+        }
+
         // meta fields
         foreach($this->form_fields as $field => $value) {
             if ($this->form_fields[$field]['type'] == 'checkbox') {
@@ -681,74 +686,17 @@ class CJA_Advert {
             $sal_num = (float) filter_var( $_POST['salary_numeric'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION );
             $this->salary_numeric = $sal_num;
         }
-/*
-        if (array_key_exists('salary_per',$_POST)) {
-            $this->salary_per = $_POST['salary_per'];
-        }
-*/
         if (array_key_exists('max_distance',$_POST)) {
             $this->max_distance = $_POST['max_distance'];
         }
         if (array_key_exists('ad-content',$_POST)) {
             $this->content = $_POST['ad-content'];
         }
-/*
-        if (array_key_exists('job_type',$_POST)) {
-            $this->job_type = $_POST['job_type'];
-        }
-        if (array_key_exists('sector',$_POST)) {
-            $this->sector = $_POST['sector'];
-        }
-        if (array_key_exists('contact_person',$_POST)) {
-            $this->contact_person = $_POST['contact_person'];
-        }
-        if (array_key_exists('contact_phone_number',$_POST)) {
-            $this->contact_phone_number = $_POST['contact_phone_number'];
-        }
-        if (array_key_exists('postcode',$_POST)) {
-            $this->postcode = $_POST['postcode'];
-        }
-        if (array_key_exists('career_level',$_POST)) {
-            $this->career_level = $_POST['career_level'];
-        }
-        if (array_key_exists('experience_required',$_POST)) {
-            $this->experience_required = $_POST['experience_required'];
-        }
-        if (array_key_exists('employer_type',$_POST)) {
-            $this->employer_type = $_POST['employer_type'];
-        }
-        if (array_key_exists('minimum_qualification',$_POST)) {
-            $this->minimum_qualification = $_POST['minimum_qualification'];
-        }
-        if (array_key_exists('dbs_required',$_POST)) {
-            $this->dbs_required = $_POST['dbs_required'];
-        }
-        if (array_key_exists('payment_frequency',$_POST)) {
-            $this->payment_frequency = $_POST['payment_frequency'];
-        }
-        if (array_key_exists('shift_work',$_POST)) {
-            $this->shift_work = $_POST['shift_work'];
-        }
-        if (array_key_exists('shifts',$_POST)) {
-            $this->shifts = $_POST['shifts'];
-        }
-        if (array_key_exists('location_options',$_POST)) {
-            $this->location_options = $_POST['location_options'];
-        }
-        if (array_key_exists('deadline',$_POST)) {
-            $this->deadline = $_POST['deadline'];
-        }
-*/
+
         if (array_key_exists('order_by',$_POST)) {
             $this->order_by = $_POST['order_by'];
         }
-        /*
-        if (array_key_exists('can_apply_online', $_POST)) {
-            $this->can_apply_online = $_POST['can_apply_online'];
-        } else {
-            $this->can_apply_online = NULL;
-        }
-        */
+
         if (array_key_exists('show_applied', $_POST)) {
             $this->show_applied = 'true';
         } else {
@@ -870,27 +818,6 @@ class CJA_Advert {
 
         update_post_meta($this->id, 'photo_filename', $this->photo_filename);
         update_post_meta($this->id, 'photo_url', $this->photo_url);
-        
-        /*
-        update_post_meta($this->id, 'cja_salary_per', $this->salary_per);
-        update_post_meta($this->id, 'cja_hourly_equivalent_rate', $this->get_hourly_equivalent_rate());
-        update_post_meta($this->id, 'cja_job_type', $this->job_type);
-        update_post_meta($this->id, 'cja_sector', $this->sector);
-        update_post_meta($this->id, 'cja_contact_person', $this->contact_person);
-        update_post_meta($this->id, 'cja_contact_phone_number', $this->contact_phone_number);
-        update_post_meta($this->id, 'cja_postcode', $this->postcode);
-        update_post_meta($this->id, 'cja_career_level', $this->career_level);
-        update_post_meta($this->id, 'cja_experience_required', $this->experience_required);
-        update_post_meta($this->id, 'cja_employer_type', $this->employer_type);
-        update_post_meta($this->id, 'cja_minimum_qualification', $this->minimum_qualification);
-        update_post_meta($this->id, 'cja_dbs_required', $this->dbs_required);
-        update_post_meta($this->id, 'cja_payment_frequency', $this->payment_frequency);
-        update_post_meta($this->id, 'cja_shift_work', $this->shift_work);
-        update_post_meta($this->id, 'cja_shifts', serialize($this->shifts));
-        update_post_meta($this->id, 'cja_location_options', $this->location_options);
-        update_post_meta($this->id, 'cja_deadline', $this->deadline);
-        update_post_meta($this->id, 'cja_can_apply_online', $this->can_apply_online);
-        */
 
         update_post_meta($this->id, 'cja_job_spec_filename', $this->job_spec_filename);
         update_post_meta($this->id, 'cja_job_spec_url', $this->job_spec_url);
@@ -954,6 +881,14 @@ class CJA_Advert {
             //'paged' => $paged
             'posts_per_page' => -1
         );
+
+        // If we are searching by ID return the query straight away
+        if ($this->cja_id) {
+            $wp_query_args['p'] = strip_cja_code($this->cja_id);
+            $wp_query_args['meta_key'] = 'cja_ad_status';
+            $wp_query_args['meta_value'] = 'active';
+            return $wp_query_args;
+        }
 
         $meta_query = array();
         $meta_query['order-clause'] = array(
@@ -1337,8 +1272,12 @@ class CJA_Advert {
 
     // Return number of days since the ad was activated
     private function get_days_old() {
-        $diff = strtotime(date("j F Y")) - $this->activation_date;
-        return abs(round($diff / 86400));
+        if ($this->activation_date) {
+            $diff = strtotime(date("j F Y")) - $this->activation_date;
+            return abs(round($diff / 86400));
+        } else {
+            return false;
+        }
     }
 
     // Return human friendly author (company) name 

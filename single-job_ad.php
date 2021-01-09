@@ -40,7 +40,8 @@ get_header(); ?>
 				}
 
 				$cja_current_advertiser = new CJA_User($cja_current_ad->author); ?>
-				<h1 class="with-subtitle"><?php echo $cja_current_ad->title; ?></h1><?php 
+				<h1 class="with-subtitle"><?php echo $cja_current_ad->title; ?></h1>
+				<p class="cja_center cja_code"><?php echo get_cja_code($cja_current_ad->id); ?></p><?php 
 				if ($cja_current_ad->status == 'deleted') { ?>
 					<p class="red"><strong>This advert has been deleted</strong></p><?php 
 				} ?>

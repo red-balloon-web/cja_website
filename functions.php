@@ -29,19 +29,22 @@ function register_custom_post_types() {
 
     // Job Advert
     register_post_type( 'job_ad',
-    array(
-      'labels' => array(
-       'name' => __( 'Job Adverts' ),
-       'singular_name' => __( 'Job Advert' )
-      ),
-      'supports' => array (
-          'title',
-          'custom-fields'
-      ),
-      'public' => true,
-      'has_archive' => false,
-      'rewrite' => array('slug' => 'jobs'),
-     )
+        array(
+        'labels' => array(
+            'name' => __( 'Job Adverts' ),
+            'singular_name' => __( 'Job Advert' ),
+            'edit_item' => 'Edit Job',
+            'add_new_item' => 'Add New Job',
+            'item_updated' => 'Job Updated'
+        ),
+        'supports' => array (
+            'title',
+            'author'
+        ),
+        'public' => true,
+        'has_archive' => false,
+        'rewrite' => array('slug' => 'jobs'),
+        )
     );
 
     // Course Advert
@@ -49,11 +52,12 @@ function register_custom_post_types() {
     array(
       'labels' => array(
        'name' => __( 'Course Adverts' ),
-       'singular_name' => __( 'Course Advert' )
+       'singular_name' => __( 'Course Advert' ),
+       'edit_item' => 'Edit Course',
+       'add_new_item' => 'Add New Course'
       ),
       'supports' => array (
-          'title',
-          'custom-fields'
+          'title'
       ),
       'public' => true,
       'has_archive' => false,
@@ -66,11 +70,12 @@ function register_custom_post_types() {
         array(
             'labels' => array(
                 'name' => 'Classified Adverts',
-                'singular_name' => 'Classified Advert'
+                'singular_name' => 'Classified Advert',
+                'edit_item' => 'Edit Classified Advert',
+                'add_new_item' => 'Add New Classified Advert'
             ),
             'supports' => array(
-                'title',
-                'custom-fields'
+                'title'
             ),
             'public' => true,
             'has_archive' => false,
@@ -78,7 +83,7 @@ function register_custom_post_types() {
         )
     );
 
-    // Application
+    // Job Application
     register_post_type( 'application',
         array(
             'labels' => array(
@@ -846,6 +851,12 @@ function process_and_redirect() {
         }
 
         update_option('cja_free_ads_message', $_POST['cja_free_ads_message']);
+        update_option('profile_approval_email_subject', $_POST['profile_approval_email_subject']);
+        update_option('profile_approval_email_message', $_POST['profile_approval_email_message']);
+        update_option('attachment_approval_email_subject', $_POST['attachment_approval_email_subject']);
+        update_option('attachment_approval_email_message', $_POST['attachment_approval_email_message']);
+        update_option('attachment_edited_approval_email_message', $_POST['attachment_edited_approval_email_message']);
+        update_option('approval_notification_cc', $_POST['approval_notification_cc']);
     }
 }
 
@@ -886,7 +897,40 @@ function cja_admin_menu() {
         'cja_approve_ads',
         'cja_approve_ads_content',
         'dashicons-yes',
-        3
+        4
+    );
+
+    // Approve profiles page (manually approve new profiles)
+    add_menu_page(
+        'Approve Profiles',
+        'Approve Profiles',
+        'edit_pages',
+        'cja_approve_profiles',
+        'cja_approve_profiles_content',
+        'dashicons-yes',
+        4
+    );
+
+    // Approve attachments page (manually approve new attachments)
+    add_menu_page(
+        'Approve Attachments',
+        'Approve Attachments',
+        'edit_pages',
+        'cja_approve_attachments',
+        'cja_approve_attachments_content',
+        'dashicons-yes',
+        4
+    );
+
+    // Monitoring Screen (how many ads etc created on various days)
+    add_menu_page(
+        'Monitoring',
+        'Monitoring',
+        'manage_options',
+        'cja_monitoring',
+        'cja_monitoring_content',
+        'dashicons-chart-bar',
+        4
     );
 }
 add_action( 'admin_menu', 'cja_admin_menu' );
@@ -913,6 +957,25 @@ function cja_admin_page_contents() { ?>
             <p><input type="checkbox" name="display_footer_menu" <?php if (get_option('cja_display_footer_menu')) { echo 'checked'; } ?>> Display footer menu</p>
             
             <hr>
+            <p class="label">Profile Approval Email Subject</p>
+            <p><input type="text" name="profile_approval_email_subject" style="width: 500px;" value="<?php echo stripslashes(get_option('profile_approval_email_subject')); ?>"></p>
+
+            <p class="label">Profile Approval Email Message</p>
+            <textarea name="profile_approval_email_message" id="" cols="60" rows="10"><?php echo stripslashes(get_option('profile_approval_email_message')); ?></textarea>
+
+            <p class="label">Attachment Approval Email Subject</p>
+            <p><input type="text" name="attachment_approval_email_subject" style="width: 500px;" value="<?php echo stripslashes(get_option('attachment_approval_email_subject')); ?>"></p>
+
+            <p class="label">Attachment Approval Email Message</p>
+            <textarea name="attachment_approval_email_message" id="" cols="60" rows="10"><?php echo stripslashes(get_option('attachment_approval_email_message')); ?></textarea>
+
+            <p class="label">Attachment Approval (edited) Email Message</p>
+            <textarea name="attachment_edited_approval_email_message" id="" cols="60" rows="10"><?php echo stripslashes(get_option('attachment_edited_approval_email_message')); ?></textarea>
+
+            <p class="label">Copy 'awaiting approval' notification emails to</p>
+            <p><input type="text" name="approval_notification_cc" style="width: 500px;" value="<?php echo stripslashes(get_option('approval_notification_cc')); ?>"></p>
+            <hr>
+
             <input type="submit" value="Update Options">
             <input type="hidden" name="cja_action" value="update_theme_options">
 
@@ -1041,6 +1104,491 @@ function cja_approve_ads_content() { ?>
 }
 
 /**
+ * CJA Approve Profiles Content
+ * Displays the content for the Approve Profiles screen in the admin
+ */
+
+function cja_approve_profiles_content() { 
+
+    // Approve anything that has been POSTed back to the page
+    if ($_POST['approve_user_id']) {
+        update_user_meta($_POST['approve_user_id'], 'company_description', $_POST['user_description']);
+        update_user_meta($_POST['approve_user_id'], 'description_approved', 'approved');
+        update_user_meta($_POST['approve_user_id'], 'pending_description', FALSE);
+
+        $cja_user = new CJA_User($_POST['approve_user_id']);
+        wp_mail($cja_user->email, stripslashes(get_option('profile_approval_email_subject')), stripslashes(get_option('profile_approval_email_message')));
+    }
+
+    ?>
+    <h1>Approve Profiles</h1><?php 
+
+    // Query profiles that are awaiting approval (description_approved = 'pending')
+    $args = array(
+        'meta_key' => 'description_approved',
+        'meta_value' => 'pending'
+    );
+    $query = new WP_User_Query( $args );
+    //print_r($query);
+
+    $query_results = $query->get_results();
+    //print_r($query_results);
+
+    if (!empty($query_results)) { ?>
+        <table>
+            <thead>
+                <td style="padding: 8px"><strong>Name</strong></td>
+                <td style="padding: 8px"><strong>Description</strong></td>
+                <td style="padding: 8px"><strong>Approve</strong></td>
+            </thead>
+            </tbody><?php
+                foreach ($query_results as $result) {
+                    $cja_user = new CJA_User($result->id); ?>
+                    <tr>
+                        <form action="<?php echo get_site_url(); ?>/wp-admin/admin.php?page=cja_approve_profiles" method="post">
+                            <input type="hidden" name="approve_user_id" value="<?php echo $cja_user->id; ?>">
+                            <td style="padding: 8px"><?php 
+                                if ($cja_user->company_name) {
+                                    echo $cja_user->company_name;
+                                } else {
+                                    echo $cja_user->full_name;
+                                } ?>
+                            </td>
+                            <td style="padding: 8px; width: 80%">
+                                <textarea name="user_description" style="width:100%" rows="5"><?php echo $cja_user->pending_description; ?></textarea>
+                            </td>
+                            <td style="padding: 8px">
+                                <input type="submit" value="Approve">
+                            </td>
+                        </form>
+                    </tr><?php
+                } ?>
+            </tbody>
+        </table><?php
+    } else { ?>
+        <p>There are no profiles awaiting approval</p> <?php
+    }
+} 
+
+/**
+ * CJA Approve Attachments Content
+ * Displays the content for the Approve Attachments screen in the admin
+ */
+
+function cja_approve_attachments_content() { 
+
+    // Approve anything that has been POSTed
+    if ($_POST['approve_user_id']) {
+        //echo 'we have post';
+        
+        $cja_user = new CJA_User($_POST['approve_user_id']);
+        if ($_FILES['cja_replace_file']['size'][0] == 0 ) { 
+            //echo ('approve user ' . $cja_user->id . ' file ' . $_POST['approve_attachment_name'] . '<br><br>');
+            foreach ($cja_user->pending_files_array as $pending_file => $value) {
+                if ($value['name'] == $_POST['approve_attachment_name']) {
+                    //echo "we have a match<br><br>";
+
+                    //print_r($value);
+
+                    $approved_file = array(
+                        'name' => $value['name'],
+                        'url' => $value['url']
+                    );
+                    $cja_user->files_array[] = $approved_file;
+                    unset($cja_user->pending_files_array[$pending_file]);
+                }
+            }
+            if (empty($cja_user->pending_files_array)) {
+                $cja_user->files_approved = 'approved';
+            }
+            $cja_user->save();
+            // $approve_message = "Your file '" . $approved_file['name'] . "' has been approved on Courses and Jobs Advertiser and is now visible to advertisers.\r\n\r\nThe Courses and Jobs Advertiser Team";
+            wp_mail($cja_user->email, stripslashes(get_option('attachment_approval_email_subject')), stripslashes(get_option('attachment_approval_email_message')));
+        } else {
+            //echo "we have a replacement file<br><br>";
+            if ( ! function_exists( 'wp_handle_upload' ) ) {
+                require_once( ABSPATH . 'wp-admin/includes/file.php' );
+            }
+            $files = $_FILES['cja_replace_file'];
+            // print_r($files);
+            $file = array(
+                'name'     => $files['name'][0],
+                'type'     => $files['type'][0],
+                'tmp_name' => $files['tmp_name'][0],
+                'error'    => $files['error'][0],
+                'size'     => $files['size'][0]
+            );
+            $upload_overrides = array(
+                'test_form' => false
+            );
+            $movefile = wp_handle_upload($file, $upload_overrides);
+            $new_file_data = array(
+                'name' => $files['name'][0],
+                'url' => $movefile['url']
+            );
+            $cja_user = new CJA_User($_POST['approve_user_id']);
+            $cja_user->files_array[] = $new_file_data;
+
+            foreach ($cja_user->pending_files_array as $pending_file => $value) {
+                if ($value['name'] == $_POST['approve_attachment_name']) {
+                    unset($cja_user->pending_files_array[$pending_file]);
+                }
+            }
+            if (empty($cja_user->pending_files_array)) {
+                $cja_user->files_approved = 'approved';
+            }
+            $cja_user->save();
+            // $approve_message = "Your file '" . $_POST['approve_attachment_name'] . "' has been approved on Courses and Jobs Advertiser and is now visible to advertisers.\r\n\r\nPlease note we have edited your file, this is normally to remove your personal information from public view.\r\n\r\nThe Courses and Jobs Advertiser Team";
+            wp_mail($cja_user->email, stripslashes(get_option('attachment_approval_email_subject')), stripslashes(get_option('attachment_edited_approval_email_message')));
+        }
+        
+        /*echo 'Pending Files<br><br>';
+        print_r($cja_user->pending_files_array);
+        echo '<br><br>';
+        echo 'Approved Files<br><br>';
+        print_r($cja_user->files_array);
+        echo '<br><br>'; */
+    } ?>
+
+    <h1>Approve Attachments</h1><?php 
+
+    // Query profiles that are awaiting approval (description_approved = 'pending')
+    $args = array(
+        'meta_key' => 'files_approved',
+        'meta_value' => 'pending'
+    );
+    $query = new WP_User_Query( $args );
+    //print_r($query);
+    $query_results = $query->get_results();
+    //print_r($query_results);
+
+    if (!empty($query_results)) { ?>
+        <table>
+            <thead>
+                <td style="padding: 8px"><strong>Name</strong></td>
+                <td style="padding: 8px"><strong>File</strong></td>
+                <td style="padding: 8px"><strong>Replace</strong></td>
+                <td style="padding: 8px"><strong>Approve</strong></td>
+            </thead>
+            </tbody><?php
+                foreach ($query_results as $result) {
+                    $cja_user = new CJA_User($result->id); 
+                    foreach ($cja_user->pending_files_array as $pending_file) { ?>
+                        <tr>
+                            <form action="<?php echo get_site_url(); ?>/wp-admin/admin.php?page=cja_approve_attachments" method="post" enctype="multipart/form-data">
+                                <input type="hidden" name="approve_user_id" value="<?php echo $cja_user->id; ?>">
+                                <input type="hidden" name="approve_attachment_name" value="<?php echo $pending_file['name']; ?>">
+                                <td style="padding: 8px"><?php 
+                                    if ($cja_user->company_name) {
+                                        echo $cja_user->company_name;
+                                    } else {
+                                        echo $cja_user->full_name;
+                                    } ?>
+                                </td>
+                                <td style="padding: 8px;">
+                                    <a href="<?php echo $pending_file['url']; ?>" target="_blank"><?php echo $pending_file['name']; ?></a>
+                                </td>
+                                <td style="padding: 8px">
+                                <input type="file" name="cja_replace_file[]" id="cja_replace_file">
+                                </td>
+                                <td style="padding: 8px">
+                                    <input type="submit" value="Approve">
+                                </td>
+                            </form>
+                        </tr><?php
+                    }
+                } ?>
+            </tbody>
+        </table><?php
+    } else { ?>
+        <p>There are no attachments awaiting approval</p> <?php
+    }
+} 
+
+/**
+ * CJA Monitoring Content
+ * Content for monitoring screen showing how many ads/users created on any given day
+ */
+
+function cja_monitoring_content() {
+
+    $data_array = array();
+
+    // Get start and end dates sent to page
+    if($_POST['start_date']) {
+        $first_date = $_POST['start_date'];
+        $last_date = $_POST['end_date'];
+    }
+    
+    // Start and end dates form ?>
+    <form action="<?php echo get_site_url(); ?>/wp-admin/admin.php?page=cja_monitoring" method="post">
+        <table style="margin-bottom: 30px; margin-top: 12px;">
+            <tr>
+                <td style="padding-right: 20px">
+                    <p style="margin-bottom: 0;">Start Date</p>
+                    <input type="date" name="start_date" <?php if ($first_date) {
+                        echo('value="' . $first_date . '" ');
+                    } ?>>
+                </td>
+                <td style="padding-right: 20px">
+                    <p style="margin-bottom: 0;">End Date</p>
+                    <input type="date" name="end_date" <?php if ($last_date) {
+                        echo('value="' . $last_date . '" '); 
+                    } ?>>
+                </td>
+                <td style="vertical-align: bottom; padding-right: 20px">
+                    <input type="submit" name="display" value="Display" style="padding: 4px 10px;">  
+                </td>
+                <td style="vertical-align: bottom">
+                <input type="submit" name="export" value="Export CSV" style="padding: 4px 10px;">
+                </td>
+            </tr>
+        </table>
+    </form><?php 
+
+    if ($_POST['start_date']) {
+
+        
+        // Convert to DateTime objects and echo table header
+        $real_first_date = new DateTime($first_date);
+        $real_last_date = new DateTime($last_date);
+        $title = $real_first_date->format('D jS F Y') . ' - ' . $real_last_date->format('D jS F Y');
+        echo ('<p style="font-size: 17px; margin-bottom: 4px;">' . $title . '</p>');
+        $interval = new DateInterval('P1D'); 
+        $real_last_date->add($interval); // add one day to end because DatePeriod will not include the final date
+        
+        // Initialise CSV data
+        $csv_title = $title . '.csv';
+        $csv_data_array = array();
+
+        // Create date array for period
+        $dates = array();
+        $period = new DatePeriod($real_first_date, $interval, $real_last_date);
+        foreach ($period as $key => $value) {
+            $single_date = $value->format('Y-m-d');
+            $dates[] = $single_date;      
+        }
+
+        // Initialise Table ?>
+        <style>
+            table#monitoringtable {
+                border-collapse: collapse;
+                border: 1px solid #333;
+            }
+
+            table#monitoringtable thead td {
+                font-weight: 700;
+            }
+
+            table#monitoringtable tr.totals td {
+                font-weight: 700;
+            }
+
+            table#monitoringtable tr td {
+                padding: 5px 15px;
+                text-align: center;
+                border-bottom: 1px solid #333;
+            }
+        </style>
+
+        <table id="monitoringtable">
+            <thead>
+                <tr>
+                    <td>Date</td>
+                    <td>New Jobs</td>
+                    <td>New Courses</td>
+                    <td>New Classifieds</td>
+                    <td>Job Applications</td>
+                    <td>Course Applications</td>
+                    <td>New Advertisers</td>
+                    <td>New Course/Job Seekers</td>
+                    <td>Course Seekers</td>
+                    <td>Job Seekers</td>
+                </tr>
+            </thead>
+            <tbody><?php
+
+        // CSV Header Line
+        $csv_data_array[] = array('Date', 'New Jobs', 'New Courses', 'New Classifieds', 'Job Applications', 'Course Applications', 'New Advertisers', 'New Course/Job Seekers', 'Course Seekers', 'Job Seekers');
+
+        // Initialise Running Totals Array
+        $running_totals = array(
+            'jobs' => 0,
+            'courses' => 0,
+            'classifieds' => 0,
+            'job_applications' => 0,
+            'course_applications' => 0,
+            'advertisers' => 0,
+            'seekers' => 0,
+            'jobseekers' => 0,
+            'courseseekers' => 0
+        );
+
+        // go through dates one at a time and display
+        foreach ($dates as $date) {
+
+            // initialise CSV line
+            $csv_data_line = array();
+
+            //echo '<tr><td>' . $date . '</td>';
+            $date_time = new DateTime($date);
+            $year = $date_time->format('Y');
+            $month = $date_time->format('m');
+            $day = $date_time->format('d');
+            $csv_data_line[] = $date_time->format('D d M');
+            echo '<tr><td>' . $date_time->format('D d M') . '</td>';
+            
+            // job ads
+            $args = array(
+                'post_type' => 'job_ad',
+                'date_query' => array(
+                    'year' => $year,
+                    'month' => $month,
+                    'day' => $day
+                )
+            );
+            $query = new WP_Query($args);
+            echo '<td>' . $query->found_posts . '</td>';
+            $csv_data_line[] = $query->found_posts;
+            $running_totals['jobs'] += $query->found_posts;
+
+            // course ads
+            $args['post_type'] = 'course_ad';
+            $query = new WP_Query($args);
+            echo '<td>' . $query->found_posts . '</td>';
+            $csv_data_line[] = $query->found_posts;
+            $running_totals['courses'] += $query->found_posts;
+
+            // classified ads
+            $args['post_type'] = 'classified_ad';
+            $query = new WP_Query($args);
+            echo '<td>' . $query->found_posts . '</td>';
+            $csv_data_line[] = $query->found_posts;
+            $running_totals['classifieds'] += $query->found_posts;
+
+            // job applications
+            $args['post_type'] = 'application';
+            $query = new WP_Query($args);
+            echo '<td>' . $query->found_posts . '</td>';
+            $csv_data_line[] = $query->found_posts;
+            $running_totals['job_applications'] += $query->found_posts;
+
+            // course applications
+            $args['post_type'] = 'course_application';
+            $query = new WP_Query($args);
+            echo '<td>' . $query->found_posts . '</td>';
+            $csv_data_line[] = $query->found_posts;
+            $running_totals['course_applications'] += $query->found_posts;
+
+            // advertisers
+            $args = array(
+                'role' => 'advertiser',
+                'date_query' => array(
+                    'year' => $year,
+                    'month' => $month,
+                    'day' => $day
+                )
+            );
+            $query = new WP_User_Query($args);
+            echo '<td>' . $query->get_total() . '</td>';
+            $csv_data_line[] = $query->get_total();
+            $running_totals['advertisers'] += $query->get_total();
+
+            // jobseekers
+            $args['role'] = 'jobseeker';
+            $query = new WP_User_Query($args);
+            echo '<td>' . $query->get_total() . '</td>';
+            $csv_data_line[] = $query->get_total();
+            $running_totals['seekers'] += $query->get_total();
+
+            
+            // get totals of is_jobseeker and is_student
+            $this_day_jobseekers = 0;
+            $this_day_courseseekers = 0;
+            if ( ! empty( $query->get_results() ) ) {
+                foreach ( $query->get_results() as $user ) {
+                    $cja_user = new CJA_User ($user->id);
+                    if ($cja_user->is_jobseeker) {
+                        $this_day_jobseekers++;
+                    }
+                    if ($cja_user->is_student) {
+                        $this_day_courseseekers++;
+                    }
+                }
+            }
+            echo '<td>' . $this_day_jobseekers . '</td>';
+            echo '<td>' . $this_day_courseseekers . '</td></tr>';
+            $csv_data_line[] = $this_day_jobseekers;
+            $csv_data_line[] = $this_day_courseseekers;
+            $running_totals['jobseekers'] += $this_day_jobseekers;
+            $running_totals['courseseekers'] += $this_day_courseseekers;
+
+            $csv_data_array[] = $csv_data_line;
+        }
+
+        // End table ?>
+        <tr class="totals">
+            <td></td>
+            <td>Total Jobs</td>
+            <td>Total Courses</td>
+            <td>Total Classifieds</td>
+            <td>Total Job Applications</td>
+            <td>Total Course Applications</td>
+            <td>Total Advertisers</td>
+            <td>Total C/J Seekers</td>
+            <td>Jobseekers</td>
+            <td>Courseseekers</td>
+        </tr>
+        <tr class="totals">
+            <td></td>
+            <td><?php echo $running_totals['jobs']; ?></td>
+            <td><?php echo $running_totals['courses']; ?></td>
+            <td><?php echo $running_totals['classifieds']; ?></td>
+            <td><?php echo $running_totals['job_applications']; ?></td>
+            <td><?php echo $running_totals['course_applications']; ?></td>
+            <td><?php echo $running_totals['advertisers']; ?></td>
+            <td><?php echo $running_totals['seekers']; ?></td>
+            <td><?php echo $running_totals['jobseekers']; ?></td>
+            <td><?php echo $running_totals['courseseekers']; ?></td>
+        </tr>
+        </tbody>
+        </table><?php
+        
+        if ($_POST['export']) {
+            outputCsv($csv_title, $csv_data_array);
+        }
+    }
+}
+
+ /**
+  * Output CSV
+ * 
+ * Takes in a filename and an array associative data array and outputs a csv file
+ * @param string $fileName
+ * @param array $assocDataArray     
+ */
+function outputCsv($fileName, $assocDataArray)
+{
+    ob_clean();
+    header('Pragma: public');
+    header('Expires: 0');
+    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+    header('Cache-Control: private', false);
+    header('Content-Type: text/csv');
+    header('Content-Disposition: attachment;filename=' . $fileName);    
+    if(isset($assocDataArray['0'])){
+        $fp = fopen('php://output', 'w');
+        fputcsv($fp, array_keys($assocDataArray['0']));
+        foreach($assocDataArray AS $values){
+            fputcsv($fp, $values);
+        }
+        fclose($fp);
+    }
+    ob_flush();
+    exit;
+}
+
+/**
  * Has Woocommerce Subscription
  * Return whether user has a certain woocommerce subscription
  */
@@ -1096,3 +1644,592 @@ define( 'ALLOW_UNFILTERED_UPLOADS', true );
 $current_user = wp_get_current_user(); 
 $role = $current_user->roles; 
 $wp_roles->add_cap( $role[0], 'unfiltered_upload' );
+
+/**
+ * Return CJA Code for Post ID
+ */
+function get_cja_code($id) {
+    $type = get_post_type($id);
+    if ($type) {
+        if ($type == 'job_ad') {
+            return 'JBA' . $id;
+        }
+        if ($type == 'course_ad') {
+            return 'CSA' . $id;
+        }
+        if ($type == 'classified_ad') {
+            return 'CLA' . $id;
+        }
+        if ($type == 'application') {
+            return 'JAP' . $id;
+        }
+        if ($type == 'course_application') {
+            return 'CAP' . $id;
+        }
+    }
+    return false;
+}
+
+/**
+ * Return CJA Code for User ID
+ */
+function get_cja_user_code($id) {
+    $user = get_userdata($id);
+
+    if (in_array('administrator', $user->roles)) {
+        return 'ADM' . $id;
+    } else if (in_array('advertiser', $user->roles)) {
+        return 'CJA' . $id;
+    } else if (in_array('jobseeker', $user->roles)) {
+        return 'CJS' . $id;
+    }
+
+    return false;
+}
+
+/**
+ * Return integer from user-inputted CJA code
+ */
+function strip_cja_code($code) {
+    preg_match_all('!\d+!', $code, $result);
+    return $result[0][0];
+}
+
+/**
+ * Update database when adverts are edited via admin
+ * See also cja_update_author_from_admin()
+ */
+add_action('init', 'update_post_from_admin');
+function update_post_from_admin() {
+
+    if ($_POST['update_job_ad_admin']) {
+        $cja_update_ad = new CJA_Advert($_POST['advert-id']);
+        $cja_update_ad->update_from_form();
+        $cja_update_ad->save();
+    }
+
+    if ($_POST['update_course_ad_admin']) {
+        $cja_update_ad = new CJA_Course_Advert($_POST['advert-id']);
+        $cja_update_ad->update_from_form();
+        $cja_update_ad->save();
+    }
+
+    if ($_POST['update_classified_ad_admin']) {
+        $cja_update_ad = new CJA_Classified_Advert($_POST['advert-id']);
+        $cja_update_ad->update_from_form();
+        $cja_update_ad->save();
+    }
+
+    if ($_POST['cja_update_user_admin']) {
+        $cja_update_user = new CJA_User($_POST['cja_user_id']);
+        $cja_update_user->updateFromForm();
+        $cja_update_user->save();
+    }
+}
+
+/**
+ * Display custom fields to edit for individual post types in admin
+ */
+add_action('edit_form_after_title', 'display_admin_custom_post_edit_form');
+function display_admin_custom_post_edit_form() {
+
+    $screen = get_current_screen();
+    //print_r($screen);
+
+    if ($screen->post_type == 'job_ad') {
+        
+        if ($screen->action == 'add') {
+            echo 'Time to create a new job. To start, type in the job title and click publish.';
+        } else {
+
+            echo '<p>CJA Code: ' . get_cja_code($_GET['post']);
+            $cja_edit_ad = new CJA_Advert($_GET['post']); 
+            $cja_advertiser = new CJA_User($cja_edit_ad->author); ?>
+
+            <div class="admin_edit_form">
+                <h2 class="form_section_heading">Advertiser</h2>
+                <div class="form_flexbox_2">
+                    <div>
+                        <p style="font-size: 1.5rem; margin-bottom: 5px; margin-top: 15px;"><span id="show_advertiser"><?php echo $cja_advertiser->display_name(); ?></span></p>
+                        <p style="margin-top: 0; font-size: 1rem;"><span id="show_code"> <?php echo get_cja_user_code($cja_advertiser->id); ?></span></p>
+                        <input type="hidden" name="advertiser" id="advertiser" value="<?php echo $cja_edit_ad->author; ?>">
+                    </div>
+                    <div>
+                        <p class="label">Change Advertiser</p>
+                        <div class="selector" style="height: 200px; overflow-y: scroll; background-color: white; border: 1px solid black; border-radius: 5px; padding: 5px 10px; width: 100%; box-sizing: border-box;">
+                            <ul role="listbox"><?php
+        
+                            // WP_User_Query arguments
+                            $args = array(
+                                'role' => 'advertiser',
+                            );
+        
+                            // The User Query
+                            $user_query = new WP_User_Query( $args );
+
+                            $select_array = array();
+                            
+                            foreach($user_query->get_results() as $user) {
+                                $the_advertiser = new CJA_User( $user->data->ID );
+                                $new_element = array();
+                                $new_element['id'] = $user->data->ID;
+                                $new_element['user_code'] = get_cja_user_code($user->data->ID);
+                                $new_element['display_name'] = $the_advertiser->display_name();
+                                $select_array[strtoupper($the_advertiser->display_name())] = $new_element;
+                            }
+                            //print_r($select_array);
+                            ksort($select_array);
+
+                            foreach($select_array as $option) { ?>
+                                <li><a style="cursor: pointer" class="update_advertiser" data-display_string="<?php 
+                                    echo $option['display_name']; ?>" data-display_code="<?php echo $option['user_code']; ?>" data-id="<?php echo $option['id']; ?>"><?php 
+                                    echo $option['display_name']; 
+                                    echo ' : ';
+                                    echo $option['user_code'];
+                                    ?></a></li><?php
+                            }?>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+
+                <script>
+
+                    jQuery('.update_advertiser').click(function() {
+                        jQuery('#show_advertiser').html(jQuery(this).data('display_string'));
+                        jQuery('#show_code').html(jQuery(this).data('display_code'));
+                        jQuery('#advertiser').val(jQuery(this).data('id'));
+                    });
+
+                </script>
+                
+                <?php
+
+                // include details form
+                include( ABSPATH . 'wp-content/themes/courses-and-jobs/inc/templates/job-details-form.php'); ?>
+
+                <input type="hidden" name="update_job_ad_admin" value="true">
+                <input type="hidden" name="advert-id" value="<?php echo ($cja_edit_ad->id); ?>">
+            </div><?php
+        }
+    }
+
+    if ($screen->post_type == 'course_ad') {
+
+        if ($screen->action == 'add') {
+            echo 'Time to create a new course. To start, type in the course title and click publish.';
+        } else {
+
+            echo '<p>CJA Code: ' . get_cja_code($_GET['post']);
+            $cja_edit_ad = new CJA_Course_Advert($_GET['post']); 
+            $cja_advertiser = new CJA_User($cja_edit_ad->author); ?>
+
+            <div class="admin_edit_form">
+                <h2 class="form_section_heading">Advertiser</h2>
+                <div class="form_flexbox_2">
+                    <div>
+                        <p style="font-size: 1.5rem; margin-bottom: 5px; margin-top: 15px;"><span id="show_advertiser"><?php echo $cja_advertiser->display_name(); ?></span></p>
+                        <p style="margin-top: 0; font-size: 1rem;"><span id="show_code"> <?php echo get_cja_user_code($cja_advertiser->id); ?></span></p>
+                        <input type="hidden" name="advertiser" id="advertiser" value="<?php echo $cja_edit_ad->author; ?>">
+                    </div>
+                    <div>
+                        <p class="label">Change Advertiser</p>
+                        <div class="selector" style="height: 200px; overflow-y: scroll; background-color: white; border: 1px solid black; border-radius: 5px; padding: 5px 10px; width: 100%; box-sizing: border-box;">
+                            <ul role="listbox"><?php
+        
+                            // WP_User_Query arguments
+                            $args = array(
+                                'role' => 'advertiser',
+                            );
+        
+                            // The User Query
+                            $user_query = new WP_User_Query( $args );
+                            foreach($user_query->get_results() as $user) { 
+                                $the_advertiser = new CJA_User( $user->data->ID ); ?>
+                                <li><a style="cursor: pointer" class="update_advertiser" data-display_string="<?php 
+                                    echo $the_advertiser->display_name(); ?>" data-display_code="<?php echo get_cja_user_code($user->data->ID); ?>" data-id="<?php echo $the_advertiser->id; ?>"><?php 
+                                    echo $the_advertiser->display_name(); 
+                                    echo ' : ';
+                                    echo get_cja_user_code($the_advertiser->id);
+                                    ?></a></li><?php
+                            } ?>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+
+                    jQuery('.update_advertiser').click(function() {
+                        jQuery('#show_advertiser').html(jQuery(this).data('display_string'));
+                        jQuery('#show_code').html(jQuery(this).data('display_code'));
+                        jQuery('#advertiser').val(jQuery(this).data('id'));
+                    });
+
+                </script>
+
+                <?php
+                // include details form
+                include( ABSPATH . 'wp-content/themes/courses-and-jobs/inc/templates/course-details-form.php'); ?>
+
+                <input type="hidden" name="update_course_ad_admin" value="true">
+                <input type="hidden" name="advert-id" value="<?php echo ($cja_edit_ad->id); ?>">
+            </div><?php
+        }
+    }
+
+    if ($screen->post_type == 'classified_ad') {
+
+        if ($screen->action == 'add') {
+            echo 'Time to create a new classified ad. To start, type in the advert title and click publish.';
+        } else {
+
+            echo '<p>CJA Code: ' . get_cja_code($_GET['post']);
+            $cja_edit_ad = new CJA_Classified_Advert($_GET['post']); 
+            $cja_advertiser = new CJA_User($cja_edit_ad->author); ?>
+
+            <div class="admin_edit_form">
+                <h2 class="form_section_heading">Advertiser</h2>
+                <div class="form_flexbox_2">
+                        <div>
+                            <p style="font-size: 1.5rem; margin-bottom: 5px; margin-top: 15px;"><span id="show_advertiser"><?php echo $cja_advertiser->display_name(); ?></span></p>
+                            <p style="margin-top: 0; font-size: 1rem;"><span id="show_code"> <?php echo get_cja_user_code($cja_advertiser->id); ?></span></p>
+                            <input type="hidden" name="advertiser" id="advertiser" value="<?php echo $cja_edit_ad->author; ?>">
+                        </div>
+                        <div>
+                            <p class="label">Change Advertiser</p>
+                            <div class="selector" style="height: 200px; overflow-y: scroll; background-color: white; border: 1px solid black; border-radius: 5px; padding: 5px 10px; width: 100%; box-sizing: border-box;">
+                                <ul role="listbox"><?php
+            
+                                // WP_User_Query arguments
+                                $args = array(
+                                    'role__in' => array('advertiser','jobseeker')
+                                );
+            
+                                // The User Query
+                                $user_query = new WP_User_Query( $args );
+                                $select_array = array();
+                            
+                                foreach($user_query->get_results() as $user) {
+                                    $the_advertiser = new CJA_User( $user->data->ID );
+                                    $new_element = array();
+                                    $new_element['id'] = $user->data->ID;
+                                    $new_element['user_code'] = get_cja_user_code($user->data->ID);
+                                    $new_element['display_name'] = $the_advertiser->display_name();
+                                    $select_array[strtoupper($the_advertiser->display_name())] = $new_element;
+                                }
+                                //print_r($select_array);
+                                ksort($select_array);
+
+                                foreach($select_array as $option) { ?>
+                                    <li><a style="cursor: pointer" class="update_advertiser" data-display_string="<?php 
+                                        echo $option['display_name']; ?>" data-display_code="<?php echo $option['user_code']; ?>" data-id="<?php echo $option['id']; ?>"><?php 
+                                        echo $option['display_name']; 
+                                        echo ' : ';
+                                        echo $option['user_code'];
+                                        ?></a></li><?php
+                                }?>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <script>
+
+                        jQuery('.update_advertiser').click(function() {
+                            jQuery('#show_advertiser').html(jQuery(this).data('display_string'));
+                            jQuery('#show_code').html(jQuery(this).data('display_code'));
+                            jQuery('#advertiser').val(jQuery(this).data('id'));
+                        });
+
+                    </script>
+                
+                
+                <h2 class="form_section_heading">Advert Details</h2>
+                <?php
+                // include details form
+                include( ABSPATH . 'wp-content/themes/courses-and-jobs/inc/templates/classified-details-form.php'); ?>
+
+                <input type="hidden" name="update_classified_ad_admin" value="true">
+                <input type="hidden" name="advert-id" value="<?php echo ($cja_edit_ad->id); ?>">
+            </div><?php
+        }
+    }
+
+}
+
+/**
+ * Custom Edit User Fields
+ */
+add_action( 'edit_user_profile', 'display_admin_user_custom_cja_fields' );
+function display_admin_user_custom_cja_fields( $user ) {
+
+    // This is mainly duplicated from my-details-endpoint.php and if updated here should probably be updated there too. Should be wrapped up in a template DRY.
+
+    echo '<h2>CJA User Fields</h2>';
+    $cja_current_user_obj = new CJA_User($_GET['user_id']); ?>
+
+<!-- IF USER IS ADVERTISER DISPLAY ADVERTISER DETAILS -->
+<?php if($cja_current_user_obj->role == 'advertiser' || $cja_current_user_obj->role == 'administrator') { ?>
+        <div id="poststuff"><div class="admin_edit_form">
+            <p style="color: #666">ID: <?php echo get_cja_user_code($cja_current_user_obj->id); ?></p>
+            <?php $cja_current_user_obj->display_form_field('company_name');
+
+            // Show the actual or pending description
+            if ($cja_current_user_obj->description_approved == 'pending') { ?>
+                <p class="label">Company Description</p>
+                <textarea name="company_description" cols="30" rows="10"><?php echo $cja_current_user_obj->pending_description; ?></textarea>
+                <p style="margin-top: 0; color: #A00">Your profile is pending approval by our admin team. You will be notified by email when it is approved.</p><?php
+            } else {
+                $cja_current_user_obj->display_form_field('company_description'); 
+            } ?>
+            
+            <div class="form_flexbox_2">
+                <div><?php $cja_current_user_obj->display_form_field('contact_person'); ?></div>
+                <div><?php $cja_current_user_obj->display_form_field('phone'); ?></div>
+            </div>
+            
+            
+            <?php $cja_current_user_obj->display_form_field('address'); ?>
+            <?php $cja_current_user_obj->display_form_field('postcode'); ?>
+        </div></div>
+
+<!-- AND IF THEY ARE AN APPLICANT DISPLAY APPLICANT DETAILS -->	
+<?php } else if ($cja_current_user_obj->role == 'jobseeker') { ?>
+        <div id="poststuff"><div class="admin_edit_form">
+            <p style="color: #666">ID: <?php echo get_cja_user_code($cja_current_user_obj->id); ?></p>
+
+            <div class="form_flexbox_2">
+                <div><?php $cja_current_user_obj->display_form_field('first_name'); ?></div>
+                <div><?php $cja_current_user_obj->display_form_field('last_name'); ?></div>
+            </div> 
+            <div class="form_flexbox_2">
+                <div><?php $cja_current_user_obj->display_form_field('town_city'); ?></div>
+                <div><?php $cja_current_user_obj->display_form_field('phone'); ?></div>
+            </div>
+
+            
+            <h2 class="form_section_heading mb-0">Photo</h2>
+            <p class="muted">You can include an optional photo of yourself to display on your profile</p>
+            <?php if ($cja_current_user_obj->photo_url == '') { ?> 
+                <p class="label">Choose Photo (Accepted filetypes: .gif .jpg .jpeg .png)</p>
+                <input type="file" name="photo">
+            <?php } else { ?>
+                <img src="<?php echo $cja_current_user_obj->photo_url; ?>" width="100px"; ><br>
+                <p class="label">Change Photo (Accepted filetypes: .gif .jpg .jpeg .png)</p>
+                <input type="file" name="photo">
+                <p><input type="checkbox" name="delete_photo" value="true"> Delete Photo</p>
+            <?php } ?>
+            
+            <h2 class="form_section_heading mb-0">Address and Postcode</h2>
+            
+            <p class="muted"><em>Your address and postcode will not be published. Your address is for office use only and your postcode is so we can show you opportunities in your area.</em></p><?php
+            $cja_current_user_obj->display_form_field('address');
+            $cja_current_user_obj->display_form_field('postcode'); ?>
+
+
+            <h2 class="form_section_heading">About the Opportunities You're Looking For</h2><?php
+            $cja_current_user_obj->display_form_field('opportunity_required');?>
+            <div class="form_flexbox_2">
+                <div><?php $cja_current_user_obj->display_form_field('course_time'); ?></div>
+                <div><?php $cja_current_user_obj->display_form_field('job_time'); ?></div>
+            </div>
+            <div class="form_flexbox_2">
+                <div><?php $cja_current_user_obj->display_form_field('job_role'); ?></div>
+                <div><?php $cja_current_user_obj->display_form_field('cover_work'); ?></div>
+            </div><?php 
+            $cja_current_user_obj->display_form_field('weekends_availability');
+            $cja_current_user_obj->display_form_field('specialism_area'); ?>
+            <h2 class="form_section_heading">Education</h2>
+            <div class="form_flexbox_2">
+                <div><?php $cja_current_user_obj->display_form_field('gcse_maths'); ?></div>
+                <div><?php $cja_current_user_obj->display_form_field('gcse_english'); ?></div>
+            </div>
+            <div class="form_flexbox_2">
+                <div><?php $cja_current_user_obj->display_form_field('functional_maths'); ?></div>
+                <div><?php $cja_current_user_obj->display_form_field('functional_english'); ?></div>
+            </div><?php
+            $cja_current_user_obj->display_form_field('highest_qualification'); ?>
+            <h2 class="form_section_heading">Some More About You</h2>
+            <div class="form_flexbox_2">
+                <div><?php $cja_current_user_obj->display_form_field('age_category'); ?></div>
+                <div><?php $cja_current_user_obj->display_form_field('current_status'); ?></div>
+            </div>
+            <div class="form_flexbox_2">
+                <div><?php $cja_current_user_obj->display_form_field('unemployed'); ?></div>
+                <div><?php $cja_current_user_obj->display_form_field('receiving_benefits'); ?></div>
+            </div>
+            <?php
+            $cja_current_user_obj->display_form_field('contact_preference');
+    ?>
+            <h2 class="form_section_heading">Appear in Searches</h2>
+            <p class="muted"><em>Our search features allow employers and course providers to search profiles and contact jobseekers and students who might be a good fit for their opportunity. We reccommend you choose to appear in searches for the type(s) of opportunity you're looking for.</em></p><?php
+            $cja_current_user_obj->display_form_field('is_jobseeker');
+            $cja_current_user_obj->display_form_field('is_student'); ?>
+            <h2 class="form_section_heading">Profile and CV</h2>
+            <p class="label">My Profile<br><em style="color: #999">Tell employers and course providers a bit about yourself and why they should choose you</em></p><?php
+            
+            // Show the actual or pending description
+            if ($cja_current_user_obj->description_approved == 'pending') { ?>
+                <textarea name="company_description" cols="30" rows="10"><?php echo $cja_current_user_obj->pending_description; ?></textarea>
+                <p style="margin-top: 0; color: #A00">Your profile is pending approval by our admin team. You will be notified by email when it is approved.</p><?php
+            } else {
+                $cja_current_user_obj->display_form_field('company_description', false); 
+            }
+            
+            ?>
+
+            
+            <h2 class="form_section_heading mb-0">Attachments</h2>
+            <p class="muted">Any other documents you want employers or course providers to see e.g. your CV, portfolio etc.</p>
+
+            <?php 
+                if ($cja_current_user_obj->files_array) {
+                    echo '<table class="attachments_table">';
+                    echo '<thead><td>File</td><td class="center">Delete</td></thead>';
+                    foreach($cja_current_user_obj->files_array as $file) {
+                        ?><tr>
+                            <td><?php echo $file['name']; ?></td>
+                            <td class="center"><input type="checkbox" name="delete_files[]" value="<?php echo $file['url']; ?>"></td>
+                            </tr>
+                        <?php
+                    }
+                    echo '</table>';
+                }
+
+                if ($cja_current_user_obj->pending_files_array) { ?>
+
+                    <p style="color: #900">The following files are pending approval by our admin team</p><?php
+                    echo '<table class="attachments_table">';
+                    echo '<thead><td>File</td><td class="center">Delete</td></thead>';
+                    foreach($cja_current_user_obj->pending_files_array as $file) {
+                        ?><tr>
+                            <td><?php echo $file['name']; ?></td>
+                            <td class="center"><input type="checkbox" name="delete_pending_files[]" value="<?php echo $file['url']; ?>"></td>
+                            </tr>
+                        <?php
+                    }
+                    echo '</table>';
+                }
+            ?>
+
+            <p>Add more files<br>
+            <input type="file" name="files[]" id="files" multiple></p>
+        </div></div>
+
+<?php } ?>
+    <input type="hidden" name="cja_update_user_admin" value="true">
+    <input type="hidden" name="cja_user_id" value="<?php echo $_GET['user_id']; ?>"><?php
+
+}
+
+/**
+ * Add enctype to default admin form tags
+ */
+add_action( 'post_edit_form_tag' , 'post_edit_form_tag' );
+function post_edit_form_tag( ) {
+   echo ' enctype="multipart/form-data"';
+}
+
+add_action( 'user_edit_form_tag' , 'user_edit_form_tag' );
+function user_edit_form_tag( ) {
+   echo ' enctype="multipart/form-data"';
+}
+
+/**
+ * Enqueue admin script
+ */
+add_action( 'admin_enqueue_scripts', 'enqueue_style_admin' );
+function enqueue_style_admin() {
+    wp_enqueue_style('admin_css', get_stylesheet_directory_uri() . '/style-admin.css');
+}
+
+/**
+ * Update the author of a custom post from the admin
+ * Activate ad if created from admin
+ * See also update_post_from_admin()
+ */
+add_action( 'save_post', 'cja_update_author_from_admin');
+function cja_update_author_from_admin() {
+    
+    if ($_POST['update_job_ad_admin']) {
+        $values = array(
+            'ID' => $_POST['advert-id'],
+            'post_author' => strip_cja_code($_POST['advertiser'])
+        );
+        remove_action('save_post', 'cja_update_author_from_admin');
+        wp_update_post($values);
+
+        // If this is new then activate ad to create activation date, status etc.
+        if ( !get_post_meta($_POST['advert-id'], 'cja_ad_status', true) ) {
+            $new_ad = new CJA_Advert($_POST['advert-id']);
+            $new_ad->activate();
+            $new_ad->save();
+        }
+
+        add_action( 'save_post', 'cja_update_author_from_admin');
+    }
+
+    if ($_POST['update_course_ad_admin']) {
+        $values = array(
+            'ID' => $_POST['advert-id'],
+            'post_author' => strip_cja_code($_POST['advertiser'])
+        );
+        remove_action('save_post', 'cja_update_author_from_admin');
+        wp_update_post($values);
+
+        // If this is new then activate ad to create activation date, status etc.
+        if ( !get_post_meta($_POST['advert-id'], 'cja_ad_status', true) ) {
+            $new_ad = new CJA_Course_Advert($_POST['advert-id']);
+            $new_ad->activate();
+            $new_ad->save();
+        }
+        add_action( 'save_post', 'cja_update_author_from_admin');
+    }
+
+    if ($_POST['update_classified_ad_admin']) {
+        $values = array(
+            'ID' => $_POST['advert-id'],
+            'post_author' => strip_cja_code($_POST['advertiser'])
+        );
+        remove_action('save_post', 'cja_update_author_from_admin');
+        wp_update_post($values);
+        
+        // If this is new then activate ad to create activation date, status etc.
+        if ( !get_post_meta($_POST['advert-id'], 'cja_ad_status', true) ) {
+            $new_ad = new CJA_Classified_Advert($_POST['advert-id']);
+            $new_ad->activate();
+            $new_ad->save();
+        }
+        add_action( 'save_post', 'cja_update_author_from_admin');
+    }
+}
+
+/**
+ * Remove unwanted fields from edit user screen
+ */
+remove_action( 'admin_color_scheme_picker', 'admin_color_scheme_picker' );
+
+if ( ! function_exists( 'cor_remove_personal_options' ) ) {
+
+    function cor_remove_personal_options( $subject ) {
+        $subject = preg_replace( '#<h2>Personal Options</h2>#s', '', $subject, 1 );
+        $subject = preg_replace( '#<h2>Name</h2>#s', '', $subject, 1 );
+        $subject = preg_replace( '#<h2>Contact Info</h2>#s', '', $subject, 1 );
+        $subject = preg_replace( '#<h2>About the user</h2>#s', '', $subject, 1 );
+        $subject = preg_replace( '#<h2>Account Management</h2>#s', '', $subject, 1 );
+        return $subject;
+    }
+
+    function cor_profile_subject_start() {
+        ob_start( 'cor_remove_personal_options' );
+    }
+
+    function cor_profile_subject_end() {
+        ob_end_flush();
+    }
+}
+add_action( 'admin_head', 'cor_profile_subject_start' );
+add_action( 'admin_footer', 'cor_profile_subject_end' );

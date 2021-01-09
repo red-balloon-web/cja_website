@@ -1,0 +1,71 @@
+#edit-slug-box {
+    padding: 0 !important;
+}
+
+#poststuff .admin_edit_form h2.form_section_heading {
+    border-bottom: 1px solid black;
+    padding: 0 0 3px 0;
+    margin-top: 30px;
+}
+
+#poststuff .admin_edit_form p.label {
+    margin-bottom: 0;
+}
+
+#poststuff .admin_edit_form .form_flexbox_2 {
+    display: flex;
+}
+
+#poststuff .admin_edit_form .form_flexbox_2 div {
+    width: 50%;
+}
+
+#poststuff .admin_edit_form input[type="text"],
+#poststuff .admin_edit_form select {
+    width: 300px;
+}
+
+#poststuff .admin_edit_form textarea {
+    width: 100%;
+}
+
+#poststuff .admin_edit_form .attachments_table {
+    width: 100%;
+}
+
+#poststuff .admin_edit_form .attachments_table td {
+    width: 50%;
+    padding: 15px 0;
+    border-bottom: 1px dashed black;
+}
+
+#poststuff .admin_edit_form .checkbox_list {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#poststuff .admin_edit_form .checkbox_list p.checkbox_list {
+    width: 50%;
+}
+
+#poststuff .admin_edit_form p.checkbox_list_label {
+    font-weight: 700;
+    margin-top: 30px;
+}
+
+/* EDIT USER PROFILE SCREEN */
+
+.user-rich-editing-wrap,
+.user-admin-color-wrap,
+.user-comment-shortcuts-wrap,
+.user-admin-bar-front-wrap,
+.user-language-wrap,
+.user-first-name-wrap,
+.user-last-name-wrap,
+.user-nickname-wrap,
+.user-display-name-wrap,
+.user-url-wrap,
+.user-description-wrap,
+.user-profile-picture {
+    display: none;
+}

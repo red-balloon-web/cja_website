@@ -2,6 +2,10 @@
 
     <?php // print_r($cja_usersearch); ?>
 
+    <?php if ($cja_usersearch->cja_id) { ?>
+        <p>User ID: <strong><?php echo $cja_usersearch->cja_id; ?></strong></p>
+    <?php } ?>
+
     <?php if ($cja_usersearch->max_distance) { ?>
         <p>Maximum Distance: <strong><?php echo $cja_usersearch->max_distance; ?> miles</strong></p>
     <?php } ?>
