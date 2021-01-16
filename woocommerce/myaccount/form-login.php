@@ -112,15 +112,35 @@ if ($_GET['login']) {
 			<p>Email Address</p>
 			<input type="text" name="email">
 			<div class="rolebox">
-				<div class="role_option">
-					<input type="radio" name="role" value="jobseeker" checked> I am looking for a job or course</input>
+
+				<table class="login_table">
+					<tr>
+						<td><input type="radio" name="role" value="jobseeker" checked></td>
+						<td>
+							<p class="role_main">Job or Course Seeker Account</p>
+							<p class="role_sub">I am looking for a job or course</p>
+						</td>
+					</tr>
+					<tr>
+						<td><input type="radio" name="role" value="advertiser"></td>
+						<td>
+							<p class="role_main">Employer or Course Provider Account</p>
+							<p class="role_sub">I want to advertise my jobs or courses</p>
+						</td>
+					</tr>
+				</table>
+				
+				<!--
+					<div class="role_option">
+						<input type="radio" name="role" value="jobseeker" checked>Jobseeker Account<br> I am looking for a job or course</input>
+					</div>
+					<div class="role_option">
+						<input type="radio" name="role" value="advertiser"> I am an employer or course provider</input>
+					</div>-->
 				</div>
-				<div class="role_option">
-					<input type="radio" name="role" value="advertiser"> I am an employer or course provider</input>
-				</div>
-			</div>
-			<input type="hidden" name="createaccount" value="true">
-			<p class="input-right"><input class="cja_button cja_button--home_login" type="submit" value="Create Free Account"></p>
+				<input type="hidden" name="createaccount" value="true">
+				<p class="input-right"><input class="cja_button cja_button--home_login" type="submit" value="Create Free Account"></p>
+				<p class="classifieds">All accounts can place classified adverts</p>
 		</form>
 	</div>
 	<!-- -->

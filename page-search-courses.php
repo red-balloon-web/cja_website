@@ -1,5 +1,8 @@
 <?php
 
+// Output buffer because we may or may not be exporting a csv file
+ob_start();
+
 /**
  * SEARCH FOR COURSES PAGE
  * 
@@ -16,20 +19,6 @@
  * 
  * 6. Display loop
  * 
- * @param $display_search - bool - display the search results
- * @param $cja_coursesearch - CJA_Advert - the search terms
- * @param $cja_coursesearch->order_by - string - 'date' or 'distance'
- * @param $cja_current_user_obj - CJA_User - current user
- * @param $the_query - WP_Query - the WP query obj
- * @param $fmn_file_address - the address to the FMN text file
- * @param $cja_results_array - the array of IDs and distances created from $the_query
- * @param $cja_current_advert - CJA_Advert - the current ad in the loop
- * @param $cja_total_results - int - number of results in final array (for pagination)
- * @param $cja_results_per_page - int - results to display on 1 page
- * @param $cja_pages - int - number of pages
- * @param $cja_first_result - int - position of first result in the array
- * @param $cja_results_array_paged - Array - just the page we're going to view
- *  
  */
 
 get_header(); ?>
@@ -167,6 +156,12 @@ get_header(); ?>
 					array_multisort($cja_distance, SORT_ASC, $cja_results_array);
 				}
 
+				/**
+				 * 4a Create the csv file for this search (this section can come before or after section 4 depending whether we want the raw array or the tailored one)
+				 */
+
+				include('inc/browse-courses/create_csv_array.php');
+					
 
 				/**
 				 * 5. Pagination to return just the bit of the array we need
@@ -274,3 +269,11 @@ get_header(); ?>
 <?php
 //do_action( 'storefront_sidebar' );
 get_footer();
+
+// Send data to page or export CSV
+if (!$_GET['output_csv']) {
+	ob_flush();
+} else {
+	ob_clean();
+	outputCsv('Coursesearch.csv', $csv_data_array);
+}

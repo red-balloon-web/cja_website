@@ -37,7 +37,7 @@
     <table class="display_table">
         <tr>
             <td>GCSE Maths</td>
-            <td><?php echo $cja_current_applicant->display_field('gcse_maths'); ?></td>
+            <td><?php echo($cja_current_applicant->display_field('gcse_maths')); ?></td>
         </tr>
         <tr>
             <td>GCSE English</td>

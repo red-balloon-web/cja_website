@@ -1,5 +1,7 @@
 <?php $cja_current_user_obj = new CJA_User;
 
+// See also display_admin_user_custom_cja_fields in functions.php as the same table is used there. This should be wrapped in a template.
+
 // UPDATE USER INFORMATION IF POST DATA SENT
 		if ($_GET['update-user-details']) {
 			?><p class="cja_alert cja_alert--success">Your Details Were Updated!</p><?php

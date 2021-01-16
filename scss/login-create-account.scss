@@ -92,3 +92,35 @@
         }
     }
 }
+
+table.login_table {
+
+    margin-bottom: 10px;
+
+    tr {
+        td {
+            background-color: unset !important;
+            padding: 5px;
+
+            &:first-child {
+                width: 10px;
+            }
+
+            p.role_main {
+                
+            }
+
+            p.role_sub {
+                font-size: .8rem;
+            }
+        }
+    }
+
+}
+
+p.classifieds {
+    font-size: .8rem;
+    color: #666 !important;
+    text-align: center;
+    margin-top: 20px;
+}

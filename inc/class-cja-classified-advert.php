@@ -312,17 +312,6 @@ class CJA_Classified_Advert {
             if ($this->category == 'events') { return 'Events'; }
             if ($this->category == 'urgent_jobs') { return 'Urgent Jobs'; }
         }
-
-        /*
-        if ($field == 'subcategory') {
-            if ($this->subcategory == 'motors') { return 'Motors'; }
-            if ($this->subcategory == 'properties') { return 'Properties'; }
-            if ($this->subcategory == 'restaurants') { return 'Restaurants'; }
-            if ($this->subcategory == 'pets') { return 'Pets'; }
-            if ($this->subcategory == 'plumbers') { return 'Plumbers'; }
-            if ($this->subcategory == 'news_events') { return 'News and Events'; }
-        }
-        */
     }
 
     /**

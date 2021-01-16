@@ -745,6 +745,53 @@ class CJA_User {
         include('display_field.php');
     }
 
+    // Return field value without html tags or echoing
+    // This is basically display_field() with some bits edited
+    public function return_field($field) {
+         
+        // array field
+         if ($this->form_fields[$field]['is_array']) {
+            $return_string = '';
+            $is_first = true;
+            foreach($this->form_fields[$field]['options'] as $option) {
+                if (in_array($option['value'], $this->$field)) {
+                    if (!$is_first) {
+                        $return_string .= '; ';
+                    } else {
+                        $is_first = false;
+                    }
+                    $return_string .= $option['label'];
+                }
+            }
+            return $return_string;
+        }
+
+        // select field
+        if ($this->form_fields[$field]['type'] == 'select' && !$this->form_fields[$field]['is_array']) {
+
+            foreach($this->form_fields[$field]['options'] as $option) {
+                if ($option['value'] == $this->$field) { 
+                    return $option['label'];
+                }
+            }
+        }
+
+        // text field
+        if ($this->form_fields[$field]['type'] == 'text') {
+            return $this->$field;
+        }
+
+        // textarea field
+        if ($this->form_fields[$field]['type'] == 'textarea') {
+            return $this->$field;
+        }
+
+        // date field
+        if ($this->form_fields[$field]['type'] == 'date') {
+            return(date("j F Y", strtotime($this->$field)));
+        }
+    }
+
     // Update object from $_POST data
     public function updateFromForm() {
 

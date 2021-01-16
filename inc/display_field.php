@@ -1,4 +1,5 @@
         <?php
+
         // array field
         if ($this->form_fields[$field]['is_array']) {
             foreach($this->form_fields[$field]['options'] as $option) {
@@ -12,8 +13,8 @@
         if ($this->form_fields[$field]['type'] == 'select' && !$this->form_fields[$field]['is_array']) {
 
             foreach($this->form_fields[$field]['options'] as $option) {
-                if ($option['value'] == $this->$field) { ?>
-                    <?php echo $option['label']; ?><?php
+                if ($option['value'] == $this->$field) { 
+                    echo $option['label'];
                 }
             }
         }

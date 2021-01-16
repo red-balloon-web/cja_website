@@ -1,5 +1,8 @@
 <?php
 
+// Output buffer because we may or may not be exporting a csv file
+ob_start();
+
 /**
  * SEARCH FOR CLASSIFIEDS PAGE
  * 
@@ -15,21 +18,6 @@
  * 5. Select just the page we want from the array (pagination)
  * 
  * 6. Display loop
- * 
- * @param $display_search - bool - display the search results
- * @param $cja_classifiedsearch - CJA_Advert - the search terms
- * @param $cja_classifiedsearch->order_by - string - 'date' or 'distance'
- * @param $cja_current_user_obj - CJA_User - current user
- * @param $the_query - WP_Query - the WP query obj
- * @param $fmn_file_address - the address to the FMN text file
- * @param $cja_results_array - the array of IDs and distances created from $the_query
- * @param $cja_current_advert - CJA_Advert - the current ad in the loop
- * @param $cja_total_results - int - number of results in final array (for pagination)
- * @param $cja_results_per_page - int - results to display on 1 page
- * @param $cja_pages - int - number of pages
- * @param $cja_first_result - int - position of first result in the array
- * @param $cja_results_array_paged - Array - just the page we're going to view
- *  
  */
 
 get_header(); ?>
@@ -153,6 +141,49 @@ get_header(); ?>
 					$cja_distance = array_column($cja_results_array, 'distance');
 					array_multisort($cja_distance, SORT_ASC, $cja_results_array);
 				}
+
+				/**
+				 * 4a Create the csv file for this search (this section can come before or after section 4 depending whether we want the raw array or the tailored one)
+				 */ ?>
+					
+					<form action="<?php echo get_site_url(); ?>/search-classifieds?output_csv=true" method="post"> <?php
+					foreach($_POST as $key => $value) { ?>
+						<input type="hidden" name="<?php echo $key; ?>" value="<?php echo $value; ?>"><?php
+					} ?>
+					<input type="submit" class="cja_button" value="Export Results as CSV File">
+					</form>
+					<?php
+
+				// Initialise array
+				$csv_data_array = [];
+
+				// Set header row
+				$array_row = array(
+					'Advert Code', 
+					'Advert Title', 
+					'Advertiser Code',
+					'Advertiser',
+					'Category',
+					'Postcode',
+					'Phone Number',
+					'Email'
+				);
+				$csv_data_array[] = $array_row;
+
+				// Loop through and add records to CSV
+				foreach($cja_results_array as $cja_result) {
+					$current_advert = new CJA_Classified_Advert($cja_result['id']);
+					$array_row = [];
+					$array_row[] = get_cja_code($current_advert->id);
+					$array_row[] = $current_advert->title;
+					$array_row[] = get_cja_user_code($current_advert->author);
+					$array_row[] = $current_advert->author_human_name;
+					$array_row[] = $current_advert->return_human('category');
+					$array_row[] = $current_advert->postcode;
+					$array_row[] = $current_advert->phone;
+					$array_row[] = $current_advert->email;
+					$csv_data_array[] = $array_row;
+				}
 					
 
 				/**
@@ -177,7 +208,7 @@ get_header(); ?>
 
 				// Now we do what would normally be the WP loop but on our results array instead
 				foreach ($cja_results_array_paged as $cja_result) {
-					$cja_current_advert = new CJA_Course_Advert($cja_result['id']);
+					$cja_current_advert = new CJA_Classified_Advert($cja_result['id']);
 					$cja_current_advertiser = new CJA_User($cja_current_advert->author); ?>
 
 					<div class="cja_list_item">
@@ -240,3 +271,11 @@ get_header(); ?>
 <?php
 //do_action( 'storefront_sidebar' );
 get_footer();
+
+// Send data to page or export CSV
+if (!$_GET['output_csv']) {
+	ob_flush();
+} else {
+	ob_clean();
+	outputCsv('Classifiedsearch.csv', $csv_data_array);
+}

@@ -1,5 +1,8 @@
 <?php
 
+// Output buffer because we may or may not be exporting a csv file
+ob_start();
+
 /**
  * SEARCH FOR STUDENTS PAGE
  * 
@@ -14,22 +17,7 @@
  * 
  * 5. Select just the page we want from the array (pagination)
  * 
- * 6. Display loop
- * 
- * @param $display_search - bool - display the search results
- * @param $cja_coursesearch - CJA_Advert - the search terms
- * @param $cja_coursesearch->order_by - string - 'date' or 'distance'
- * @param $cja_current_user_obj - CJA_User - current user
- * @param $the_query - WP_Query - the WP query obj
- * @param $fmn_file_address - the address to the FMN text file
- * @param $cja_results_array - the array of IDs and distances created from $the_query
- * @param $cja_current_advert - CJA_Advert - the current ad in the loop
- * @param $cja_total_results - int - number of results in final array (for pagination)
- * @param $cja_results_per_page - int - results to display on 1 page
- * @param $cja_pages - int - number of pages
- * @param $cja_first_result - int - position of first result in the array
- * @param $cja_results_array_paged - Array - just the page we're going to view
- *  
+ * 6. Display loop 
  */
 
 get_header(); ?>
@@ -169,6 +157,28 @@ get_header(); ?>
 
 
                     /**
+                     * 4a Create the csv array for this search
+                     * We do this at this point because the final results array has been set up in the previous step
+                     */
+
+                    // display the export to csv button with hidden form fields to resend POST data ?>
+                    <form action="<?php echo get_site_url(); ?>/search-students?output_csv=true" method="post"> <?php
+                        foreach($_POST as $key => $value) {
+                            if (!is_array($value)) { ?>
+                                <input type="hidden" name="<?php echo $key; ?>" value="<?php echo $value; ?>"><?php
+                            } else {
+                                foreach($value as $single_value) {
+                                    ?><input type="hidden" name="<?php echo $key; ?>[]" value="<?php echo $single_value; ?>"><?php
+                                }
+                            }
+                        } ?>
+                        <input type="submit" class="cja_button" value="Export Results as CSV File">
+                    </form><?php
+
+                    // Create the array
+                    include('inc/user-searches/create-csv-array.php');
+
+                    /**
                      * 5. Pagination to return just the bit of the array we need
                      */
 
@@ -248,3 +258,11 @@ get_header(); ?>
 <?php
 //do_action( 'storefront_sidebar' );
 get_footer();
+
+// Send data to page or export CSV
+if (!$_GET['output_csv']) {
+	ob_flush();
+} else {
+	ob_clean();
+	outputCsv('Student-Search.csv', $csv_data_array);
+}
