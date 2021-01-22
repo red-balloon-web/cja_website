@@ -1752,6 +1752,28 @@ class CJA_Course_Advert {
         $this->status = 'deleted';
     }
 
+    // return total number of applications for this job
+    public function application_count() {
+        $args = array(
+            'post_type' => 'course_application',
+            'meta_key' => 'advertID',
+            'meta_value' => $this->id
+        );
+        $query = new WP_Query($args);
+        return $query->post_count;
+    }
+
+    public function display_application_count() {
+        $applications = $this->application_count();
+        if (!$applications) {
+            return "No Applications";
+        } else if ($applications == 1) {
+            return "1 Application";
+        } else {
+            return $applications . " Applications";
+        }
+    }
+
     // Update search object from cookies
     public function update_from_cookies() {
         $this->max_distance = $_COOKIE[ get_current_user_id() . '_course_max_distance'];

@@ -16,13 +16,20 @@ $cja_current_user_obj = new CJA_User; ?>
 			$cja_current_applicant = new CJA_User($cja_current_application->applicant_ID); ?>
 
 			<h1 class="with-subtitle">View Course Application</h1>
-			<p class="cja_center cja_code"><?php echo get_cja_code($cja_current_ad->id); ?></p><?php 
+			<p class="cja_center cja_code"><?php echo get_cja_code($cja_current_application->id); ?></p><?php 
+
+			if ($cja_current_user_obj->role == 'advertiser' || $cja_current_user_obj->role == 'administrator') { ?>
+				<p>&nbsp;</p>
+				<p><a href="<?php echo get_site_url(); ?>/course-applications?advert_id=<?php echo $cja_current_ad->id; ?>"><< Back to <?php echo $cja_current_ad->title; ?> applications</a></p> <?php
+
+			}
+
 			include('inc/templates/course-application-details.php');
 			include('inc/templates/applicant-details.php');
 			include('inc/templates/course-details.php');
 			include('inc/templates/company-details.php'); ?>
 
-			<hr><?php 
+			<?php 
 			/**
 			 * DISPLAY OPTIONS
 			 * 
