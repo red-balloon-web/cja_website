@@ -224,6 +224,11 @@ function cja_primary_navigation() { ?>
 }
 
 /**
+ * Include Form Processing Functions
+ */
+include('inc/functions/form-processing/admin_post_functions.php');
+
+/**
  * WOOCOMMERCE MY ACCOUNT
  */
 
@@ -867,6 +872,48 @@ function process_and_redirect() {
 
 function cja_admin_menu() {
 
+    // Notification bubbles
+
+        // Profile approvals
+        $args = array(
+            'meta_key' => 'description_approved',
+            'meta_value' => 'pending'
+        );
+        $user_query = new WP_User_Query($args);
+        $profile_approvals = $user_query->get_total();
+
+        // Attachment approvals
+        $args = array(
+            'meta_key' => 'files_approved',
+            'meta_value' => 'pending'
+        );
+        $user_query = new WP_User_Query($args);
+        $files_approvals = $user_query->get_total();
+
+        // Advert approvals
+        $args = array(
+            'post_type' => array('job_ad', 'course_ad', 'classified_ad'),
+            'meta_query' => array(
+                array(
+                    'key' => 'cja_ad_status',
+                    'value' => 'inactive'
+                )
+            )
+        );
+        $cja_query = new WP_Query( $args );
+        $advert_approvals = $cja_query->found_posts;
+
+        // Any approvals
+        if ($profile_approvals || $files_approvals || $advert_approvals) {
+            $any_approvals = true;
+        } else {
+            $any_approvals = false;
+        }
+
+        $any_approvals = $profile_approvals + $files_approvals + $advert_approvals;
+        
+    
+
     // Theme options page
     add_menu_page(
         'Theme Options',
@@ -889,37 +936,54 @@ function cja_admin_menu() {
         3
     );
 
-    // Approve adverts page (manually approve new adverts)
+    // Approvals top level menu item
     add_menu_page(
-        'Approve Adverts',
-        'Approve Adverts',
-        'manage_options',
+        'Approvals',
+        $any_approvals ? sprintf('Approvals <span class="awaiting-mod">%d</span>', $any_approvals) : 'Approvals',
+        'edit_pages',
         'cja_approve_ads',
         'cja_approve_ads_content',
         'dashicons-yes',
         4
     );
 
+    // Approve adverts page (manually approve new adverts)
+    add_submenu_page(
+        'cja_approve_ads',
+        'Approve Adverts',
+        $advert_approvals ? sprintf('Approve Adverts <span class="awaiting-mod">%d</span>', $advert_approvals) : 'Approve Adverts',
+        //'Approve Adverts',
+        'manage_options',
+        'cja_approve_ads', // this stops the menu header creating an extra submenu item
+        'cja_approve_ads_content',
+        'dashicons-yes',
+        1
+    );
+
     // Approve profiles page (manually approve new profiles)
-    add_menu_page(
+    add_submenu_page(
+        'cja_approve_ads',
         'Approve Profiles',
-        'Approve Profiles',
+        $profile_approvals ? sprintf('Approve Profiles <span class="awaiting-mod">%d</span>', $profile_approvals) : 'Approve Profiles',
+        //'Approve Profiles<span class="awaiting-mod">' . $profile_approvals . '</span>',
         'edit_pages',
         'cja_approve_profiles',
         'cja_approve_profiles_content',
         'dashicons-yes',
-        4
+        2
     );
 
     // Approve attachments page (manually approve new attachments)
-    add_menu_page(
+    add_submenu_page(
+        'cja_approve_ads',
         'Approve Attachments',
-        'Approve Attachments',
+        $files_approvals ? sprintf('Approve Attachments <span class="awaiting-mod">%d</span>', $files_approvals) : 'Approve Attachments',
+        //'Approve Attachments',
         'edit_pages',
         'cja_approve_attachments',
         'cja_approve_attachments_content',
         'dashicons-yes',
-        4
+        3
     );
 
     // Monitoring Screen (how many ads etc created on various days)
@@ -1033,21 +1097,6 @@ function cja_user_credits_page_contents() {
 function cja_approve_ads_content() { ?>
     
     <h1>Approve Adverts</h1><?php 
-    
-    // Activate and save ads that have been approved by admin
-    if ($_POST['cja_approve_ad']) {
-        foreach($_POST['cja_approve_ad'] as $advert) {
-            if (get_post_type($advert) == 'job_ad') {
-                $approve_ad = new CJA_Advert($advert);
-            } else if (get_post_type($advert) == 'course_ad') {
-                $approve_ad = new CJA_Course_Advert($advert);
-            } else if (get_post_type($advert) == 'classified_ad') {
-                $approve_ad = new CJA_Classified_Advert($advert);
-            }
-            $approve_ad->activate();
-            $approve_ad->save();
-        }
-    }
 
     // Query adverts that are awaiting approval (status 'inactive')
     $args = array(
@@ -1063,7 +1112,7 @@ function cja_approve_ads_content() { ?>
 
     // Loop through and display ads in form
     if ( $query->have_posts() ) { ?>
-        <form action="<?php echo admin_url('admin.php?page=cja_approve_ads'); ?>" method="post">
+        <form action="<?php echo get_site_url(); ?>/wp-admin/admin-post.php?action=approve-advert" method="post">
             <table>
                 <thead>
                     <td style="padding: 8px"><strong>Title</strong></td>
@@ -1108,19 +1157,8 @@ function cja_approve_ads_content() { ?>
  * Displays the content for the Approve Profiles screen in the admin
  */
 
-function cja_approve_profiles_content() { 
+function cja_approve_profiles_content() { ?>
 
-    // Approve anything that has been POSTed back to the page
-    if ($_POST['approve_user_id']) {
-        update_user_meta($_POST['approve_user_id'], 'company_description', $_POST['user_description']);
-        update_user_meta($_POST['approve_user_id'], 'description_approved', 'approved');
-        update_user_meta($_POST['approve_user_id'], 'pending_description', FALSE);
-
-        $cja_user = new CJA_User($_POST['approve_user_id']);
-        wp_mail($cja_user->email, stripslashes(get_option('profile_approval_email_subject')), stripslashes(get_option('profile_approval_email_message')));
-    }
-
-    ?>
     <h1>Approve Profiles</h1><?php 
 
     // Query profiles that are awaiting approval (description_approved = 'pending')
@@ -1145,7 +1183,7 @@ function cja_approve_profiles_content() {
                 foreach ($query_results as $result) {
                     $cja_user = new CJA_User($result->id); ?>
                     <tr>
-                        <form action="<?php echo get_site_url(); ?>/wp-admin/admin.php?page=cja_approve_profiles" method="post">
+                        <form action="<?php echo get_site_url(); ?>/wp-admin/admin-post.php?action=approve-profile" method="post">
                             <input type="hidden" name="approve_user_id" value="<?php echo $cja_user->id; ?>">
                             <td style="padding: 8px"><?php 
                                 if ($cja_user->company_name) {
@@ -1175,80 +1213,7 @@ function cja_approve_profiles_content() {
  * Displays the content for the Approve Attachments screen in the admin
  */
 
-function cja_approve_attachments_content() { 
-
-    // Approve anything that has been POSTed
-    if ($_POST['approve_user_id']) {
-        //echo 'we have post';
-        
-        $cja_user = new CJA_User($_POST['approve_user_id']);
-        if ($_FILES['cja_replace_file']['size'][0] == 0 ) { 
-            //echo ('approve user ' . $cja_user->id . ' file ' . $_POST['approve_attachment_name'] . '<br><br>');
-            foreach ($cja_user->pending_files_array as $pending_file => $value) {
-                if ($value['name'] == $_POST['approve_attachment_name']) {
-                    //echo "we have a match<br><br>";
-
-                    //print_r($value);
-
-                    $approved_file = array(
-                        'name' => $value['name'],
-                        'url' => $value['url']
-                    );
-                    $cja_user->files_array[] = $approved_file;
-                    unset($cja_user->pending_files_array[$pending_file]);
-                }
-            }
-            if (empty($cja_user->pending_files_array)) {
-                $cja_user->files_approved = 'approved';
-            }
-            $cja_user->save();
-            // $approve_message = "Your file '" . $approved_file['name'] . "' has been approved on Courses and Jobs Advertiser and is now visible to advertisers.\r\n\r\nThe Courses and Jobs Advertiser Team";
-            wp_mail($cja_user->email, stripslashes(get_option('attachment_approval_email_subject')), stripslashes(get_option('attachment_approval_email_message')));
-        } else {
-            //echo "we have a replacement file<br><br>";
-            if ( ! function_exists( 'wp_handle_upload' ) ) {
-                require_once( ABSPATH . 'wp-admin/includes/file.php' );
-            }
-            $files = $_FILES['cja_replace_file'];
-            // print_r($files);
-            $file = array(
-                'name'     => $files['name'][0],
-                'type'     => $files['type'][0],
-                'tmp_name' => $files['tmp_name'][0],
-                'error'    => $files['error'][0],
-                'size'     => $files['size'][0]
-            );
-            $upload_overrides = array(
-                'test_form' => false
-            );
-            $movefile = wp_handle_upload($file, $upload_overrides);
-            $new_file_data = array(
-                'name' => $files['name'][0],
-                'url' => $movefile['url']
-            );
-            $cja_user = new CJA_User($_POST['approve_user_id']);
-            $cja_user->files_array[] = $new_file_data;
-
-            foreach ($cja_user->pending_files_array as $pending_file => $value) {
-                if ($value['name'] == $_POST['approve_attachment_name']) {
-                    unset($cja_user->pending_files_array[$pending_file]);
-                }
-            }
-            if (empty($cja_user->pending_files_array)) {
-                $cja_user->files_approved = 'approved';
-            }
-            $cja_user->save();
-            // $approve_message = "Your file '" . $_POST['approve_attachment_name'] . "' has been approved on Courses and Jobs Advertiser and is now visible to advertisers.\r\n\r\nPlease note we have edited your file, this is normally to remove your personal information from public view.\r\n\r\nThe Courses and Jobs Advertiser Team";
-            wp_mail($cja_user->email, stripslashes(get_option('attachment_approval_email_subject')), stripslashes(get_option('attachment_edited_approval_email_message')));
-        }
-        
-        /*echo 'Pending Files<br><br>';
-        print_r($cja_user->pending_files_array);
-        echo '<br><br>';
-        echo 'Approved Files<br><br>';
-        print_r($cja_user->files_array);
-        echo '<br><br>'; */
-    } ?>
+function cja_approve_attachments_content() { ?>
 
     <h1>Approve Attachments</h1><?php 
 
@@ -1275,7 +1240,7 @@ function cja_approve_attachments_content() {
                     $cja_user = new CJA_User($result->id); 
                     foreach ($cja_user->pending_files_array as $pending_file) { ?>
                         <tr>
-                            <form action="<?php echo get_site_url(); ?>/wp-admin/admin.php?page=cja_approve_attachments" method="post" enctype="multipart/form-data">
+                            <form action="<?php echo get_site_url(); ?>/wp-admin/admin-post.php?action=approve-attachment" method="post" enctype="multipart/form-data">
                                 <input type="hidden" name="approve_user_id" value="<?php echo $cja_user->id; ?>">
                                 <input type="hidden" name="approve_attachment_name" value="<?php echo $pending_file['name']; ?>">
                                 <td style="padding: 8px"><?php 
@@ -1559,6 +1524,8 @@ function cja_monitoring_content() {
         }
     }
 }
+
+
 
 /**
  * Print Monitoring CSV
@@ -2806,3 +2773,37 @@ if ( ! function_exists( 'cor_remove_personal_options' ) ) {
 }
 add_action( 'admin_head', 'cor_profile_subject_start' );
 add_action( 'admin_footer', 'cor_profile_subject_end' );
+
+
+/**
+ * Allows posts to be searched by ID in the admin area.
+ * https://wordpress.stackexchange.com/questions/296566/how-to-search-post-by-id-in-wp-admin
+ * 
+ * @param WP_Query $query The WP_Query instance (passed by reference).
+ */
+add_action( 'pre_get_posts','wpse_admin_search_include_ids' );
+function wpse_admin_search_include_ids( $query ) {
+    // Bail if we are not in the admin area
+    if ( ! is_admin() ) {
+        return;
+    }
+
+    // Bail if this is not the search query.
+    if ( ! $query->is_main_query() && ! $query->is_search() ) {
+        return;
+    }   
+
+    // Get the value that is being searched.
+    $search_string = get_query_var( 's' );
+
+    // Bail if the search string is not an integer.
+    if ( ! filter_var( $search_string, FILTER_VALIDATE_INT ) ) {
+        return;
+    }
+
+    // Set WP Query's p value to the searched post ID.
+    $query->set( 'p', intval( $search_string ) );
+
+    // Reset the search value to prevent standard search from being used.
+    $query->set( 's', '' );
+}

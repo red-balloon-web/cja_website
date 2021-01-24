@@ -9,10 +9,15 @@
 ?>
 
 <!-- IF USER IS ADVERTISER DISPLAY ADVERTISER DETAILS -->
-<?php if($cja_current_user_obj->role == 'advertiser' || $cja_current_user_obj->role == 'administrator') { ?>
+<?php if($cja_current_user_obj->role == 'advertiser' || $cja_current_user_obj->role == 'administrator') {
+
+    if ($cja_current_user_obj->description_approved == 'pending') { ?>
+        <p class="cja_alert cja_alert--amber">Your profile is pending approval by our admin team.</p><?php
+    } ?>
     
     <h1 class="with-subtitle">Your Profile</h1>
     <p class="header_subtitle">These are the details that will appear on your adverts</p>
+
     <form action="<?php echo $cja_config['user-details-page-slug']; ?>" class="smart_form" method="post" enctype="multipart/form-data">
         <p style="color: #666">ID: <?php echo get_cja_user_code($cja_current_user_obj->id); ?></p>
         <?php $cja_current_user_obj->display_form_field('company_name');
@@ -20,7 +25,7 @@
         // Show the actual or pending description
         if ($cja_current_user_obj->description_approved == 'pending') { ?>
             <textarea name="company_description" cols="30" rows="10"><?php echo $cja_current_user_obj->pending_description; ?></textarea>
-            <p style="margin-top: 0; color: #A00">Your profile is pending approval by our admin team. You will be notified by email when it is approved.</p><?php
+            <p style="margin-top: -23px; color: #A00">Your profile is pending approval by our admin team. You will be notified by email when it is approved.</p><?php
         } else {
             $cja_current_user_obj->display_form_field('company_description', false); 
         } ?>
@@ -38,8 +43,19 @@
     </form>
 
 <!-- AND IF THEY ARE AN APPLICANT DISPLAY APPLICANT DETAILS -->	
-<?php } else if ($cja_current_user_obj->role == 'jobseeker') { ?>
+<?php } else if ($cja_current_user_obj->role == 'jobseeker') {
+
+    if ($cja_current_user_obj->description_approved == 'pending') { ?>
+        <p class="cja_alert cja_alert--amber">Your profile is pending approval by our admin team.</p><?php
+    } 
+    
+    if ($cja_current_user_obj->pending_files_array) { ?>
+        <p class="cja_alert cja_alert--amber">One or more of your files are pending approval by our admin team.</p><?php
+    }?>
+
     <h1>Your Profile</h1>
+
+
     <!--<p class="header_subtitle">These Details Will Be Sent with Your Applications</p>-->
     <form id="edit_user_form" class="smart_form" action="<?php echo $cja_config['user-details-page-slug']; ?>" method="post" enctype="multipart/form-data">
         <p style="color: #666">ID: <?php echo get_cja_user_code($cja_current_user_obj->id); ?></p>
@@ -117,7 +133,7 @@
         // Show the actual or pending description
         if ($cja_current_user_obj->description_approved == 'pending') { ?>
             <textarea name="company_description" cols="30" rows="10"><?php echo $cja_current_user_obj->pending_description; ?></textarea>
-            <p style="margin-top: 0; color: #A00">Your profile is pending approval by our admin team. You will be notified by email when it is approved.</p><?php
+            <p style="margin-top: -23px; color: #A00">Your profile is pending approval by our admin team. You will be notified by email when it is approved.</p><?php
         } else {
             $cja_current_user_obj->display_form_field('company_description', false); 
         }
