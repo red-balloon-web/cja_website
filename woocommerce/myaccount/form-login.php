@@ -26,13 +26,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 // CREATE NEW ACCOUNT IF POST DATA SENT
 if ($_POST['createaccount'] && $_POST['email']) {
 
-	$username = $_POST['username'];
+	$username = $_POST['email']; // set username to email address
 	$email = $_POST['email'];
 	$password = $_POST['password'];
 	$role = $_POST['role'];
 	
 	$userdata = array(
-		'user_login' => $username,
+		'user_login' => $username, // set username to email address
 		'user_email' => $email,
 		'user_pass' => $password,
 		'role' => $role
@@ -61,10 +61,10 @@ if ($_POST['createaccount'] && $_POST['email']) {
 // DISPLAY ERROR MESSAGE IF LOGIN FAILED
 if ($_GET['login']) {
 	if ($_GET['login'] == 'failed') {
-		?><p class="cja_alert cja_alert--red">Your username or password are incorrect. <a href="<?php echo esc_url( wp_lostpassword_url() ); ?>"><?php esc_html_e( 'Lost your password?', 'woocommerce' ); ?></a></p><?php
+		?><p class="cja_alert cja_alert--red">Your username/email or password are incorrect. <a href="<?php echo esc_url( wp_lostpassword_url() ); ?>"><?php esc_html_e( 'Lost your password?', 'woocommerce' ); ?></a></p><?php
 	}
 	if ($_GET['login'] == 'empty') {
-		?><p class="cja_alert cja_alert--red">Please complete both the username and password</p><?php
+		?><p class="cja_alert cja_alert--red">Please complete both the username/email and password</p><?php
 	}
 }
 
@@ -73,11 +73,11 @@ if ($_GET['login']) {
 <div class="cja-login-screen">
 	<div class="existing-user-login<?php if($freshaccountcreation) { echo(' highlight'); } ?>">
 	
-	<h4>Log In</h4>
+	<h4 class="box-header">Log In</h4>
 	<form action="<?php echo get_site_url(); ?>/wp-login.php" method="post" class="cja_home_login">
 		<div class="topbox">
 			<div class="username">
-				<p>Username</p>
+				<p>Email or Username</p>
 				<input type="text" name="log" <?php if ($freshaccountcreation) { echo ('value="' . $_POST['username'] . '"'); } ?>>
 			</div>
 			<div class="password">
@@ -97,22 +97,25 @@ if ($_GET['login']) {
 
 	<!-- disabled by client -->
 	<div class="new-user-account">
-		<h4 class="account_create">Create an Account</h4>
+		<h4 class="account_create box-header">Create an Account</h4>
 		<form action="<?php echo get_site_url() . '/my-account' ?>" method="post" class="cja_home_create">
 			<div class="topbox">
 				<div class="username">
+					<!--
+					We removed functionality to create username. All usernames are the same as the email address.	
 					<p>Username</p>
-					<input type="text" name="username">
+					<input type="text" name="username">-->
+					<p>Email Address</p>
+					<input type="text" name="email">
 				</div>
 				<div class="password">
 					<p>Password</p>
 					<input type="password" name="password">
 				</div>
 			</div>
-			<p>Email Address</p>
-			<input type="text" name="email">
+			
 			<div class="rolebox">
-
+				<!-- email address field used to go here -->
 				<table class="login_table">
 					<tr>
 						<td><input type="radio" name="role" value="jobseeker" checked></td>

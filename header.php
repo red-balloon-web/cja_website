@@ -65,7 +65,7 @@
 					<form action="<?php echo get_site_url(); ?>/wp-login.php?redirect_to=<?php echo get_site_url() . '/' . $cja_config['user-details-page-slug']; ?>" method="post" class="cja_home_login">
 						<div class="header_login_form">
 							<div class="username">
-								<p>Username</p>
+								<p>Email or Username</p>
 								<input type="text" name="log">
 							</div>
 							<div class="password">
