@@ -216,7 +216,10 @@ get_header(); ?>
 
                             <p class="short_list_item"><?php 
                                 if ($cja_current_result->full_name != ' ') {
-                                    echo ($cja_current_result->full_name);
+                                    echo ($cja_current_result->full_name) . ' ';
+                                    if ($cja_current_result->is_new()) {
+                                        echo ' <span class="new-item">NEW</span>';
+                                    }
                                 } else {
                                     echo ('User #' . $cja_current_result->id);
                                 } ?>

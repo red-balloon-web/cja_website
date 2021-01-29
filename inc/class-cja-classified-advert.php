@@ -237,6 +237,15 @@ class CJA_Classified_Advert {
         $this->status = 'deleted';
     }
 
+    // return whether advert is "new"
+    public function is_new() {
+        if ($this->days_old <= get_option('cja_days_still_new')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     // Update search object from cookies
     public function update_from_cookies() {
         $this->salary_numeric = $_COOKIE[ get_current_user_id() . '_salary_numeric'];

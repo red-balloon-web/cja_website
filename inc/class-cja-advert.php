@@ -860,6 +860,7 @@ class CJA_Advert {
         return $query->post_count;
     }
 
+    // return display string with no.of applications
     public function display_application_count() {
         $applications = $this->application_count();
         if (!$applications) {
@@ -868,6 +869,15 @@ class CJA_Advert {
             return "1 Application";
         } else {
             return $applications . " Applications";
+        }
+    }
+
+    // return whether advert is "new"
+    public function is_new() {
+        if ($this->days_old <= get_option('cja_days_still_new')) {
+            return true;
+        } else {
+            return false;
         }
     }
 

@@ -792,6 +792,21 @@ class CJA_User {
         }
     }
 
+    // Return whether user is "new"
+    public function is_new() {
+        // Get number of days old
+        $wp_user = new WP_User($this->id);
+        $diff = strtotime(date("j F Y")) - strtotime($wp_user->user_registered);
+        $days_old = abs(round($diff / 86400));
+
+        // Compare to option and return
+        if ($days_old <= get_option('cja_user_days_still_new')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     // Update object from $_POST data
     public function updateFromForm() {
 

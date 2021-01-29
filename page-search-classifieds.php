@@ -221,7 +221,12 @@ get_header(); ?>
 
 					<div class="cja_list_item">
 						<a class="cja_button" href="<?php echo get_the_permalink($cja_current_advert->id); ?>">View Advert</a>
-						<h4 class="item-title"><?php echo ($cja_current_advert->title); ?></h4>
+						<h4 class="item-title"><?php 
+							echo ($cja_current_advert->title); 
+							if ($cja_current_advert->is_new()) {
+								echo ' <span class="new-item">NEW</span>';
+							}?>
+						</h4>
 						<p class="item-meta"><?php echo ($cja_current_advert->author_human_name); 
 							if ($cja_current_advert->postcode && $cja_current_user_obj->postcode && $cja_result['distance'] != -1) {
 								echo (', ' . $cja_current_advert->postcode . ' (' . $cja_result['distance'] . ' miles away)');

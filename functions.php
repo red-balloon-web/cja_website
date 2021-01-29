@@ -841,6 +841,12 @@ function process_and_redirect() {
             update_option('cja_charge_users', FALSE);
         }
 
+        // number of days ad is still new
+        update_option('cja_days_still_new', $_POST['days_new']);
+
+        // number of user is still new
+        update_option('cja_user_days_still_new', $_POST['user_days_new']);
+
         // Display homepage or holding page
         if ($_POST['display_homepage']) {
             update_option('cja_display_homepage', TRUE);
@@ -1012,6 +1018,16 @@ function cja_admin_page_contents() { ?>
             <p><input type="checkbox" name="cja_charge_users" value="true" <?php if (get_option('cja_charge_users')) { echo 'checked'; } ?>> Charge users to place adverts</p>
             <p class="label">Display message to users that adverts are free (leave blank for no message)</p>
             <p><input type="text" name="cja_free_ads_message" value="<?php echo get_option('cja_free_ads_message'); ?>"></p>
+            <hr><?php
+
+            // Number of days old an advert is still considered "new" ?>
+            <p class="label">Number of days old an advert is still "new" (0 = today only, -1 = turn off)</p>
+            <input type="number" name="days_new" value="<?php echo get_option('cja_days_still_new'); ?>" max="15" min="-1" >
+            <hr><?php
+
+            // Number of days old an advert is still considered "new" ?>
+            <p class="label">Number of days old a user is still "new" (0 = today only, -1 = turn off)</p>
+            <input type="number" name="user_days_new" value="<?php echo get_option('cja_user_days_still_new'); ?>" max="15" min="-1" >
             <hr><?php
 
             // Display homepage or holding page ?>
