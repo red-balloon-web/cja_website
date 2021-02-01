@@ -30,7 +30,7 @@ if ($cja_current_user_obj->role == 'advertiser' || $cja_current_user_obj->role =
         <?php
     } else {?>
         <p>
-            <a class="cja_button cja_button--mar-right" href="<?php echo get_site_url(); ?>/browse-jobs">Search Jobs</a>
+            <a class="cja_button cja_button--mar-right" href="<?php echo get_site_url(); ?>/search-jobs">Search Jobs</a>
         </p><?php
     }
 }

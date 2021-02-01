@@ -22,7 +22,7 @@ $cja_current_user_obj = new CJA_User; ?>
 			if ($cja_current_user_obj->role == 'advertiser' || $cja_current_user_obj->role == 'administrator') { ?>
 			
 				<p>&nbsp;</p>
-				<p><a href="<?php echo get_site_url(); ?>/applications?advert_id=<?php echo $cja_current_ad->id; ?>"><< Back to <?php echo $cja_current_ad->title; ?> applications</a></p> <?php
+				<p><a href="<?php echo get_site_url(); ?>/applications-jobs?advert_id=<?php echo $cja_current_ad->id; ?>"><< Back to <?php echo $cja_current_ad->title; ?> applications</a></p> <?php
 			
 			}
 			

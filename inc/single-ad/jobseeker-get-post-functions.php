@@ -25,7 +25,7 @@ if ($cja_current_user_obj->role == 'jobseeker') {
 
             // Display message
             ?><p class="cja_alert cja_alert--success">You Applied to <?php echo $cja_current_ad->title; ?></p>
-            <p><a class="cja_button cja_button--2" href="<?php echo get_site_url() . '/' . $cja_config['browse-jobs-slug']; ?>">Back to Search Jobs</a></p><?php
+            <p><a class="cja_button cja_button--2" href="<?php echo get_site_url() . '/search-jobs'; ?>">Back to Search Jobs</a></p><?php
         }
     }
 

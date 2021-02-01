@@ -76,12 +76,12 @@ get_header(); ?>
 						if ($cja_current_ad->can_apply_online) { ?>
 						<p>
 							<a class="cja_button cja_button--mar-right" href="<?php echo get_the_permalink(); ?>?action=apply">Apply for this Job</a>
-							<a class="cja_button cja_button--mar-right" href="<?php echo get_site_url(); ?>/browse-jobs">Search Jobs</a>
+							<a class="cja_button cja_button--mar-right" href="<?php echo get_site_url(); ?>/search-jobs">Search Jobs</a>
 						</p><?php
 
 						} else { ?>
 							<p><strong>Please contact the advertiser directly to apply for this job</strong></p>
-							<p><a class="cja_button cja_button--mar-right" href="<?php echo get_site_url(); ?>/browse-jobs">Search Jobs</a></p><?php
+							<p><a class="cja_button cja_button--mar-right" href="<?php echo get_site_url(); ?>/search-jobs">Search Jobs</a></p><?php
 						}
 					}
 				}

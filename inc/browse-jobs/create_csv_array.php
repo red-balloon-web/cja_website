@@ -7,11 +7,11 @@
  * Builds $csv_data_array from search data which can then be turned into CSV
  * 
  * Included in:
- * page-browse-jobs.php
+ * page-search-jobs.php
  * 
  */ ?>
 
-<form action="<?php echo get_site_url(); ?>/browse-jobs?output_csv=true" method="post"> <?php
+<form action="<?php echo get_site_url(); ?>/search-jobs?output_csv=true" method="post"> <?php
     foreach($_POST as $key => $value) {
         if (!is_array($value)) { ?>
             <input type="hidden" name="<?php echo $key; ?>" value="<?php echo $value; ?>"><?php

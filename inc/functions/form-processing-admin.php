@@ -142,3 +142,96 @@ function approve_attachment_posted() {
     header('Location: ' . get_site_url() . '/wp-admin/admin.php?page=cja_approve_attachments');
     exit;
 }
+
+/**
+ * Update database when adverts are edited via admin
+ * See also cja_update_author_from_admin()
+ */
+add_action('init', 'update_post_from_admin');
+function update_post_from_admin() {
+
+    if ($_POST['update_job_ad_admin']) {
+        $cja_update_ad = new CJA_Advert($_POST['advert-id']);
+        $cja_update_ad->update_from_form();
+        $cja_update_ad->save();
+    }
+
+    if ($_POST['update_course_ad_admin']) {
+        $cja_update_ad = new CJA_Course_Advert($_POST['advert-id']);
+        $cja_update_ad->update_from_form();
+        $cja_update_ad->save();
+    }
+
+    if ($_POST['update_classified_ad_admin']) {
+        $cja_update_ad = new CJA_Classified_Advert($_POST['advert-id']);
+        $cja_update_ad->update_from_form();
+        $cja_update_ad->save();
+    }
+
+    if ($_POST['cja_update_user_admin']) {
+        $cja_update_user = new CJA_User($_POST['cja_user_id']);
+        $cja_update_user->updateFromForm();
+        $cja_update_user->save();
+    }
+}
+
+/**
+ * Update the author of a custom post from the admin
+ * Activate ad if created from admin
+ * See also update_post_from_admin()
+ */
+add_action( 'save_post', 'cja_update_author_from_admin');
+function cja_update_author_from_admin() {
+    
+    if ($_POST['update_job_ad_admin']) {
+        $values = array(
+            'ID' => $_POST['advert-id'],
+            'post_author' => strip_cja_code($_POST['advertiser'])
+        );
+        remove_action('save_post', 'cja_update_author_from_admin');
+        wp_update_post($values);
+
+        // If this is new then activate ad to create activation date, status etc.
+        if ( !get_post_meta($_POST['advert-id'], 'cja_ad_status', true) ) {
+            $new_ad = new CJA_Advert($_POST['advert-id']);
+            $new_ad->activate();
+            $new_ad->save();
+        }
+
+        add_action( 'save_post', 'cja_update_author_from_admin');
+    }
+
+    if ($_POST['update_course_ad_admin']) {
+        $values = array(
+            'ID' => $_POST['advert-id'],
+            'post_author' => strip_cja_code($_POST['advertiser'])
+        );
+        remove_action('save_post', 'cja_update_author_from_admin');
+        wp_update_post($values);
+
+        // If this is new then activate ad to create activation date, status etc.
+        if ( !get_post_meta($_POST['advert-id'], 'cja_ad_status', true) ) {
+            $new_ad = new CJA_Course_Advert($_POST['advert-id']);
+            $new_ad->activate();
+            $new_ad->save();
+        }
+        add_action( 'save_post', 'cja_update_author_from_admin');
+    }
+
+    if ($_POST['update_classified_ad_admin']) {
+        $values = array(
+            'ID' => $_POST['advert-id'],
+            'post_author' => strip_cja_code($_POST['advertiser'])
+        );
+        remove_action('save_post', 'cja_update_author_from_admin');
+        wp_update_post($values);
+        
+        // If this is new then activate ad to create activation date, status etc.
+        if ( !get_post_meta($_POST['advert-id'], 'cja_ad_status', true) ) {
+            $new_ad = new CJA_Classified_Advert($_POST['advert-id']);
+            $new_ad->activate();
+            $new_ad->save();
+        }
+        add_action( 'save_post', 'cja_update_author_from_admin');
+    }
+}

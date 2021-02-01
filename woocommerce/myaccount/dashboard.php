@@ -55,7 +55,7 @@ if ($cja_current_user_obj->role == 'advertiser' || $cja_current_user_obj->role =
 
 <p>Welcome, <strong><?php echo $cja_current_user_obj->display_name(); ?></strong>!</p>
 <p><!--<strong>Job Search and Applications</strong><br>-->
-<!-- It is FREE to search jobs and to apply online with your CV. Search functionality will be coming soon. To search for jobs or courses just go to <a href="<?php echo get_site_url(); ?>/browse-jobs">Search Jobs</a> or <a href="<?php echo get_site_url(); ?>/search-courses">Search Courses</a>.-->
+<!-- It is FREE to search jobs and to apply online with your CV. Search functionality will be coming soon. To search for jobs or courses just go to <a href="<?php echo get_site_url(); ?>/search-jobs">Search Jobs</a> or <a href="<?php echo get_site_url(); ?>/search-courses">Search Courses</a>.-->
 <span style="color: #00A">We are currently updating and revamping our search functionality, therefore, the search option will be restored soon.  In the meantime, ensure to respond to opportunities alerts sent by text and email.</span>
 </p>
 
