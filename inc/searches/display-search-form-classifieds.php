@@ -1,7 +1,7 @@
 <?php
 
 if ($_GET['edit-search']) { 
-    $cja_classifiedsearch = new CJA_Classified_Advert;
+    $cja_classifiedsearch = new CJA_Classified_Advert; // just for persistent search
     // $cja_classifiedsearch->update_from_cookies(); // disabled by client
 
     ?>
@@ -20,7 +20,7 @@ if ($_GET['edit-search']) {
 
         <hr>
 
-        <?php if ($cja_user->postcode) { ?>
+        <?php if ($cja_current_user_obj->postcode) { ?>
             <p class="label">Maximum Distance from my Postcode:</p>
             <select name="max_distance" form="edit_classified_search_form">
                 <option value="">-- Any --</option>
@@ -50,7 +50,7 @@ if ($_GET['edit-search']) {
             <option value="urgent_jobs" <?php if ($cja_classifiedsearch->category == 'urgent_jobs') { echo 'selected'; } ?>>Urgent Jobs</option>
         </select><?php 
         
-        if ($cja_user->postcode) { ?>
+        if ($cja_current_user_obj->postcode) { ?>
             <p class="label">Order Results By</p>
             <select name="order_by" form="edit_classified_search_form">
                 <option value="date">Newest Adverts First</option>
@@ -60,7 +60,7 @@ if ($_GET['edit-search']) {
             <input type="hidden" name="order_by" value="date"><?php 
         } ?>
 
-        <input type="hidden" name="update_classified_search" value="true">
+        <input type="hidden" name="update_search" value="true">
         <input type="hidden" name="cja_set_classified_cookies" value="true">
 
         <p>

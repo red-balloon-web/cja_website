@@ -16,7 +16,6 @@ include('inc/functions/form-processing-admin.php'); // Admin form processing
 include('inc/functions/form-processing-frontend.php'); // Frontend form processing
 include('inc/functions/woocommerce.php'); // WooCommerce functions and my-account endpoints
 include('inc/functions/daily-admin.php'); // Daily functions (check for expiration etc)
-
 include('inc/functions/search-cookies.php'); // Set search cookies (client disabled)
 include('inc/functions/wp-admin-menu.php'); // Set up our custom admin menus (loads child pages)
 

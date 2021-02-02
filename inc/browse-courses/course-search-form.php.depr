@@ -1,7 +1,7 @@
 <?php
 
 if ($_GET['edit-search']) { 
-    $cja_coursesearch = new CJA_Course_Advert;
+    $cja_coursesearch = new CJA_Course_Advert; // for persistent search using cookies
     // $cja_coursesearch->update_from_cookies();
 
     ?>

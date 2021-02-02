@@ -6,9 +6,6 @@
  * Displays export CSV button on user search pages
  * Builds $csv_data_array from search data which can then be turned into CSV
  * 
- * Included in:
- * page-search-jobs.php
- * 
  */ ?>
 
 <form action="<?php echo get_site_url(); ?>/search-jobs?output_csv=true" method="post"> <?php
