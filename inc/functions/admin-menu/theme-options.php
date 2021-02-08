@@ -48,7 +48,26 @@ function cja_admin_page_contents() { ?>
 
         <p class="label">Copy 'awaiting approval' notification emails to</p>
         <p><input type="text" name="approval_notification_cc" style="width: 500px;" value="<?php echo stripslashes(get_option('approval_notification_cc')); ?>"></p>
+
         <hr>
+
+        <p><em>The following email subjects and messages accept these placeholders:<br>%ad-title% : title of advert<br>%expiry-date% : date advert expires e.g. 6 June<br>%login-link% : link to my account page</em></p>
+
+        <p class="label">Days before advert expiry to send 'advert expiring soon' email</p>
+        <p><input type="number" name="advert_running_out_message_days" min="0" max="31" value="<?php echo get_option('advert_running_out_message_days'); ?>"></p>
+
+        <p class="label">Advert Expiring Soon Email Subject</p>
+        <p><input type="text" name="advert_running_out_email_subject" style="width: 500px;" value="<?php echo cja_escape_double_quotes(stripslashes(get_option('advert_running_out_email_subject'))); ?>"></p>
+
+        <p class="label">Advert Expiring Soon Email Message</p>
+        <textarea name="advert_running_out_email_message" id="" cols="60" rows="10"><?php echo stripslashes(get_option('advert_running_out_email_message')); ?></textarea>
+
+        <p class="label">Advert Expired Email Subject</p>
+        <p><input type="text" name="advert_expired_email_subject" style="width: 500px;" value="<?php echo cja_escape_double_quotes(stripslashes(get_option('advert_expired_email_subject'))); ?>"></p>
+
+        <p class="label">Advert Expired Email Message</p>
+        <textarea name="advert_expired_email_message" id="" cols="60" rows="10"><?php echo stripslashes(get_option('advert_expired_email_message')); ?></textarea>
+        <p>&nbsp;</p>
 
         <input type="submit" value="Update Options">
         <input type="hidden" name="cja_action" value="update_theme_options">

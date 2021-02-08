@@ -59,21 +59,32 @@ function cja_admin_menu() {
 
         $any_approvals = $profile_approvals + $files_approvals + $advert_approvals;
         
-    
-
-    // Theme options page
+    // Theme options top level menu item
     add_menu_page(
         'Theme Options',
         'Theme Options',
         'manage_options',
         'cja_options',
         'cja_admin_page_contents',
-        'dashicons-schedule',
+        'dashicons-admin-tools',
         3
     );
 
+    // Theme options sub
+    add_submenu_page(
+        'cja_options',
+        'Theme Options',
+        'Theme Options',
+        'manage_options',
+        'cja_options',
+        'cja_admin_page_contents',
+        'dashicons-schedule',
+        1
+    );
+
     // Manage user credits page (add credits to user account)
-    add_menu_page(
+    add_submenu_page(
+        'cja_options',
         'Manage User Credits',
         'Manage User Credits',
         'manage_options',
@@ -81,6 +92,18 @@ function cja_admin_menu() {
         'cja_user_credits_page_contents',
         'dashicons-admin-tools',
         3
+    );
+
+    // Monitoring Screen (how many ads etc created on various days)
+    add_submenu_page(
+        'cja_options',
+        'Monitoring',
+        'Monitoring',
+        'manage_options',
+        'cja_monitoring',
+        'cja_monitoring_content',
+        'dashicons-chart-bar',
+        4
     );
 
     // Approvals top level menu item
@@ -101,7 +124,7 @@ function cja_admin_menu() {
         $advert_approvals ? sprintf('Approve Adverts <span class="awaiting-mod">%d</span>', $advert_approvals) : 'Approve Adverts',
         //'Approve Adverts',
         'manage_options',
-        'cja_approve_ads', // this stops the menu header creating an extra submenu item
+        'cja_approve_ads', 
         'cja_approve_ads_content',
         'dashicons-yes',
         1
@@ -132,15 +155,11 @@ function cja_admin_menu() {
         'dashicons-yes',
         3
     );
+}
 
-    // Monitoring Screen (how many ads etc created on various days)
-    add_menu_page(
-        'Monitoring',
-        'Monitoring',
-        'manage_options',
-        'cja_monitoring',
-        'cja_monitoring_content',
-        'dashicons-chart-bar',
-        4
-    );
+add_action( 'admin_init', 'my_remove_admin_menus' );
+function my_remove_admin_menus() {
+    remove_menu_page( 'edit-comments.php' ); // comments
+    remove_menu_page( 'upload.php' ); // media
+    remove_menu_page( 'edit.php' ); // posts
 }

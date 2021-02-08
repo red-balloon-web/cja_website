@@ -98,8 +98,9 @@ function register_custom_post_types() {
 
 /**
  * USER ROLES
+ * This only needs to run once as values are stored in db so it's commented out
  */
-add_action( 'init', 'add_custom_user_roles' );
+// add_action( 'init', 'add_custom_user_roles' );
 function add_custom_user_roles() {
 
     add_role(
@@ -112,7 +113,7 @@ function add_custom_user_roles() {
 
     add_role(
         'jobseeker',
-        'Job Seeker',
+        'Candidate',
         array(
             'read' => true,
         )

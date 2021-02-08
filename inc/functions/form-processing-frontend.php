@@ -87,6 +87,7 @@ function process_and_redirect() {
     }
 
     // Update theme options (sent from theme options in admin)
+    // Todo: move this to admin post hook and admin processing file
     if ($_POST['cja_action'] == 'update_theme_options') {
 
         // charge users for ads Y/N
@@ -123,5 +124,12 @@ function process_and_redirect() {
         update_option('attachment_approval_email_message', $_POST['attachment_approval_email_message']);
         update_option('attachment_edited_approval_email_message', $_POST['attachment_edited_approval_email_message']);
         update_option('approval_notification_cc', $_POST['approval_notification_cc']);
+
+        update_option('advert_running_out_message_days', $_POST['advert_running_out_message_days']);
+        update_option('advert_running_out_email_subject', $_POST['advert_running_out_email_subject']);
+        update_option('advert_running_out_email_message', $_POST['advert_running_out_email_message']);
+
+        update_option('advert_expired_email_subject', $_POST['advert_expired_email_subject']);
+        update_option('advert_expired_email_message', $_POST['advert_expired_email_message']);
     }
 }
