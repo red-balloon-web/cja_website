@@ -183,7 +183,7 @@ get_header(); ?>
                     </form><?php
 
                     // Create the array
-                    include('inc/user-searches/create-csv-array.php');
+                    include('inc/user-searches/create-csv-array-students.php');
 
                     /**
                      * 5. Pagination to return just the bit of the array we need

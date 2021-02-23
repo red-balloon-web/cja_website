@@ -33,3 +33,12 @@
         if ($this->form_fields[$field]['type'] == 'date') {
             echo date("j F Y", strtotime($this->$field));
         }
+
+        // checkbox field
+        if ($this->form_fields[$field]['type'] == 'checkbox') {
+            if ($this->$field == '') {
+                echo 'No';
+            } else {
+                echo 'Yes';
+            }
+        }

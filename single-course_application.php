@@ -25,7 +25,8 @@ $cja_current_user_obj = new CJA_User; ?>
 			}
 
 			include('inc/templates/course-application-details.php');
-			include('inc/templates/applicant-details.php');
+			$candidate_template = 'courseseeker';
+			include('inc/templates/candidate-details.php');
 			include('inc/templates/course-details.php');
 			include('inc/templates/company-details.php'); ?>
 

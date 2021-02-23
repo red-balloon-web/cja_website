@@ -338,3 +338,91 @@ function wpse_admin_search_include_ids( $query ) {
     // Reset the search value to prevent standard search from being used.
     $query->set( 's', '' );
 }
+
+/**
+ * Filter WP-admin users by jobseeker or courseseeker
+ * https://www.intelliwolf.com/how-to-add-a-custom-filter-to-wordpress-users-list/
+ */
+
+ /*** Sort and Filter Users ***/
+add_action('restrict_manage_users', 'filter_by_seeking');
+
+function filter_by_seeking($which)
+{
+ // template for filtering
+ $st = '<select name="seeking_%s" style="float:none;margin-left:10px;">
+    <option value="">%s</option>%s</select>';
+
+ // generate options
+ $options = '<option value="jobseeker">Jobs</option>
+    <option value="courseseeker">Courses</option>';
+ 
+ // combine template and options
+ $select = sprintf( $st, $which, 'Seeking...', $options );
+
+ // output <select> and submit button
+ echo $select;
+ submit_button('Filter', null, $which, false);
+}
+
+add_filter('pre_get_users', 'filter_users_by_job_role_section');
+
+function filter_users_by_job_role_section($query)
+{
+ global $pagenow;
+ if (is_admin() && 'users.php' == $pagenow) {
+  // figure out which button was clicked. The $which in filter_by_job_role()
+  $top = $_GET['seeking_top'] ? $_GET['seeking_top'] : null;
+  $bottom = $_GET['seeking_bottom'] ? $_GET['seeking_bottom'] : null;
+  if (!empty($top) OR !empty($bottom))
+  {
+   $section = !empty($top) ? $top : $bottom;
+   
+   // change the meta query based on which option was chosen
+
+   if ($section == 'jobseeker') {
+       $meta_query = array (array (
+          'key' => 'is_jobseeker',
+          'value' => 'true',
+          'compare' => 'LIKE'
+       ));
+       $query->set('meta_query', $meta_query);
+   } else if ($section == 'courseseeker') {
+    $meta_query = array (array (
+        'key' => 'is_student',
+        'value' => 'true',
+        'compare' => 'LIKE'
+     ));
+     $query->set('meta_query', $meta_query);
+   }
+  }
+ }
+}
+
+/**
+ * Add whether user is course or jobseeker to users table
+ * https://wordpress.stackexchange.com/questions/160422/add-custom-column-to-users-admin-panel
+ */
+
+function new_modify_user_table( $column ) {
+    $column['seeking'] = 'Seeking';
+    return $column;
+}
+add_filter( 'manage_users_columns', 'new_modify_user_table' );
+
+function new_modify_user_table_row( $val, $column_name, $user_id ) {
+
+    if ($column_name == 'seeking') {
+        $cja_user = new CJA_User($user_id);
+        if ($cja_user->is_jobseeker && !$cja_user->is_student) {
+            return 'Jobs';
+        } else if (!$cja_user->is_jobseeker && $cja_user->is_student) {
+            return 'Courses';
+        } else if ($cja_user->is_jobseeker && $cja_user->is_student) {
+            return 'Jobs and Courses';
+        } else {
+            return '';
+        }
+    }
+}
+add_filter( 'manage_users_custom_column', 'new_modify_user_table_row', 10, 3 );

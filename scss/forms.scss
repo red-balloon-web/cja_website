@@ -139,3 +139,26 @@ table.attachments_table {
         text-align: center;
     }
 }
+
+.role_select_box {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 1.5rem;
+
+    .role {
+        float: left;
+        width: 33%;
+        padding: 10px;
+        text-align: center;
+        border: 1px solid #999;
+
+        &:hover {
+            background-color: lightblue;
+            cursor: pointer;
+        }
+
+        &.current {
+            background-color: lightblue;
+        }
+    }
+}

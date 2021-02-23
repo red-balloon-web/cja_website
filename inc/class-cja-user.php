@@ -116,6 +116,10 @@ class CJA_User {
                 array(
                     "label" => "A Placement for my Course",
                     "value" => "placement_course"
+                ),
+                array(
+                    "label" => "Looking for CPD",
+                    "value" => "cpd"
                 )
             )
         ),
@@ -495,7 +499,7 @@ class CJA_User {
                     "value" => "any"
                 )
             ),
-            "label" => "Courses FT/PT (if applicable)",
+            "label" => "Courses FT/PT",
             "meta_label" => "course_time"
         ),
         "job_role" => array(
@@ -521,7 +525,7 @@ class CJA_User {
                     "value" => "any"
                 )
             ),
-            "label" => "Jobs FT/PT (if applicable)",
+            "label" => "Jobs FT/PT",
             "meta_label" => "job_time"
         ),
         "cover_work" => array(
@@ -680,6 +684,130 @@ class CJA_User {
                     "value" => "no"
                 ),
             )
+        ),
+        "how_far_travel" => array(
+            "meta_field" => true,
+            "label" => "How far are you able to travel (e.g. 5 miles from my postcode, 10 miles from London, etc.",
+            "meta_label" => "how_far_travel",
+            "type" => "text"
+        ),
+        "dbs" => array(
+            "meta_field" => true,
+            "label" => "Do you have a DBS?",
+            "meta_label" => "dbs",
+            "type" => "select",
+            "options" => array(
+                array(
+                    "label" => "Yes",
+                    "value" => "yes"
+                ),
+                array(
+                    "label" => "No",
+                    "value" => "no"
+                ),
+                array(
+                    "label" => "No but happy to get it done",
+                    "value" => "no_but_can_do"
+                )
+            )
+        ),
+        "prevent_safeguarding" => array(
+            "meta_field" => true,
+            "label" => "Have you done the Prevent or Safeguarding training",
+            "meta_label" => "prevent_safeguarding",
+            "type" => "select",
+            "options" => array(
+                array(
+                    "label" => "Yes",
+                    "value" => "yes"
+                ),
+                array(
+                    "label" => "No",
+                    "value" => "no"
+                ),
+                array(
+                    "label" => "Not sure what it is",
+                    "value" => "not_sure"
+                )
+            )
+        ),
+        "current_availability" => array(
+            "meta_field" => true,
+            "label" => "Current Availability",
+            "meta_label" => "current_availability",
+            "type" => "select",
+            "options" => array(
+                array(
+                    "label" => "Immediately",
+                    "value" => "immediately"
+                ),
+                array(
+                    "label" => "Notice period required",
+                    "value" => "notice_period"
+                ),
+                array(
+                    "label" => "Within the next two weeks",
+                    "value" => "within_two_weeks"
+                ),
+                array(
+                    "label" => "Can be discussed",
+                    "value" => "can_be_discussed"
+                )
+            )
+        ),
+        "what_course" => array(
+            "meta_field" => true,
+            "label" => "What course are you looking for?",
+            "meta_label" => "what_course",
+            "type" => "text"
+        ),
+        "looking_for_loan" => array(
+            "meta_field" => true,
+            "label" => "I'm looking for a student loan or advanced learner loan",
+            "meta_label" => "looking_for_loan",
+            "type" => "select",
+            "options" => array(
+                array(
+                    "label" => "Yes",
+                    "value" => "yes"
+                ),
+                array(
+                    "label" => "No",
+                    "value" => "no"
+                )
+            )
+        ),
+        "progress_to_university" => array(
+            "meta_field" => true,
+            "label" => "I'm looking for this particular course to progress to university",
+            "meta_label" => "progress_to_university",
+            "type" => "select",
+            "options" => array(
+                array(
+                    "label" => "Yes",
+                    "value" => "yes"
+                ),
+                array(
+                    "label" => "No",
+                    "value" => "no"
+                )
+            )
+        ),
+        "progress_to_employment" => array(
+            "meta_field" => true,
+            "label" => "I'm looking for this particular course to enter employment e.g. CSCS training",
+            "meta_label" => "progress_to_employment",
+            "type" => "select",
+            "options" => array(
+                array(
+                    "label" => "Yes",
+                    "value" => "yes"
+                ),
+                array(
+                    "label" => "No",
+                    "value" => "no"
+                )
+            )
         )
     );
     
@@ -789,6 +917,15 @@ class CJA_User {
         // date field
         if ($this->form_fields[$field]['type'] == 'date') {
             return(date("j F Y", strtotime($this->$field)));
+        }
+
+        // checkbox field
+        if ($this->form_fields[$field]['type'] == 'checkbox') {
+            if ($this->$field == '') {
+                return 'No';
+            } else {
+                return 'Yes';
+            }
         }
     }
 
@@ -1067,6 +1204,7 @@ class CJA_User {
 
         $meta_query = array();
 
+        // About the opportunities you're looking for
         if ($this->opportunity_required) {
             $meta_query = $this->add_query_item($meta_query, 'opportunity_required', 'in_array');
         }
@@ -1084,6 +1222,15 @@ class CJA_User {
         }
         if ($this->specialism_area) {
             $meta_query = $this->add_query_item($meta_query, 'specialism_area', 'in_array');
+        }
+        if ($this->looking_for_loan) {
+            $meta_query = $this->add_query_item($meta_query, 'looking_for_loan', 'select');
+        }
+        if ($this->progress_to_university) {
+            $meta_query = $this->add_query_item($meta_query, 'progress_to_university', 'select');
+        }
+        if ($this->progress_to_employment) {
+            $meta_query = $this->add_query_item($meta_query, 'progress_to_employment', 'select');
         }
 
         // education
@@ -1103,7 +1250,7 @@ class CJA_User {
             $meta_query = $this->add_query_item($meta_query, 'highest_qualification', 'rank');
         }
 
-        // other
+        // more about you
         if ($this->age_category) {
             $meta_query = $this->add_query_item($meta_query, 'age_category', 'select');
         }
@@ -1115,6 +1262,15 @@ class CJA_User {
         }
         if ($this->receiving_benefits) {
             $meta_query = $this->add_query_item($meta_query, 'receiving_benefits', 'select');
+        }
+        if ($this->dbs) {
+            $meta_query = $this->add_query_item($meta_query, 'dbs', 'select');
+        }
+        if ($this->current_availability) {
+            $meta_query = $this->add_query_item($meta_query, 'current_availability', 'select');
+        }
+        if ($this->prevent_safeguarding) {
+            $meta_query = $this->add_query_item($meta_query, 'prevent_safeguarding', 'select');
         }
 
         // in search

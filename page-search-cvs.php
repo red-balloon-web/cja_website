@@ -150,6 +150,14 @@ get_header(); ?>
                         $cja_distance = array_column($cja_results_array, 'distance');
                         array_multisort($cja_distance, SORT_ASC, $cja_results_array);
 
+                        // Display count of results within area
+                        $cja_total_results = count($cja_results_array); ?>
+                        <p><?php echo $cja_total_results; ?> result<?php if ($cja_total_results != 1) { echo 's'; } ?> found<?php
+                            if ($cja_usersearch->max_distance) {
+                                echo ' within a ' . $cja_usersearch->max_distance . ' mile radius';
+                            }
+                        ?></p><?php
+
                         /**
                          * 4a Create the csv array for this search
                          * We do this at this point because the final results array has been set up in the previous step
@@ -165,19 +173,12 @@ get_header(); ?>
                                         ?><input type="hidden" name="<?php echo $key; ?>[]" value="<?php echo $single_value; ?>"><?php
                                     }
                                 }
-                            } 
-                            // Display count of results within area
-                            $cja_total_results = count($cja_results_array); ?>
-                            <p><?php echo $cja_total_results; ?> result<?php if ($cja_total_results != 1) { echo 's'; } ?> found<?php
-                                if ($cja_usersearch->max_distance) {
-                                    echo ' within a ' . $cja_usersearch->max_distance . ' mile radius';
-                                }
-                            ?></p>
+                            } ?>
                             <input type="submit" class="cja_button" value="Export Results as CSV File">
                         </form><?php
                         
                         // Create the array
-                        include('inc/user-searches/create-csv-array.php');
+                        include('inc/user-searches/create-csv-array-cvs.php');
 
                         /**
                          * 5. Pagination to return just the bit of the array we need

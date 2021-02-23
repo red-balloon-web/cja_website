@@ -69,3 +69,27 @@
 .user-profile-picture {
     display: none;
 }
+
+.role_select_box {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 1.5rem;
+}
+
+.role_select_box .role {
+    float: left;
+    width: 33%;
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #999;
+}
+
+.role_select_box .role:hover {
+    background-color: lightblue;
+    cursor: pointer;
+}
+
+
+.role_select_box .role.current {
+    background-color: lightblue;
+}

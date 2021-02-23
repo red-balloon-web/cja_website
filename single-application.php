@@ -27,7 +27,8 @@ $cja_current_user_obj = new CJA_User; ?>
 			}
 			
 			include('inc/templates/application-details.php');
-			include('inc/templates/applicant-details.php');
+			$candidate_template = 'jobseeker';
+			include('inc/templates/candidate-details.php');
 			include('inc/templates/job-details.php');
 			include('inc/templates/company-details.php'); ?>
 
