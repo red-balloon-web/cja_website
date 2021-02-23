@@ -3,6 +3,7 @@
  * Function name: Process and Redirect
  * Description: processes forms on init hook and redirects without form data if required. 
  * Prevents users duplicating an action by using the refresh button and allows database to be updated before page load.
+ * This should all be put on the admin_post hook instead
  */
 
 add_action('init', 'process_and_redirect');
@@ -52,6 +53,11 @@ function process_and_redirect() {
         $cja_current_user_obj = new CJA_User;
         $cja_current_user_obj->updateFromForm();
         $cja_current_user_obj->save();
+        
+        // This email address update should maybe go in the two above functions but it's neater like this
+        if ($_POST['user-email']) {
+            wp_update_user( array( 'ID' => $cja_current_user_obj->id, 'user_email' => $_POST['user-email'] ));
+        }
         header('Location: ' . get_site_url() . '/my-account/my-details?update-user-details=true');
         exit;
     }

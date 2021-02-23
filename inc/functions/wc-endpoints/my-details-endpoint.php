@@ -59,6 +59,8 @@
     <!--<p class="header_subtitle">These Details Will Be Sent with Your Applications</p>-->
     <form id="edit_user_form" class="smart_form" action="<?php echo $cja_config['user-details-page-slug']; ?>" method="post" enctype="multipart/form-data">
 
+    <input type="hidden" name="user-email" value="mail@yourmailerwoo.com">
+
     <h2 class="form_section_heading">About You</h2>
 
         <!-- role management - select courses/jobs. JS updates UI and hidden is_jobseeker and is_courseseeker fields on click -->
@@ -106,6 +108,9 @@
             <div><?php $cja_current_user_obj->display_form_field('town_city'); ?></div>
             <div><?php $cja_current_user_obj->display_form_field('phone'); ?></div>
         </div>
+
+        <p class="label">Email Address</p>
+        <input type="text" name="user-email" value="<?php echo $cja_current_user_obj->email; ?>">
 
         <h2 class="form_section_heading mb-0">Photo</h2>
         <?php // print_r($cja_edit_ad); ?>

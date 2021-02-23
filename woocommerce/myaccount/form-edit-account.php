@@ -24,6 +24,7 @@ do_action( 'woocommerce_before_edit_account_form' ); ?>
 	<?php do_action( 'woocommerce_edit_account_form_start' ); ?>
 	<input type="hidden" name="account_first_name" value="<?php echo esc_attr( $user->first_name ); ?>">
 	<input type="hidden" name="account_last_name" value="<?php echo esc_attr( $user->last_name ); ?>">
+	<input type="hidden" name="account_email" value="<?php echo esc_attr( $user->user_email ); ?>">
 
 	<!--
 	<p class="woocommerce-form-row woocommerce-form-row--first form-row form-row-first">
@@ -45,14 +46,16 @@ do_action( 'woocommerce_before_edit_account_form' ); ?>
 
 	<?php $cja_current_user_obj = new CJA_User; ?>
 
-	<h1>Change Email and Password</h1>
+	<h1>Change Password</h1>
 
-	<p style="color: #666">Username: <?php echo $cja_current_user_obj->login_name; ?><br><em>Your username cannot be changed</em></p>
+	<!--
+	<p style="color: #666">Username: <?php echo $cja_current_user_obj->login_name; ?><br><em>Your username cannot be changed</em></p>-->
 
+	<!--
 	<p class="woocommerce-form-row woocommerce-form-row--wide form-row form-row-wide label">
 		<label for="account_email"><?php esc_html_e( 'Email address', 'woocommerce' ); ?>&nbsp;<span class="required">*</span></label>
 		<input type="email" class="woocommerce-Input woocommerce-Input--email input-text" name="account_email" id="account_email" autocomplete="email" value="<?php echo esc_attr( $user->user_email ); ?>" />
-	</p>
+	</p>-->
 
 	<fieldset>
 		<legend><?php esc_html_e( 'Password change', 'woocommerce' ); ?></legend>

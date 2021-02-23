@@ -55,7 +55,7 @@ function cja_order_woocommerce_account_menu( $items ) {
 
     // $items['purchase-credits'] = 'Purchase Credits'; // temporarily disabled by client
     $items['my-details'] = 'Your Profile';
-    $items['edit-account'] = 'Email / Password';
+    $items['edit-account'] = 'Change Password';
     // $items['orders'] = 'My Purchases'; // temporarily disabled by client
     
     // only display subscriptions tab to advertisers
