@@ -59,7 +59,9 @@
     <!--<p class="header_subtitle">These Details Will Be Sent with Your Applications</p>-->
     <form id="edit_user_form" class="smart_form" action="<?php echo $cja_config['user-details-page-slug']; ?>" method="post" enctype="multipart/form-data">
 
-    <input type="hidden" name="user-email" value="mail@yourmailerwoo.com">
+    <h2 class="form_section_heading">Profile Status</h2>
+    <p class="label">Set your profile status to "Not Currently Available" if you are not currently looking for work or education and do not want to be included in searches</p>
+    <?php $cja_current_user_obj->display_form_field('profile_status'); ?>
 
     <h2 class="form_section_heading">About You</h2>
 

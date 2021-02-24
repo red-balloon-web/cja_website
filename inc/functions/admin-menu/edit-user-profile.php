@@ -68,6 +68,10 @@ function display_admin_user_custom_cja_fields( $user ) {
         <div id="poststuff"><div class="admin_edit_form">
             <p style="color: #666">ID: <?php echo get_cja_user_code($cja_current_user_obj->id); ?></p>
 
+            <h2 class="form_section_heading">Profile Status</h2>
+            <p class="label">Set your profile status to "Not Currently Available" if you are not currently looking for work or education and do not want to be included in searches</p>
+            <?php $cja_current_user_obj->display_form_field('profile_status'); ?>
+
             <h2 class="form_section_heading">About You</h2>
 
         <!-- role management - select courses/jobs. JS updates UI and hidden is_jobseeker and is_courseseeker fields on click -->

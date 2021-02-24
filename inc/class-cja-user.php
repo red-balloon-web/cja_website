@@ -808,6 +808,21 @@ class CJA_User {
                     "value" => "no"
                 )
             )
+        ),
+        "profile_status" => array(
+            "meta_field" => true,
+            "meta_label" => "profile_status",
+            "type" => "select",
+            "options" => array(
+                array(
+                    "label" => "Available",
+                    "value" => "available"
+                ),
+                array(
+                    "label" => "Not Currently Available",
+                    "value" => "not_available"
+                )
+            )
         )
     );
     
@@ -1193,8 +1208,7 @@ class CJA_User {
     // Build WP User Query
     public function build_wp_query() {
         $return_wp_query = array(
-            'role' => 'jobseeker',
-            //'include' => array(23)
+            'role' => 'jobseeker', // 'Candidate' on front end
         );
 
         // If we are searching by ID set the ID 
@@ -1203,6 +1217,15 @@ class CJA_User {
         }
 
         $meta_query = array();
+
+        // Only return active profiles unless searching by ID
+        if (!$this->cja_id) {
+            $meta_query_sub_item = array(
+                'key' => 'profile_status',
+                'value' => 'available'
+            );
+            $meta_query[] = $meta_query_sub_item;
+        }
 
         // About the opportunities you're looking for
         if ($this->opportunity_required) {
