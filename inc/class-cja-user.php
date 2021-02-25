@@ -959,6 +959,23 @@ class CJA_User {
         }
     }
 
+    // Update object from $_GET data (for admin users screen)
+    public function update_from_get() {
+        
+        // Go through form fields
+        foreach($this->form_fields as $field => $value) {
+            /*
+            if ($this->form_fields[$field]['type'] == 'checkbox' || $this->form_fields[$field]['type'] == 'checkboxes') {
+                $this->$field = false; // blank checkbox value first
+            }*/
+            
+            // Update other form fields
+            if (isset($_GET[$field])) {
+                $this->$field = $_GET[$field];
+            }
+        }
+    }
+
     // Update object from $_POST data
     public function updateFromForm() {
 

@@ -1,5 +1,6 @@
 <?php
 
+/*
 $args = array(
     'role' => 'jobseeker',
     'orderby' => 'ID'
@@ -15,4 +16,4 @@ if (!empty($the_query)) {
     }
 }
 
-
+*/

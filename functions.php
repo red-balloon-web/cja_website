@@ -367,36 +367,45 @@ function filter_by_seeking($which)
 
 add_filter('pre_get_users', 'filter_users_by_job_role_section');
 
-function filter_users_by_job_role_section($query)
-{
- global $pagenow;
- if (is_admin() && 'users.php' == $pagenow) {
-  // figure out which button was clicked. The $which in filter_by_job_role()
-  $top = $_GET['seeking_top'] ? $_GET['seeking_top'] : null;
-  $bottom = $_GET['seeking_bottom'] ? $_GET['seeking_bottom'] : null;
-  if (!empty($top) OR !empty($bottom))
-  {
-   $section = !empty($top) ? $top : $bottom;
-   
-   // change the meta query based on which option was chosen
+function filter_users_by_job_role_section($query) {
+    global $pagenow;
+    if (is_admin() && 'users.php' == $pagenow) {
+    
+        // figure out which button was clicked. The $which in filter_by_job_role()
+        $top = $_GET['seeking_top'] ? $_GET['seeking_top'] : null;
+        $bottom = $_GET['seeking_bottom'] ? $_GET['seeking_bottom'] : null;
+        if (!empty($top) OR !empty($bottom)) {
+            $section = !empty($top) ? $top : $bottom;
+    
+            // change the meta query based on which option was chosen
 
-   if ($section == 'jobseeker') {
-       $meta_query = array (array (
-          'key' => 'is_jobseeker',
-          'value' => 'true',
-          'compare' => 'LIKE'
-       ));
-       $query->set('meta_query', $meta_query);
-   } else if ($section == 'courseseeker') {
-    $meta_query = array (array (
-        'key' => 'is_student',
-        'value' => 'true',
-        'compare' => 'LIKE'
-     ));
-     $query->set('meta_query', $meta_query);
-   }
-  }
- }
+            if ($section == 'jobseeker') {
+                $meta_query = array (array (
+                    'key' => 'is_jobseeker',
+                    'value' => 'true',
+                    'compare' => 'LIKE'
+                ));
+                $query->set('meta_query', $meta_query);
+            } else if ($section == 'courseseeker') {
+                $meta_query = array (array (
+                    'key' => 'is_student',
+                    'value' => 'true',
+                    'compare' => 'LIKE'
+                ));
+                $query->set('meta_query', $meta_query);
+            }
+        }
+
+        if ($_GET['cja_advanced_search']) {
+
+            $cja_search_obj = new CJA_User();
+            $cja_search_obj->update_from_get();
+            $cja_full_search_args = $cja_search_obj->build_wp_query();
+            $cja_meta_query_args = $cja_full_search_args['meta_query'];
+            unset($cja_meta_query_args[0]); // remove 'post_status' == 'active' 
+            $query->set('meta_query', $cja_meta_query_args);
+        }
+    }
 }
 
 /**
@@ -426,3 +435,126 @@ function new_modify_user_table_row( $val, $column_name, $user_id ) {
     }
 }
 add_filter( 'manage_users_custom_column', 'new_modify_user_table_row', 10, 3 );
+
+
+
+add_action( 'manage_users_extra_tablenav', 'cja_admin_user_filter' );
+function cja_admin_user_filter( $which ) {
+    if ( $which == 'top' ) { 
+        $cja_user = new CJA_User(); 
+        
+        if ($_GET['cja_advanced_search']) {
+
+                $cja_usersearch = new CJA_User();
+                $cja_usersearch->update_from_get(); ?>
+            
+                <div id="search_options_display"><?php
+                    include('inc/user-searches/display_cv_search_criteria.php'); ?>
+                </div>
+            
+            <?php
+        }
+        ?>
+
+        <h4 style="clear: both"><span id="users_filter_form_toggle">CJA User Search Options</span></h4>
+
+        
+        <div class="admin_edit_form" id="users_table_filter_form">
+            <h2 class="form_section_heading">Job/Course Seeker</h2>
+            <div class="form_flexbox_2">
+                <div>
+                    <p><input type="checkbox" name="is_jobseeker" value="true">Looking for Jobs</p>
+                </div>
+                <div>
+                    <p><input type="checkbox" name="is_student" value="true">Looking for Courses</p>
+                </div>
+            </div>
+
+            <h2 class="form_section_heading">About the Opportunities You're Looking For</h2>
+            <?php $cja_user->display_form_field('opportunity_required'); ?>
+            <div class="form_flexbox_2">
+                <div><?php $cja_user->display_form_field('job_time'); ?></div>
+                <div><?php $cja_user->display_form_field('course_time'); ?></div>
+            </div>
+            <?php $cja_user->display_form_field('cover_work'); ?>
+            <div class="form_flexbox_2">
+                <div><?php $cja_user->display_form_field('progress_to_university'); ?></div>
+                <div><?php $cja_user->display_form_field('progress_to_employment'); ?></div>
+               
+                
+            </div><?php
+            $cja_user->display_form_field('looking_for_loan');
+            $cja_user->display_form_field('weekends_availability');
+            $cja_user->display_form_field('specialism_area'); ?>
+
+            <h2 class="form_section_heading">Education</h2>
+            <div class="form_flexbox_2">
+                <!-- GCSE Maths -->
+                <div>
+                    <p class="label">Minimum GCSE Maths grade</p>
+                    <?php $cja_user->display_form_field('gcse_maths', false, true); ?>
+                </div>
+                <!-- GCSE English -->
+                <div>
+                    <p class="label">Minimum GCSE English grade</p>
+                    <?php $cja_user->display_form_field('gcse_english', false, true); ?>
+                </div>
+            </div>
+            <div class="form_flexbox_2">
+                <!-- Functional Maths -->
+                <div>
+                    <p class="label">Minimum functional maths grade</p>
+                    <?php $cja_user->display_form_field('functional_maths', false, true); ?>
+                </div>
+                <!-- Functional English -->
+                <div>
+                    <p class="label">Minimum functional English grade</p>
+                    <?php $cja_user->display_form_field('functional_english', false, true); ?>
+                </div>
+            </div>
+            <!-- Highest Qualification -->
+            <p class="label">Minimum current highest qualification</p>
+            <?php $cja_user->display_form_field('highest_qualification', false, true); ?>
+
+            <h2 class="form_section_heading">Other Details</h2>
+            <div class="form_flexbox_2">
+                <!-- Age Category -->
+                <div>
+                    <?php $cja_user->display_form_field('age_category', true, true); ?>
+                </div>
+                <!-- Current Status -->
+                <div>
+                    <?php $cja_user->display_form_field('current_status', true, true); ?>
+                </div>
+            </div>
+            <div class="form_flexbox_2">
+                <div><?php $cja_user->display_form_field('unemployed'); ?></div>
+                <div><?php $cja_user->display_form_field('receiving_benefits'); ?></div>
+            </div>
+            <div class="form_flexbox_2">
+                <div><?php $cja_user->display_form_field('dbs'); ?></div>
+                <div><?php $cja_user->display_form_field('current_availability'); ?></div>
+            </div>
+            <?php $cja_user->display_form_field('prevent_safeguarding'); ?>
+            <br>
+            <input type="submit" name="cja_advanced_search" id="cja_advanced_search_submit" class="button" value="Filter Users" style="margin-top: 20px">
+        </div>
+        
+        <!-- layout hack to prevent empty table from overlaying search fields -->
+        <div style="float:right"></div>
+        
+
+        <script>
+            jQuery(document).ready(function() {
+                jQuery('#users_filter_form_toggle').click(function() {
+                    jQuery('#users_filter_form_toggle').toggleClass('open');
+                    jQuery('#users_table_filter_form').slideToggle();
+                });
+            });
+        </script>
+        
+        <?php
+        
+
+    }
+}

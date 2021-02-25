@@ -194,6 +194,7 @@
         </div><?php 
         $cja_current_user_obj->display_form_field('weekends_availability');
         $cja_current_user_obj->display_form_field('specialism_area'); ?>
+        
         <h2 class="form_section_heading">Education</h2>
         <div class="form_flexbox_2">
             <div><?php $cja_current_user_obj->display_form_field('gcse_maths'); ?></div>
