@@ -114,6 +114,7 @@
 
 #users_table_filter_form {
     display: none;
+    padding-bottom: 20px;
 }
 
 #search_options_display {

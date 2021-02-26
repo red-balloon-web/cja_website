@@ -23,7 +23,7 @@ include('inc/functions/wp-admin-menu.php'); // Set up our custom admin menus (lo
 include('inc/functions/csv/monitoring-csv.php'); // Admin monitoring screen CSV
 include('inc/functions/csv/job-applicants-csv.php'); // Job Applicants CSV
 include('inc/functions/csv/course-applicants-csv.php'); // Course Applicants CSV
-
+include('inc/functions/csv/users-csv.php'); // Course Applicants CSV
 
 
 /**
@@ -443,20 +443,28 @@ function cja_admin_user_filter( $which ) {
     if ( $which == 'top' ) { 
         $cja_user = new CJA_User(); 
         
-        if ($_GET['cja_advanced_search']) {
-
+        if ($_GET['cja_advanced_search']) { ?>
+            
+            <div id="search_options_display"><?php
                 $cja_usersearch = new CJA_User();
-                $cja_usersearch->update_from_get(); ?>
+                $cja_usersearch->update_from_get();
+
+                if ($cja_usersearch->is_jobseeeker && $cja_usersearch->is_student) { ?> 
+                    <p>Looking for <strong>Jobs or Courses</strong></p> <?php
+                } else if ($cja_usersearch->is_jobseeker) { ?>
+                    <p>Looking for <strong>Jobs</strong></p> <?php
+                } else if ($cja_usersearch->is_student) { ?>
+                    <p>Looking for <strong>Courses</strong></p> <?php
+                }
             
-                <div id="search_options_display"><?php
-                    include('inc/user-searches/display_cv_search_criteria.php'); ?>
-                </div>
-            
-            <?php
+                include('inc/user-searches/display_cv_search_criteria.php'); ?>
+            </div><?php
         }
         ?>
 
-        <h4 style="clear: both"><span id="users_filter_form_toggle">CJA User Search Options</span></h4>
+        <h4 style="clear: both; padding-top: 10px"><span id="users_filter_form_toggle">CJA User Search Options</span></h4>
+
+        <input type="submit" name="export" form="user-csv-form" value="Export CSV" style="padding: 4px 10px;">
 
         
         <div class="admin_edit_form" id="users_table_filter_form">

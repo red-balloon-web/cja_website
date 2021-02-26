@@ -37,6 +37,15 @@
     <?php if ($cja_usersearch->cover_work) { ?>
         <p>Cover Work: <strong><?php $cja_usersearch->display_field('cover_work'); ?></strong></p>
     <?php } ?>
+    <?php if ($cja_usersearch->progress_to_university) { ?>
+        <p>Course to progress to university: <strong><?php $cja_usersearch->display_field('progress_to_university'); ?></strong></p>
+    <?php } ?>
+    <?php if ($cja_usersearch->progress_to_employment) { ?>
+        <p>Course to progress to employment: <strong><?php $cja_usersearch->display_field('progress_to_employment'); ?></strong></p>
+    <?php } ?>
+    <?php if ($cja_usersearch->looking_for_loan) { ?>
+        <p>Looking for student or advanced learner loan: <strong><?php $cja_usersearch->display_field('looking_for_loan'); ?></strong></p>
+    <?php } ?>
     <?php if ($cja_usersearch->weekends_availability) { ?>
         <p>Weekends Availability: <strong><?php $cja_usersearch->display_field('weekends_availability'); ?></strong></p>
     <?php } ?>
@@ -69,6 +78,15 @@
     <?php } ?>
     <?php if ($cja_usersearch->receiving_benefits) { ?>
         <p>Receving Benefits: <strong><?php $cja_usersearch->display_field('receiving_benefits'); ?></strong></p>
+    <?php } ?>
+    <?php if ($cja_usersearch->dbs) { ?>
+        <p>Do you have a DBS: <strong><?php $cja_usersearch->display_field('dbs'); ?></strong></p>
+    <?php } ?>
+    <?php if ($cja_usersearch->current_availability) { ?>
+        <p>Current Availability: <strong><?php $cja_usersearch->display_field('current_availability'); ?></strong></p>
+    <?php } ?>
+    <?php if ($cja_usersearch->prevent_safeguarding) { ?>
+        <p>Have you done the Prevent or Safeguarding training: <strong><?php $cja_usersearch->display_field('prevent_safeguarding'); ?></strong></p>
     <?php } ?>
 
 
