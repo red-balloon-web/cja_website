@@ -12,6 +12,7 @@ $csv_data_array = [];
 // Set header row
 $array_row = array(
 'Advert Code', 
+'Posted',
 'Advert Title', 
 'Advertiser Code',
 'Advertiser',
@@ -27,6 +28,7 @@ foreach($cja_results_array as $cja_result) {
 $current_advert = new CJA_Classified_Advert($cja_result['id']);
 $array_row = [];
 $array_row[] = get_cja_code($current_advert->id);
+$array_row[] = $current_advert->human_activation_date;
 $array_row[] = $current_advert->title;
 $array_row[] = get_cja_user_code($current_advert->author);
 $array_row[] = $current_advert->author_human_name;

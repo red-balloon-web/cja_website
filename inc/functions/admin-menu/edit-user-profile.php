@@ -67,6 +67,7 @@ function display_admin_user_custom_cja_fields( $user ) {
 <?php } else if ($cja_current_user_obj->role == 'jobseeker') { ?>
         <div id="poststuff"><div class="admin_edit_form">
             <p style="color: #666">ID: <?php echo get_cja_user_code($cja_current_user_obj->id); ?></p>
+            <p style="color: #666">Date Registered: <?php echo $cja_current_user_obj->date_registered; ?></p>
 
             <h2 class="form_section_heading">Profile Status</h2>
             <p class="label">Set your profile status to "Not Currently Available" if you are not currently looking for work or education and do not want to be included in searches</p>

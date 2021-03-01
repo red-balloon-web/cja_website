@@ -27,6 +27,14 @@
             <td>ID</td>
             <td><?php echo get_cja_user_code($cja_current_applicant->id); ?></td>
         </tr>
+        <tr>
+            <td>Profile Status</td>
+            <td><?php echo $cja_current_applicant->display_field('profile_status'); ?></td>
+        </tr>
+        <tr>
+            <td>Date Registered</td>
+            <td><?php echo $cja_current_applicant->date_registered; ?></td>
+        </tr>
     </table>
 
     <h2 class="form_section_heading">Education</h2>

@@ -404,6 +404,10 @@ function filter_users_by_job_role_section($query) {
             $cja_meta_query_args = $cja_full_search_args['meta_query'];
             unset($cja_meta_query_args[0]); // remove 'post_status' == 'active' 
             $query->set('meta_query', $cja_meta_query_args);
+            if ($cja_search_obj->earliest_creation_date || $cja_search_obj->latest_creation_date) {
+                $cja_date_query_args = $cja_full_search_args['date_query'];
+                $query->set('date_query', $cja_date_query_args);
+            }
         }
     }
 }
@@ -544,9 +548,23 @@ function cja_admin_user_filter( $which ) {
                 <div><?php $cja_user->display_form_field('current_availability'); ?></div>
             </div>
             <?php $cja_user->display_form_field('prevent_safeguarding'); ?>
+            <!-- Date Registered -->
+            <h2 class="form_section_heading">Date Registered</h2>
+    
+           <div class="form_flexbox_2">
+               <div>
+                   <p class="label">Earliest Date Registered</p>
+                   <input type="date" name="earliest_creation_date">
+               </div>
+               <div>
+                   <p class="label">Latest Date Registered</p>
+                   <input type="date" name="latest_creation_date">
+               </div>
+           </div>
             <br>
             <input type="submit" name="cja_advanced_search" id="cja_advanced_search_submit" class="button" value="Filter Users" style="margin-top: 20px">
         </div>
+
         
         <!-- layout hack to prevent empty table from overlaying search fields -->
         <div style="float:right"></div>

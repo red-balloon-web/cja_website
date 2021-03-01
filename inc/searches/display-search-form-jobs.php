@@ -204,6 +204,20 @@ if ($_GET['edit-search']) {
                 </div>
             </div>
 
+            <!-- Date Registered -->
+            <h2 class="form_section_heading">Date Posted on Site</h2>
+
+            <div class="form_flexbox_2">
+                <div>
+                    <p class="label">Earliest Date Posted</p>
+                    <input type="date" name="earliest_creation_date">
+                </div>
+                <div>
+                    <p class="label">Latest Date Posted</p>
+                    <input type="date" name="latest_creation_date">
+                </div>
+            </div>
+
             <input type="hidden" name="update_search" value="true">
             <input type="hidden" name="cja_set_cookies" value="true">
 
@@ -215,6 +229,4 @@ if ($_GET['edit-search']) {
 
 
     $display_search = false;
-}
-
-?>
+} ?>

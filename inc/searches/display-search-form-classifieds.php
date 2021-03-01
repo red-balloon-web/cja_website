@@ -13,24 +13,38 @@ if ($_GET['edit-search']) {
     <!--<p style="text-align: center; font-style: italic; color: #666; margin-bottom: 40px;">Please remember to set any fields you no longer wish to search by back to "any".</p>-->
 
 
-    <form action="<?php echo get_the_permalink(); ?>" method="post" id="edit_classified_search_form">
+    <form action="<?php echo get_the_permalink(); ?>" method="post" id="edit_classified_search_form" class="smart_form">
 
         <p class="label">Search by ID</p>
-        <input type="text" name="cja_id">
+        <input type="text" name="cja_id"><?php 
+        
+        if ($cja_current_user_obj->postcode) { ?>
+            <h2 class="form_section_heading">Search</h2>
+            <div class="form_flexbox_2">
+                <div>
+                    <p class="label">Maximum Distance from my Postcode:</p>
+                    <select name="max_distance" form="edit_classified_search_form">
+                        <option value="">-- Any --</option>
+                        <option value="10" <?php if ($cja_classifiedsearch->max_distance == '10') { echo 'selected'; } ?>>10 Miles</option>
+                        <option value="20" <?php if ($cja_classifiedsearch->max_distance == '20') { echo 'selected'; } ?>>20 Miles</option>
+                        <option value="30" <?php if ($cja_classifiedsearch->max_distance == '30') { echo 'selected'; } ?>>30 Miles</option>
+                        <option value="50" <?php if ($cja_classifiedsearch->max_distance == '50') { echo 'selected'; } ?>>50 Miles</option>
+                        <option value="100" <?php if ($cja_classifiedsearch->max_distance == '100') { echo 'selected'; } ?>>100 Miles</option>
+                    </select>
+                </div>
+                <div>
+                    <p class="label">Order Results By</p>
+                    <select name="order_by" form="edit_classified_search_form">
+                        <option value="date">Newest Adverts First</option>
+                        <option value="distance" <?php if ($cja_classifiedsearch->order_by == 'distance') { echo 'selected'; } ?>>Closest Adverts First</option>
+                    </select>
+                </div>
+            </div><?php
+        } else { ?>
+            <input type="hidden" name="order_by" value="date"><?php 
+        } ?>
 
-        <hr>
-
-        <?php if ($cja_current_user_obj->postcode) { ?>
-            <p class="label">Maximum Distance from my Postcode:</p>
-            <select name="max_distance" form="edit_classified_search_form">
-                <option value="">-- Any --</option>
-                <option value="10" <?php if ($cja_classifiedsearch->max_distance == '10') { echo 'selected'; } ?>>10 Miles</option>
-                <option value="20" <?php if ($cja_classifiedsearch->max_distance == '20') { echo 'selected'; } ?>>20 Miles</option>
-                <option value="30" <?php if ($cja_classifiedsearch->max_distance == '30') { echo 'selected'; } ?>>30 Miles</option>
-                <option value="50" <?php if ($cja_classifiedsearch->max_distance == '50') { echo 'selected'; } ?>>50 Miles</option>
-                <option value="100" <?php if ($cja_classifiedsearch->max_distance == '100') { echo 'selected'; } ?>>100 Miles</option>
-            </select>
-        <?php } ?>
+        <h2 class="form_section_heading">Category</h2>
 
         <p class="label">Advert Category</p>
         <select name="category" form="edit_classified_search_form">
@@ -48,18 +62,21 @@ if ($_GET['edit-search']) {
             <option value="notices" <?php if ($cja_classifiedsearch->category == 'notices') { echo 'selected'; } ?>>Notices</option>
             <option value="events" <?php if ($cja_classifiedsearch->category == 'events') { echo 'selected'; } ?>>Events</option>
             <option value="urgent_jobs" <?php if ($cja_classifiedsearch->category == 'urgent_jobs') { echo 'selected'; } ?>>Urgent Jobs</option>
-        </select><?php 
-        
-        if ($cja_current_user_obj->postcode) { ?>
-            <p class="label">Order Results By</p>
-            <select name="order_by" form="edit_classified_search_form">
-                <option value="date">Newest Adverts First</option>
-                <option value="distance" <?php if ($cja_classifiedsearch->order_by == 'distance') { echo 'selected'; } ?>>Closest Adverts First</option>
-            </select><?php 
-        } else { ?>
-            <input type="hidden" name="order_by" value="date"><?php 
-        } ?>
+        </select> 
 
+        <h2 class="form_section_heading">Date Posted on Site</h2>
+
+        <div class="form_flexbox_2">
+            <div>
+                <p class="label">Earliest Date Posted</p>
+                <input type="date" name="earliest_creation_date">
+            </div>
+            <div>
+                <p class="label">Latest Date Posted</p>
+                <input type="date" name="latest_creation_date">
+            </div>
+        </div>
+        
         <input type="hidden" name="update_search" value="true">
         <input type="hidden" name="cja_set_classified_cookies" value="true">
 

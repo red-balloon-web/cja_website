@@ -22,6 +22,8 @@ $array_row = array(
     'Phone Number',
     'Email Address',
     'Town/City',
+    'Profile Status',
+    'Date Registered',
     $distance_header,
     'GCSE Maths',
     'GCSE English',
@@ -59,6 +61,8 @@ foreach($cja_results_array as $cja_result) {
     $array_row[] = $current_user->phone;
     $array_row[] = $current_user->email;
     $array_row[] = $current_user->town_city;
+    $array_row[] = $current_user->return_field('profile_status');
+    $array_row[] = $current_user->date_registered;
     if ($cja_result['distance'] != -1) {
         $array_row[] = $cja_result['distance'];
     } else {

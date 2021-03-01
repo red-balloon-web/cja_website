@@ -35,6 +35,8 @@ function users_csv() {
         'Phone Number',
         'Email Address',
         'Town/City',
+        'Profile Status',
+        'Date Registered',
         'GCSE Maths',
         'GCSE English',
         'Functional Skills Maths',
@@ -80,6 +82,8 @@ function users_csv() {
         $array_row[] = $current_user->phone;
         $array_row[] = $current_user->email;
         $array_row[] = $current_user->town_city;
+        $array_row[] = $current_user->return_field('profile_status');
+        $array_row[] = $current_user->date_registered;
         $array_row[] = $current_user->return_field('gcse_maths');
         $array_row[] = $current_user->return_field('gcse_english');
         $array_row[] = $current_user->return_field('functional_maths');

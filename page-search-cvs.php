@@ -97,6 +97,7 @@ get_header(); ?>
                 
                     // Do the query
                     $the_query = new WP_User_Query( $cja_usersearch->build_wp_query() );
+                    // print_r($the_query);
                     $the_returned_query_array = $the_query->get_results();
                     if ( !empty($the_returned_query_array)) {
                         $cja_results_array = array(); // set up the blank results array

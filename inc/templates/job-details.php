@@ -19,6 +19,10 @@
             <td><?php echo $cja_current_ad->display_field('payment_frequency'); ?></td>
         </tr>
         <tr>
+            <td>Posted</td>
+            <td><?php echo $cja_current_ad->human_activation_date; ?></td>
+        </tr>
+        <tr>
             <td>Deadline</td>
             <td><?php echo $cja_current_ad->display_field('deadline'); ?></td>
         </tr>

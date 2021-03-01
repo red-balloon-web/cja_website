@@ -35,6 +35,7 @@ $array_row = array(
     'Advertiser Code',
     'Advertiser',
     $distance_header,
+    'Posted',
     'Deadline',
     'Offer Type',
     'Category',
@@ -75,6 +76,7 @@ foreach($cja_results_array as $cja_result) {
     } else {
         $array_row[] = '';
     }
+    $array_row[] = $current_course->human_activation_date;
     $array_row[] = $current_course->return_human('deadline');
     $array_row[] = $current_course->return_human('offer_type');
     $array_row[] = $current_course->return_human('category');

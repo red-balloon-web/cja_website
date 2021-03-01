@@ -118,6 +118,12 @@ class CJA_Classified_Advert {
         if ($_POST['order_by']) {
             $this->order_by = $_POST['order_by'];
         }
+        if ($_POST['earliest_creation_date']) {
+            $this->earliest_creation_date = $_POST['earliest_creation_date'];
+        }
+        if ($_POST['latest_creation_date']) {
+            $this->latest_creation_date = $_POST['latest_creation_date'];
+        }
 
         if ($_POST['delete_photo']) {
             $this->class_photo_filename = '';
@@ -296,6 +302,19 @@ class CJA_Classified_Advert {
                 $meta_item['value'] = $this->$field;
                 $meta_query[] = $meta_item;
             }
+        }
+
+        // Date registered
+        if ($this->earliest_creation_date || $this->latest_creation_date) {
+            $date_query = [];
+            if ($this->earliest_creation_date) {
+                $date_query['after'] = $this->earliest_creation_date;
+            }
+            if ($this->latest_creation_date) {
+                $date_query['before'] = $this->latest_creation_date;
+            }
+            $date_query['inclusive'] = true;
+            $wp_query_args['date_query'] = $date_query;
         }
 
         $wp_query_args['meta_query'] = $meta_query;

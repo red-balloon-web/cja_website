@@ -16,7 +16,7 @@ if ($_GET['edit-search']) {
         <p class="label">Search by ID</p>
         <input type="text" name="cja_id">
 
-        <hr>
+        <h2 class="form_section_heading">Distance</h2>
 
         <?php if ($cja_user->postcode) { ?>
                 <p class="label">Maximum Distance from my Postcode:</p>
@@ -111,6 +111,20 @@ if ($_GET['edit-search']) {
         
         <!-- Prevent Safeguarding -->
         <?php $cja_usersearch->display_form_field('prevent_safeguarding', true, true); ?>
+
+        <!-- Date Registered -->
+        <h2 class="form_section_heading">Date Registered</h2>
+
+        <div class="form_flexbox_2">
+            <div>
+                <p class="label">Earliest Date Registered</p>
+                <input type="date" name="earliest_creation_date">
+            </div>
+            <div>
+                <p class="label">Latest Date Registered</p>
+                <input type="date" name="latest_creation_date">
+            </div>
+        </div>
 
         <input type="hidden" name="update_cv_search" value="true">
         <input type="hidden" name="cja_set_cv_cookies" value="true">

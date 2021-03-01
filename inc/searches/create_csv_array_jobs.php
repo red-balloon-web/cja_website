@@ -37,6 +37,7 @@ $array_row = array(
     'Salary',
     'Salary per',
     'Payment Frequency',
+    'Posted',
     'Deadline',
     'Sector',
     'Job Type',
@@ -71,6 +72,7 @@ foreach($cja_results_array as $cja_result) {
     $array_row[] = $current_job->salary_numeric;
     $array_row[] = $current_job->salary_per;
     $array_row[] = $current_job->payment_frequency;
+    $array_row[] = $current_job->human_activation_date;
     $array_row[] = $current_job->return_human('deadline');
     $array_row[] = $current_job->return_human('sector');
     $array_row[] = $current_job->return_human('job_type');

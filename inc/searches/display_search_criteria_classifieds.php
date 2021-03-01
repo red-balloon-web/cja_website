@@ -10,6 +10,23 @@
     
     if ($cja_search->category) { ?>
         <p>Category: <strong><?php echo $cja_search->return_human('category'); ?></strong></p><?php 
+    } 
+
+    if ($cja_search->earliest_creation_date || $cja_search->latest_creation_date) { ?>
+        <p>Display adverts posted<?php
+        if ($cja_search->earliest_creation_date) {
+            $date_time = new DateTime($cja_search->earliest_creation_date);
+            echo ' after ';
+            echo $date_time->format('D d F Y');
+            if ($cja_search->latest_creation_date) {
+                echo ' and ';
+            }
+        }
+        if ($cja_search->latest_creation_date) {
+            $date_time = new DateTime($cja_search->latest_creation_date);
+            echo ' before ';
+            echo $date_time->format('D d F Y');
+        }
     } ?>
     
     <p>Order results by: <strong><?php 

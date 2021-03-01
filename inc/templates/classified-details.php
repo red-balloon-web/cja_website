@@ -14,6 +14,10 @@
             <td><?php echo $cja_current_ad->return_human('category'); ?></td>
         </tr>
         <tr>
+            <td>Posted</td>
+            <td><?php echo $cja_current_ad->human_activation_date; ?></td>
+        </tr>
+        <tr>
             <td>Postcode</td>
             <td><?php echo $cja_current_ad->postcode; ?></td>
         </tr>

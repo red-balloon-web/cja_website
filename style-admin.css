@@ -8,6 +8,12 @@
     margin-top: 30px;
 }
 
+#poststuff .admin_edit_form h2.form_section_heading {
+    border-bottom: 1px solid black;
+    padding: 0 0 3px 0;
+    margin-top: 30px;
+}
+
 .admin_edit_form p.label {
     margin-bottom: 0;
 }

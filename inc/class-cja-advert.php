@@ -703,21 +703,12 @@ class CJA_Advert {
             $this->show_applied = NULL;
         }
 
-        /*
-        if ( $_FILES['job_specification']['size'] != 0 ) {
-            if ( ! function_exists( 'wp_handle_upload' ) ) {
-                require_once( ABSPATH . 'wp-admin/includes/file.php' );
-            }
-            $uploadedfile = $_FILES['job_specification'];
-
-            $upload_overrides = array(
-                'test_form' => false
-            );
-            $movefile = wp_handle_upload( $uploadedfile, $upload_overrides );
-            $this->job_spec_filename = $uploadedfile['name'];
-            $this->job_spec_url = $movefile['url'];
+        if ($_POST['earliest_creation_date']) {
+            $this->earliest_creation_date = $_POST['earliest_creation_date'];
         }
-        */
+        if ($_POST['latest_creation_date']) {
+            $this->latest_creation_date = $_POST['latest_creation_date'];
+        }
 
         // photo
 
@@ -1137,6 +1128,19 @@ class CJA_Advert {
                 $meta_item['value'] = $this->$field;
                 $meta_query[] = $meta_item;
             }
+        }
+
+        // Date registered
+        if ($this->earliest_creation_date || $this->latest_creation_date) {
+            $date_query = [];
+            if ($this->earliest_creation_date) {
+                $date_query['after'] = $this->earliest_creation_date;
+            }
+            if ($this->latest_creation_date) {
+                $date_query['before'] = $this->latest_creation_date;
+            }
+            $date_query['inclusive'] = true;
+            $wp_query_args['date_query'] = $date_query;
         }
 
         $wp_query_args['meta_query'] = $meta_query;

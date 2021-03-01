@@ -109,7 +109,24 @@
             }
         } ?>
         <p>Specialism Area(s): <strong><?php echo $display_string; ?></strong></p>
-    <?php } ?>
+    <?php }
+
+    if ($cja_usersearch->earliest_creation_date || $cja_usersearch->latest_creation_date) { ?>
+        <p>Display users registered<?php
+        if ($cja_usersearch->earliest_creation_date) {
+            $date_time = new DateTime($cja_usersearch->earliest_creation_date);
+            echo ' after ';
+            echo $date_time->format('D d F Y');
+            if ($cja_usersearch->latest_creation_date) {
+                echo ' and ';
+            }
+        }
+        if ($cja_usersearch->latest_creation_date) {
+            $date_time = new DateTime($cja_usersearch->latest_creation_date);
+            echo ' before ';
+            echo $date_time->format('D d F Y');
+        }
+    } ?>
 
     <!--<p>Order results by: <strong><?php 
         if ($cja_usersearch->order_by == 'alphabet') {

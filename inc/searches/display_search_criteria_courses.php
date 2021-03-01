@@ -85,6 +85,23 @@
         ?><p>Include courses I have already applied for</p><?php
     } else {
         ?><p>Exclude courses I have already applied for</p><?php
+    }
+
+    if ($cja_search->earliest_creation_date || $cja_search->latest_creation_date) { ?>
+        <p>Display courses posted<?php
+        if ($cja_search->earliest_creation_date) {
+            $date_time = new DateTime($cja_search->earliest_creation_date);
+            echo ' after ';
+            echo $date_time->format('D d F Y');
+            if ($cja_search->latest_creation_date) {
+                echo ' and ';
+            }
+        }
+        if ($cja_search->latest_creation_date) {
+            $date_time = new DateTime($cja_search->latest_creation_date);
+            echo ' before ';
+            echo $date_time->format('D d F Y');
+        }
     } ?>
 
 </div>

@@ -872,6 +872,10 @@ class CJA_User {
         $this->description_approved = get_user_meta($this->id, 'description_approved', true);
         $this->pending_description = get_user_meta($this->id, 'pending_description', true);
         $this->files_approved = get_user_meta($this->id, 'files_approved', true);
+        // date registered
+        $userdata = get_userdata($this->id);
+        $date_time = new DateTime( $userdata->user_registered ); 
+        $this->date_registered = $date_time->format('D d F Y');
     }
 
     /**
@@ -974,6 +978,12 @@ class CJA_User {
                 $this->$field = $_GET[$field];
             }
         }
+        if (isset($_GET['earliest_creation_date'])) {
+            $this->earliest_creation_date = $_GET['earliest_creation_date'];
+        }
+        if (isset($_GET['latest_creation_date'])) {
+            $this->latest_creation_date = $_GET['latest_creation_date'];
+        }
     }
 
     // Update object from $_POST data
@@ -1009,26 +1019,6 @@ class CJA_User {
                 $this->$field = $_POST[$field];
             }
         }
-        /*
-        if ($_POST['delete_cv']) {
-            $this->cv_filename = null;
-            $this->cv_url = null;
-        }
-
-        if ( $_FILES['cv-file']['size'] != 0 ) {
-            if ( ! function_exists( 'wp_handle_upload' ) ) {
-                require_once( ABSPATH . 'wp-admin/includes/file.php' );
-            }
-            $uploadedfile = $_FILES['cv-file'];
-
-            $upload_overrides = array(
-                'test_form' => false
-            );
-            $movefile = wp_handle_upload( $uploadedfile, $upload_overrides );
-            $this->cv_filename = $uploadedfile['name'];
-            $this->cv_url = $movefile['url'];
-        }
-        */
 
         // Search
 
@@ -1037,6 +1027,12 @@ class CJA_User {
         }
         if ($_POST['order_by']) {
             $this->order_by = $_POST['order_by'];
+        }
+        if ($_POST['earliest_creation_date']) {
+            $this->earliest_creation_date = $_POST['earliest_creation_date'];
+        }
+        if ($_POST['latest_creation_date']) {
+            $this->latest_creation_date = $_POST['latest_creation_date'];
         }
 
         // photo
@@ -1328,6 +1324,19 @@ class CJA_User {
                 'value' => 'true'
             );
             $meta_query[] = $meta_query_item;
+        }
+
+        // Date registered
+        if ($this->earliest_creation_date || $this->latest_creation_date) {
+            $date_query = [];
+            if ($this->earliest_creation_date) {
+                $date_query['after'] = $this->earliest_creation_date;
+            }
+            if ($this->latest_creation_date) {
+                $date_query['before'] = $this->latest_creation_date;
+            }
+            $date_query['inclusive'] = true;
+            $return_wp_query['date_query'] = $date_query;
         }
     
         $return_wp_query['meta_query'] = $meta_query;

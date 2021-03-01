@@ -14,6 +14,8 @@ function cja_monitoring_content() {
         $first_date = $_POST['start_date'];
         $last_date = $_POST['end_date'];
     }
+
+    echo strtotime($first_date);
     
     // Start and end dates form ?>
     <form action="<?php echo get_site_url(); ?>/wp-admin/admin.php?page=cja_monitoring" method="post">
