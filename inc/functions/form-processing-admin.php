@@ -70,10 +70,13 @@ function approve_attachment_posted() {
 
     // If there is no replacement file then approve file
     if ($_FILES['cja_replace_file']['size'][0] == 0 ) { 
+
+        //print_r($_POST['approve_attachment_name']);
+        
         
         // Find file in pending files array and move to approved files array
         foreach ($cja_user->pending_files_array as $pending_file => $value) {
-            if ($value['name'] == $_POST['approve_attachment_name']) {
+            if ($value['name'] == stripslashes($_POST['approve_attachment_name'])) {
 
                 $approved_file = array(
                     'name' => $value['name'],

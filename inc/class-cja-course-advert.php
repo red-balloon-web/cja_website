@@ -1147,6 +1147,31 @@ class CJA_Course_Advert {
                 )
             )
         ),
+        "availability_period" => array(
+            "meta_field" => true,
+            "type" => "select",
+            "meta_label" => "cja_availability_period",
+            "label" => "Availability Period",
+            "options" => array(
+                array(
+                    "label" => "Morning",
+                    "value" => "morning"
+                ),
+                array(
+                    "label" => "Afternoon",
+                    "value" => "afternoon"
+                ),
+                array(
+                    "label" => "Night",
+                    "value" => "night"
+                ),
+                array(
+                    "label" => "Weekend",
+                    "value" => "weekend"
+                ),
+
+            )
+        ),
         "allowance_available" => array(
             "meta_field" => true,
             "type" => "select",
@@ -1441,6 +1466,27 @@ class CJA_Course_Advert {
         $this->status = 'inactive';
         $this->expiry_date = 100;
         return $this->id;
+    }
+
+    // Update object from $_GET data for admin search
+    public function update_from_get() {
+        
+        // meta fields
+        foreach($this->form_fields as $field => $value) {
+            if ($this->form_fields[$field]['type'] == 'checkbox') {
+                $this->$field = false; // blank checkbox value first
+            }
+            if (isset($_GET[$field])) {
+                $this->$field = $_GET[$field];
+            }
+        }
+
+        if ($_GET['earliest_creation_date']) {
+            $this->earliest_creation_date = $_GET['earliest_creation_date'];
+        }
+        if ($_GET['latest_creation_date']) {
+            $this->latest_creation_date = $_GET['latest_creation_date'];
+        }
     }
 
     // Update object from $_POST data

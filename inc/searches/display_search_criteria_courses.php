@@ -1,5 +1,7 @@
 <div class="cja_search_criteria">
 
+    <?php global $pagenow; ?>
+
     <?php if ($cja_search->cja_id) { ?>
         <p>Course ID: <strong><?php echo $cja_search->cja_id; ?></strong></p>
     <?php } ?>
@@ -74,17 +76,21 @@
     <?php } ?>
     <?php if ($cja_search->available_start) { ?>
         <p>Available to Start: <strong><?php echo $cja_search->return_human('available_start'); ?></strong></p>
-    <?php } ?>
-    <p>Order results by: <strong><?php 
-        if ($cja_search->order_by == 'date') {
-            echo 'Newest Courses First';
-        } else if ($cja_search->order_by == 'distance') {
-            echo 'Closest Courses First';
-        } ?></strong></p>
-    <?php if ($cja_search->show_applied) {
-        ?><p>Include courses I have already applied for</p><?php
-    } else {
-        ?><p>Exclude courses I have already applied for</p><?php
+    <?php }
+
+    if ($pagenow != 'edit.php') { ?>
+        <p>Order results by: <strong><?php 
+            if ($cja_search->order_by == 'date') {
+                echo 'Newest Courses First';
+            } else if ($cja_search->order_by == 'distance') {
+                echo 'Closest Courses First';
+            } ?></strong>
+        </p><?php 
+        if ($cja_search->show_applied) {
+            ?><p>Include courses I have already applied for</p><?php
+        } else {
+            ?><p>Exclude courses I have already applied for</p><?php
+        }
     }
 
     if ($cja_search->earliest_creation_date || $cja_search->latest_creation_date) { ?>

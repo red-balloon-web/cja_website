@@ -1,5 +1,7 @@
 <div class="cja_search_criteria"><?php 
 
+    global $pagenow;
+
     if ($cja_search->cja_id) { ?>
     <p>Advert ID: <strong><?php echo $cja_search->cja_id; ?></strong></p>
     <?php }
@@ -27,13 +29,17 @@
             echo ' before ';
             echo $date_time->format('D d F Y');
         }
-    } ?>
+    } 
     
-    <p>Order results by: <strong><?php 
-        if ($cja_search->order_by == 'date') {
-            echo 'Newest Adverts First';
-        } else if ($cja_search->order_by == 'distance') {
-            echo 'Closest Adverts First';
-        } ?></strong></p>
+    if ($pagenow != 'edit.php') {?>
+    
+        <p>Order results by: <strong><?php 
+            if ($cja_search->order_by == 'date') {
+                echo 'Newest Adverts First';
+            } else if ($cja_search->order_by == 'distance') {
+                echo 'Closest Adverts First';
+            } ?></strong>
+        </p> <?php
+    } ?>
 
 </div>

@@ -1,5 +1,7 @@
 <div class="cja_search_criteria">
 
+    <?php global $pagenow; ?>
+
     <?php if ($cja_search->cja_id) { ?>
         <p>Job ID: <strong><?php echo $cja_search->cja_id; ?></strong></p>
     <?php } ?>
@@ -39,16 +41,19 @@
     <?php if ($cja_search->location_options) { ?>
         <p>Location Options: <strong><?php echo $cja_search->return_human('location_options'); ?></strong></p>
     <?php } ?>
-    <p>Order results by: <strong><?php 
-        if ($cja_search->order_by == 'date') {
-            echo 'Newest Jobs First';
-        } else if ($cja_search->order_by == 'distance') {
-            echo 'Closest Jobs First';
-        } ?></strong></p>
-    <?php if ($cja_search->show_applied) {
-        ?><p>Include jobs I have already applied for</p><?php
-    } else {
-        ?><p>Exclude jobs I have already applied for</p><?php
+
+    <?php if ($pagenow != 'edit.php') { ?>
+        <p>Order results by: <strong><?php 
+            if ($cja_search->order_by == 'date') {
+                echo 'Newest Jobs First';
+            } else if ($cja_search->order_by == 'distance') {
+                echo 'Closest Jobs First';
+            } ?></strong></p>
+        <?php if ($cja_search->show_applied) {
+            ?><p>Include jobs I have already applied for</p><?php
+        } else {
+            ?><p>Exclude jobs I have already applied for</p><?php
+        } 
     } 
 
     if ($cja_search->earliest_creation_date || $cja_search->latest_creation_date) { ?>

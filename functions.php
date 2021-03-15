@@ -594,10 +594,45 @@ function cja_filter_jobs($query) {
         $cja_search_obj = new CJA_Advert;
         $cja_search_obj->update_from_get();
         $cja_full_search_args = $cja_search_obj->build_wp_query();
+        //print_r($cja_full_search_args);
         $cja_meta_query_args = $cja_full_search_args['meta_query'];
+        $cja_date_query = $cja_full_search_args['date_query'];
         //print_r($cja_meta_query_args);
         unset($cja_meta_query_args[0]); // remove 'post_status' == 'active' 
         $query->set('meta_query', $cja_meta_query_args);
+        if ($cja_date_query) {
+            $query->set('date_query', $cja_date_query);
+        }
+    }
+
+    if (is_admin() && $pagenow == 'edit.php' && $_GET['post_type'] == 'course_ad') {
+
+        $cja_search_obj = new CJA_Course_Advert;
+        $cja_search_obj->update_from_get();
+        $cja_full_search_args = $cja_search_obj->build_wp_query();
+        $cja_meta_query_args = $cja_full_search_args['meta_query'];
+        $cja_date_query = $cja_full_search_args['date_query'];
+        //print_r($cja_meta_query_args);
+        unset($cja_meta_query_args[0]); // remove 'post_status' == 'active' 
+        $query->set('meta_query', $cja_meta_query_args);
+        if ($cja_date_query) {
+            $query->set('date_query', $cja_date_query);
+        }
+    }
+
+    if (is_admin() && $pagenow == 'edit.php' && $_GET['post_type'] == 'classified_ad') {
+
+        $cja_search_obj = new CJA_Classified_Advert;
+        $cja_search_obj->update_from_get();
+        $cja_full_search_args = $cja_search_obj->build_wp_query();
+        $cja_meta_query_args = $cja_full_search_args['meta_query'];
+        $cja_date_query = $cja_full_search_args['date_query'];
+        //print_r($cja_meta_query_args);
+        unset($cja_meta_query_args[0]); // remove 'post_status' == 'active' 
+        $query->set('meta_query', $cja_meta_query_args);
+        if ($cja_date_query) {
+            $query->set('date_query', $cja_date_query);
+        }
     }
     
 }
@@ -606,9 +641,21 @@ add_action('manage_posts_extra_tablenav', 'cja_filter_jobs_admin');
 function cja_filter_jobs_admin($which) {
     global $pagenow;
 
+    // JOB ADS
     if ( $pagenow == 'edit.php' && $_GET['post_type'] == 'job_ad' && $which == 'top') {
 
         $cja_jobsearch = new CJA_Advert;
+        if ($_GET['cja_advanced_search']) {
+
+            $cja_search = new CJA_Advert;
+            $cja_search->update_from_get(); 
+            // print_r($cja_search); ?>
+
+            
+            <div id="search_options_display"><?php 
+                include('inc/searches/display_search_criteria_jobs.php'); ?>
+            </div><?php
+        }
         ?>
         <h4 style="clear: both; padding-top: 10px"><span id="users_filter_form_toggle">CJA Job Filter Options</span></h4>
 
@@ -645,20 +692,170 @@ function cja_filter_jobs_admin($which) {
                 <div><?php $cja_jobsearch->display_form_field('dbs_required', true, true); ?></div>
                 <div><?php $cja_jobsearch->display_form_field('career_level', true, true); ?></div>
             </div>
+            <h2 class="form_section_heading">Date Created</h2>
+            <div class="form_flexbox_2">
+               <div>
+                   <p class="label">Earliest Date Created</p>
+                   <input type="date" name="earliest_creation_date">
+               </div>
+               <div>
+                   <p class="label">Latest Date Created</p>
+                   <input type="date" name="latest_creation_date">
+               </div>
+           </div>
 
             <input type="submit" name="cja_advanced_search" id="cja_advanced_search_submit" class="button" value="Filter Jobs" style="margin-top: 20px">
-        </div>
+        </div><?php
+
+    // COURSE ADS
+    } else if ( $pagenow == 'edit.php' && $_GET['post_type'] == 'course_ad' && $which == 'top') {
+        
+        $cja_coursesearch = new CJA_Course_Advert;
+        
+        if ($_GET['cja_advanced_search']) {
+
+            $cja_search = new CJA_Course_Advert;
+            $cja_search->update_from_get(); 
+            // print_r($cja_search); ?>
+
+            
+            <div id="search_options_display"><?php 
+                include('inc/searches/display_search_criteria_courses.php'); ?>
+            </div><?php
+        } ?>
+
+        <h4 style="clear: both; padding-top: 10px"><span id="users_filter_form_toggle">CJA Course Filter Options</span></h4>
+
+        <div class="admin_edit_form" id="users_table_filter_form">
+            <div class="form_flexbox_2">
+                <div><?php $cja_coursesearch->display_form_field('offer_type', true, true); ?></div>
+                <div><?php $cja_coursesearch->display_form_field('category', true, true); ?></div>
+            </div>
+            <div class="form_flexbox_2">
+                <div><?php $cja_coursesearch->display_form_field('sector', true, true); ?></div>
+                <div><?php $cja_coursesearch->display_form_field('deposit_required', true, true); ?></div>
+            </div>
+            <div class="form_flexbox_2">
+                <div><?php $cja_coursesearch->display_form_field('career_level', true, true); ?></div>
+                <div><?php $cja_coursesearch->display_form_field('experience_required', true, true); ?></div>
+            </div>
+            <div class="form_flexbox_2">
+                <div><?php $cja_coursesearch->display_form_field('provider_type', true, true); ?></div>
+                <div><?php $cja_coursesearch->display_form_field('previous_qualification', true, true); ?></div>
+            </div>
+            <div class="form_flexbox_2">
+                <div><?php $cja_coursesearch->display_form_field('course_pathway', true, true); ?></div>
+                <div><?php $cja_coursesearch->display_form_field('funding_options', true, true); ?></div>
+            </div>
+            <div class="form_flexbox_2">
+                <div><?php $cja_coursesearch->display_form_field('payment_plan', true, true); ?></div>
+                <div><?php $cja_coursesearch->display_form_field('qualification_level', true, true); ?></div>
+            </div>
+            <div class="form_flexbox_2">
+                <div><?php $cja_coursesearch->display_form_field('qualification_type', true, true); ?></div>
+                <div><?php $cja_coursesearch->display_form_field('total_units', true, true); ?></div>
+            </div>
+            <div class="form_flexbox_2">
+                <div><?php $cja_coursesearch->display_form_field('dbs_required', true, true); ?></div>
+                <div><?php $cja_coursesearch->display_form_field('availability_period', true, true); ?></div>
+            </div>
+            <div class="form_flexbox_2">
+                <div><?php $cja_coursesearch->display_form_field('allowance_available', true, true); ?></div>
+                <div><?php $cja_coursesearch->display_form_field('awarding_body', true, true); ?></div>
+            </div>
+            <div class="form_flexbox_2">
+                <div><?php $cja_coursesearch->display_form_field('duration', true, true); ?></div>
+                <div><?php $cja_coursesearch->display_form_field('suitable_benefits', true, true); ?></div>
+            </div>
+            <div class="form_flexbox_2">
+                <div><?php $cja_coursesearch->display_form_field('social_services', true, true); ?></div>
+                <div><?php $cja_coursesearch->display_form_field('delivery_route', true, true); ?></div>
+            </div>
+            <div class="form_flexbox_2">
+                <div><?php $cja_coursesearch->display_form_field('available_start', true, true); ?></div>
+            </div>
+
+            <h2 class="form_section_heading">Date Created</h2>
+            <div class="form_flexbox_2">
+               <div>
+                   <p class="label">Earliest Date Created</p>
+                   <input type="date" name="earliest_creation_date">
+               </div>
+               <div>
+                   <p class="label">Latest Date Created</p>
+                   <input type="date" name="latest_creation_date">
+               </div>
+           </div>
+
+            <input type="submit" name="cja_advanced_search" id="cja_advanced_search_submit" class="button" value="Filter Courses" style="margin-top: 20px">
+        </div><?php
+
+    // CLASSIFIED ADS
+    }  else if ( $pagenow == 'edit.php' && $_GET['post_type'] == 'classified_ad' && $which == 'top') {
+
+        $cja_classifiedsearch = new CJA_Classified_Advert;
+        if ($_GET['cja_advanced_search']) {
+
+            $cja_search = new CJA_Classified_Advert;
+            $cja_search->update_from_get(); 
+            // print_r($cja_search); ?>
+
+            
+            <div id="search_options_display"><?php 
+                include('inc/searches/display_search_criteria_classifieds.php'); ?>
+            </div><?php
+        } ?>
+
+        <h4 style="clear: both; padding-top: 10px"><span id="users_filter_form_toggle">CJA Classified Filter Options</span></h4>
+
+        <div class="admin_edit_form" id="users_table_filter_form">
+            <div>
+                <p class="label">Advert Category</p>
+                <select name="category">
+                    <option value="" <?php if ($cja_edit_ad->category == 'for_sale') { echo 'selected'; } ?>>-- Any --</option>
+                    <option value="for_sale" <?php if ($cja_edit_ad->category == 'for_sale') { echo 'selected'; } ?>>For Sale</option>
+                    <option value="for_hire" <?php if ($cja_edit_ad->category == 'for_hire') { echo 'selected'; } ?>>For Hire</option>
+                    <option value="motors" <?php if ($cja_edit_ad->category == 'motors') { echo 'selected'; } ?>>Motors</option>
+                    <option value="pets" <?php if ($cja_edit_ad->category == 'pets') { echo 'selected'; } ?>>Pets</option>
+                    <option value="properties" <?php if ($cja_edit_ad->category == 'properties') { echo 'selected'; } ?>>Properties</option>
+                    <option value="services" <?php if ($cja_edit_ad->category == 'services') { echo 'selected'; } ?>>Services</option>
+                    <option value="exchange" <?php if ($cja_edit_ad->category == 'exchange') { echo 'selected'; } ?>>Exchange</option>
+                    <option value="freebies" <?php if ($cja_edit_ad->category == 'freebies') { echo 'selected'; } ?>>Freebies</option>
+                    <option value="lost_found" <?php if ($cja_edit_ad->category == 'lost_found') { echo 'selected'; } ?>>Lost and Found</option>
+                    <option value="make_offer" <?php if ($cja_edit_ad->category == 'make_offer') { echo 'selected'; } ?>>Make an Offer</option>
+                    <option value="notices" <?php if ($cja_edit_ad->category == 'notices') { echo 'selected'; } ?>>Notices</option>
+                    <option value="events" <?php if ($cja_edit_ad->category == 'events') { echo 'selected'; } ?>>Events</option>
+                    <option value="urgent_jobs" <?php if ($cja_edit_ad->category == 'urgent_jobs') { echo 'selected'; } ?>>Urgent Jobs</option>
+                </select>
+            </div>
+
+            <h2 class="form_section_heading">Date Created</h2>
+            <div class="form_flexbox_2">
+               <div>
+                   <p class="label">Earliest Date Created</p>
+                   <input type="date" name="earliest_creation_date">
+               </div>
+               <div>
+                   <p class="label">Latest Date Created</p>
+                   <input type="date" name="latest_creation_date">
+               </div>
+           </div>
+
+            <input type="submit" name="cja_advanced_search" id="cja_advanced_search_submit" class="button" value="Filter Classifieds" style="margin-top: 20px">
+        </div><?php
+    }  
+    
+    if ($pagenow == 'edit.php' && $which == 'top') { ?>
 
         <script>
             jQuery(document).ready(function() {
                 jQuery('#users_filter_form_toggle').click(function() {
                     jQuery('#users_filter_form_toggle').toggleClass('open');
                     jQuery('#users_table_filter_form').slideToggle();
+                    console.log('toggled');
                 });
             });
-        </script>
+        </script><?php
 
-
-        <?php
     }
 }

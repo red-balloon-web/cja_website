@@ -676,6 +676,13 @@ class CJA_Advert {
                 $this->salary_numeric = $sal_num;
             }
         }
+
+        if ($_GET['earliest_creation_date']) {
+            $this->earliest_creation_date = $_GET['earliest_creation_date'];
+        }
+        if ($_GET['latest_creation_date']) {
+            $this->latest_creation_date = $_GET['latest_creation_date'];
+        }
     }
 
     // Update object from $_POST data

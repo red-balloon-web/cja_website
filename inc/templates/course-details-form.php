@@ -89,7 +89,10 @@ $cja_current_user = new CJA_User;
     <div><?php $cja_edit_ad->display_form_field('allowance_available'); ?></div>
     <div><?php $cja_edit_ad->display_form_field('social_services'); ?></div>
 </div>
-<?php $cja_edit_ad->display_form_field('suitable_benefits'); ?>
+<div class="form_flexbox_2">
+    <div><?php $cja_edit_ad->display_form_field('suitable_benefits'); ?></div>
+    <div><?php $cja_edit_ad->display_form_field('availability_period'); ?></div>
+</div>
 
 
 <h2 class="form_section_heading">About the Provider</h2>

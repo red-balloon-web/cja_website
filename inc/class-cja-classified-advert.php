@@ -83,6 +83,26 @@ class CJA_Classified_Advert {
         return $this->id;
     }
 
+    // Update from $_GET for admin searches
+    public function update_from_get() {
+        if ($_GET['category']) {
+            $this->category = $_GET['category'];
+        }
+        if ($_GET['earliest_creation_date']) {
+            $this->earliest_creation_date = $_GET['earliest_creation_date'];
+        }
+        if ($_GET['latest_creation_date']) {
+            $this->latest_creation_date = $_GET['latest_creation_date'];
+        }
+
+        if ($_GET['earliest_creation_date']) {
+            $this->earliest_creation_date = $_GET['earliest_creation_date'];
+        }
+        if ($_GET['latest_creation_date']) {
+            $this->latest_creation_date = $_GET['latest_creation_date'];
+        }
+    }
+
     // Update object from $_POST data
     public function update_from_form() {
         if ($_POST['ad-title']) {
