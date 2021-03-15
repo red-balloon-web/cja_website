@@ -127,3 +127,9 @@
     clear: both;
     padding-top: 10px;
 }
+
+/* STOP TABLE OVERLAYING SEARCH OPTIONS WHEN THERE ARE NO RESULTS */
+
+.tablenav {
+    height: auto;
+}

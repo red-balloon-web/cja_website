@@ -657,6 +657,27 @@ class CJA_Advert {
         return $this->id;
     }
 
+    public function update_from_get() {
+
+        // meta fields
+        foreach($this->form_fields as $field => $value) {
+            if ($this->form_fields[$field]['type'] == 'checkbox') {
+                $this->$field = false; // blank checkbox value first
+            }
+            if (isset($_GET[$field])) {
+                $this->$field = $_GET[$field];
+                if ($field == 'salary_numeric') {
+                    $sal_num = (float) filter_var( $_GET['salary_numeric'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION );
+                    $this->salary_numeric = $sal_num;
+                }
+            }
+            if (array_key_exists('salary_numeric',$_GET)) {
+                $sal_num = (float) filter_var( $_GET['salary_numeric'], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION );
+                $this->salary_numeric = $sal_num;
+            }
+        }
+    }
+
     // Update object from $_POST data
     public function update_from_form() {
         if ($_POST['ad-title']) {
@@ -812,6 +833,7 @@ class CJA_Advert {
 
         update_post_meta($this->id, 'cja_job_spec_filename', $this->job_spec_filename);
         update_post_meta($this->id, 'cja_job_spec_url', $this->job_spec_url);
+        update_post_meta($this->id, 'cja_hourly_equivalent_rate', $this->get_hourly_equivalent_rate());
     }
 
     // Activate the advert
@@ -1042,6 +1064,7 @@ class CJA_Advert {
             $meta_query[] = $meta_item;
         }
 
+        
         if ($this->experience_required) {
             $meta_item = array();
             $meta_item['relation'] = 'OR';
@@ -1117,7 +1140,7 @@ class CJA_Advert {
             }
 
             $meta_query[] = $meta_item;
-        }
+        } 
 
         $fields = array( 'job_type', 'sector', 'career_level', 'employer_type', 'dbs_required', 'payment_frequency', 'shift_work', 'location_options');
 

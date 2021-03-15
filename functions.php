@@ -584,3 +584,81 @@ function cja_admin_user_filter( $which ) {
 
     }
 }
+
+add_filter('pre_get_posts', 'cja_filter_jobs');
+function cja_filter_jobs($query) {
+
+    global $pagenow;
+    if (is_admin() && $pagenow == 'edit.php' && $_GET['post_type'] == 'job_ad') {
+
+        $cja_search_obj = new CJA_Advert;
+        $cja_search_obj->update_from_get();
+        $cja_full_search_args = $cja_search_obj->build_wp_query();
+        $cja_meta_query_args = $cja_full_search_args['meta_query'];
+        //print_r($cja_meta_query_args);
+        unset($cja_meta_query_args[0]); // remove 'post_status' == 'active' 
+        $query->set('meta_query', $cja_meta_query_args);
+    }
+    
+}
+
+add_action('manage_posts_extra_tablenav', 'cja_filter_jobs_admin');
+function cja_filter_jobs_admin($which) {
+    global $pagenow;
+
+    if ( $pagenow == 'edit.php' && $_GET['post_type'] == 'job_ad' && $which == 'top') {
+
+        $cja_jobsearch = new CJA_Advert;
+        ?>
+        <h4 style="clear: both; padding-top: 10px"><span id="users_filter_form_toggle">CJA Job Filter Options</span></h4>
+
+        <div class="admin_edit_form" id="users_table_filter_form">
+            <h2 class="form_section_heading">About the Job</h2>
+            <p class="label">Minimum Salary</p>
+            <input type="text" name="salary_numeric" value="£<?php echo ($cja_jobsearch->salary_numeric); ?>">
+            <select name="salary_per">
+                <option value="hour" <?php if ($cja_jobsearch->salary_per == 'hour') { echo 'selected'; } ?>>per hour</option>
+                <option value="day" <?php if ($cja_jobsearch->salary_per == 'day') { echo 'selected'; } ?>>per day</option>
+                <option value="year" <?php if ($cja_jobsearch->salary_per == 'year') { echo 'selected'; } ?>>per annum</option>
+            </select>
+            <div class="form_flexbox_2">
+                <div><?php $cja_jobsearch->display_form_field('job_type', true, true); ?></div>
+                <div><?php $cja_jobsearch->display_form_field('employer_type', true, true); ?></div>
+            </div>
+            <div class="form_flexbox_2">
+                <div><?php $cja_jobsearch->display_form_field('sector', true, true); ?></div>
+                <div><?php $cja_jobsearch->display_form_field('payment_frequency', true, true); ?></div>
+            </div>
+            <div class="form_flexbox_2">
+                <div><?php $cja_jobsearch->display_form_field('location_options', true, true); ?></div>
+                <div><?php $cja_jobsearch->display_form_field('shift_work', true, true); ?></div>
+            </div>
+            <h2 class="form_section_heading">Qualifications and Experience</h2>
+            <div class="form_flexbox_2">
+                <div><?php $cja_jobsearch->display_form_field('minimum_qualification', true, true); ?></div>
+                <div>
+                    <p class="label">Maximum Experience Required</p>
+                    <?php $cja_jobsearch->display_form_field('experience_required', false, true); ?>
+                </div>
+            </div>
+            <div class="form_flexbox_2">
+                <div><?php $cja_jobsearch->display_form_field('dbs_required', true, true); ?></div>
+                <div><?php $cja_jobsearch->display_form_field('career_level', true, true); ?></div>
+            </div>
+
+            <input type="submit" name="cja_advanced_search" id="cja_advanced_search_submit" class="button" value="Filter Jobs" style="margin-top: 20px">
+        </div>
+
+        <script>
+            jQuery(document).ready(function() {
+                jQuery('#users_filter_form_toggle').click(function() {
+                    jQuery('#users_filter_form_toggle').toggleClass('open');
+                    jQuery('#users_table_filter_form').slideToggle();
+                });
+            });
+        </script>
+
+
+        <?php
+    }
+}
