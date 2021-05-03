@@ -11,13 +11,19 @@
 
     <table class="display_table">
         <tr>
-            <td>Salary</td>
-            <td>£<?php echo $cja_current_ad->salary_numeric; ?> per <?php echo $cja_current_ad->salary_per; ?></td>
-        </tr>
-        <tr>
-            <td>Payment Frequency</td>
-            <td><?php echo $cja_current_ad->display_field('payment_frequency'); ?></td>
-        </tr>
+            <td>Paid / Unpaid</td>
+            <td><?php $cja_current_ad->display_field('salary_type'); ?></td>
+        </tr><?php 
+        if ($cja_current_ad->salary_type == 'paid') { ?>
+            <tr>
+                <td>Salary</td>
+                <td>£<?php echo $cja_current_ad->salary_numeric; ?> per <?php echo $cja_current_ad->salary_per; ?></td>
+            </tr>
+            <tr>
+                <td>Payment Frequency</td>
+                <td><?php echo $cja_current_ad->display_field('payment_frequency'); ?></td>
+            </tr><?php 
+        } ?>
         <tr>
             <td>Posted</td>
             <td><?php echo $cja_current_ad->human_activation_date; ?></td>

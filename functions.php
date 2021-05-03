@@ -24,6 +24,8 @@ include('inc/functions/csv/monitoring-csv.php'); // Admin monitoring screen CSV
 include('inc/functions/csv/job-applicants-csv.php'); // Job Applicants CSV
 include('inc/functions/csv/course-applicants-csv.php'); // Course Applicants CSV
 include('inc/functions/csv/users-csv.php'); // Course Applicants CSV
+include('inc/functions/csv/admin-custom-post-type-csv.php'); // Admin jobs/courses/class CSV
+
 
 
 /**
@@ -481,6 +483,8 @@ function cja_admin_user_filter( $which ) {
                     <p><input type="checkbox" name="is_student" value="true">Looking for Courses</p>
                 </div>
             </div>
+            <?php $cja_user->display_form_field('pre_trained'); ?>
+
 
             <h2 class="form_section_heading">About the Opportunities You're Looking For</h2>
             <?php $cja_user->display_form_field('opportunity_required'); ?>
@@ -524,9 +528,18 @@ function cja_admin_user_filter( $which ) {
                     <?php $cja_user->display_form_field('functional_english', false, true); ?>
                 </div>
             </div>
-            <!-- Highest Qualification -->
-            <p class="label">Minimum current highest qualification</p>
-            <?php $cja_user->display_form_field('highest_qualification', false, true); ?>
+            <div class="form_flexbox_2">
+                <div>
+                    <!-- Highest Qualification -->
+                    <p class="label">Minimum current highest qualification</p>
+                    <?php $cja_user->display_form_field('highest_qualification', false, true); ?>
+                </div>
+                <div>
+                    <!-- Upskill & CPD -->
+                    <p class="label">Upskilling and CPD Status</p>
+                    <?php $cja_user->display_form_field('upskill_status', false, true); ?>
+                </div>
+            </div>
 
             <h2 class="form_section_heading">Other Details</h2>
             <div class="form_flexbox_2">
@@ -637,6 +650,10 @@ function cja_filter_jobs($query) {
     
 }
 
+/**
+ * cja_filter_jobs_admin
+ * Adds filter options for jobs, courses and classifieds
+ */
 add_action('manage_posts_extra_tablenav', 'cja_filter_jobs_admin');
 function cja_filter_jobs_admin($which) {
     global $pagenow;
@@ -659,8 +676,11 @@ function cja_filter_jobs_admin($which) {
         ?>
         <h4 style="clear: both; padding-top: 10px"><span id="users_filter_form_toggle">CJA Job Filter Options</span></h4>
 
+        <input type="submit" name="export" form="custom-post-type-csv-form" value="Export CSV" style="padding: 4px 10px;">
+
         <div class="admin_edit_form" id="users_table_filter_form">
             <h2 class="form_section_heading">About the Job</h2>
+            <?php $cja_jobsearch->display_form_field('salary_type', true, true); ?>
             <p class="label">Minimum Salary</p>
             <input type="text" name="salary_numeric" value="£<?php echo ($cja_jobsearch->salary_numeric); ?>">
             <select name="salary_per">
@@ -725,6 +745,8 @@ function cja_filter_jobs_admin($which) {
         } ?>
 
         <h4 style="clear: both; padding-top: 10px"><span id="users_filter_form_toggle">CJA Course Filter Options</span></h4>
+
+        <input type="submit" name="export" form="custom-post-type-csv-form" value="Export CSV" style="padding: 4px 10px;">
 
         <div class="admin_edit_form" id="users_table_filter_form">
             <div class="form_flexbox_2">
@@ -807,6 +829,8 @@ function cja_filter_jobs_admin($which) {
         } ?>
 
         <h4 style="clear: both; padding-top: 10px"><span id="users_filter_form_toggle">CJA Classified Filter Options</span></h4>
+
+        <input type="submit" name="export" form="custom-post-type-csv-form" value="Export CSV" style="padding: 4px 10px;">
 
         <div class="admin_edit_form" id="users_table_filter_form">
             <div>

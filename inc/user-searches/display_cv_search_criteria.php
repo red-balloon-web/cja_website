@@ -28,6 +28,9 @@
         <p>Opportunity Required: <strong><?php echo $display_string; ?></strong></p>
     <?php } ?>
 
+    <?php if ($cja_usersearch->pre_trained) { ?>
+        <p>Pre Trained: <strong><?php $cja_usersearch->display_field('pre_trained'); ?></strong></p>
+    <?php } ?>
     <?php if ($cja_usersearch->course_time) { ?>
         <p>Courses FT/PT: <strong><?php $cja_usersearch->display_field('course_time'); ?></strong></p>
     <?php } ?>
@@ -65,6 +68,9 @@
     <?php } ?>
     <?php if ($cja_usersearch->highest_qualification) { ?>
         <p>Minimum Highest Current Qualification: <strong><?php $cja_usersearch->display_field('highest_qualification'); ?></strong></p>
+    <?php } ?>
+    <?php if ($cja_usersearch->upskill_status) { ?>
+        <p>Upskilling and CPD Status: <strong><?php $cja_usersearch->display_field('upskill_status'); ?></strong></p>
     <?php } ?>
 
     <?php if ($cja_usersearch->age_category) { ?>

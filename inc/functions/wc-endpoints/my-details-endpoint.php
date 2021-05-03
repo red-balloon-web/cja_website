@@ -24,10 +24,11 @@
 
         // Show the actual or pending description
         if ($cja_current_user_obj->description_approved == 'pending') { ?>
+            <p class="label">Company Description</p>
             <textarea name="company_description" cols="30" rows="10"><?php echo $cja_current_user_obj->pending_description; ?></textarea>
             <p style="margin-top: -23px; color: #A00">Your profile is pending approval by our admin team. You will be notified by email when it is approved.</p><?php
         } else {
-            $cja_current_user_obj->display_form_field('company_description', false); 
+            $cja_current_user_obj->display_form_field('company_description', true); 
         } ?>
         
         <div class="form_flexbox_2">
@@ -203,8 +204,12 @@
         <div class="form_flexbox_2">
             <div><?php $cja_current_user_obj->display_form_field('functional_maths'); ?></div>
             <div><?php $cja_current_user_obj->display_form_field('functional_english'); ?></div>
+        </div>
+        <div class="form_flexbox_2">
+            <div><?php $cja_current_user_obj->display_form_field('highest_qualification'); ?></div>
+            <div><?php $cja_current_user_obj->display_form_field('upskill_status'); ?></div>
         </div><?php
-        $cja_current_user_obj->display_form_field('highest_qualification'); ?>
+         ?>
         <h2 class="form_section_heading">Some More About You</h2>
         <div class="form_flexbox_2">
             <div><?php $cja_current_user_obj->display_form_field('age_category'); ?></div>

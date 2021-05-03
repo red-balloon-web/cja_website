@@ -30,30 +30,37 @@ if ($_POST['createaccount'] && $_POST['email']) {
 	$email = $_POST['email'];
 	$password = $_POST['password'];
 	$role = $_POST['role'];
-	
-	$userdata = array(
-		'user_login' => $username, // set username to email address
-		'user_email' => $email,
-		'user_pass' => $password,
-		'role' => $role
-	);
 
-	$result = wp_insert_user($userdata);
-
-	if (is_int($result)) {
+	// Validate email address test
+	if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
 		
-		// Send new user email
-		// wp_new_user_notification($result,'','both');
+	
+		$userdata = array(
+			'user_login' => $username, // set username to email address
+			'user_email' => $email,
+			'user_pass' => $password,
+			'role' => $role
+		);
 
-		// Give new user 1 credit
-		add_user_meta($result, 'cja_credits', 1, true);
-		add_user_meta($result, 'cja_classified_credits', 1, true);
-		?><p class="cja_alert cja_alert--success"><strong><?php echo $username; ?></strong>, Your Account Has Been Created!<br>Please use your password to login!</p><?php
-		$freshaccountcreation = true;
-	} else { ?>
+		$result = wp_insert_user($userdata);
 
-	<p class="cja_alert cja_alert--red"><?php echo $result->get_error_message(); ?></p>
-	<?php }
+		if (is_int($result)) {
+			
+			// Send new user email
+			// wp_new_user_notification($result,'','both');
+
+			// Give new user 1 credit
+			add_user_meta($result, 'cja_credits', 1, true);
+			add_user_meta($result, 'cja_classified_credits', 1, true);
+			?><p class="cja_alert cja_alert--success"><strong><?php echo $username; ?></strong>, Your Account Has Been Created!<br>Please use your password to login!</p><?php
+			$freshaccountcreation = true;
+		} else { ?>
+
+		<p class="cja_alert cja_alert--red"><?php echo $result->get_error_message(); ?></p>
+		<?php }
+	} else {
+		?><p class="cja_alert cja_alert--red">Email address not valid</p><?php
+	}
 } else if ($_POST['createaccount'] && !$_POST['email']) {
 	?><p class="cja_alert cja_alert--red">Please include an email address</p><?php
 }

@@ -5,6 +5,9 @@
     <?php if ($cja_search->cja_id) { ?>
         <p>Job ID: <strong><?php echo $cja_search->cja_id; ?></strong></p>
     <?php } ?>
+    <?php if ($cja_search->salary_type) { ?>
+        <p>Paid / Unpaid: <strong><?php echo $cja_search->return_human('salary_type'); ?></strong></p>
+    <?php } ?>
     <?php if ($cja_search->salary_numeric) { ?>
         <p>Minimum salary: <strong>£<?php echo $cja_search->salary_numeric; ?> per <?php echo $cja_search->salary_per; ?></strong></p>
     <?php } ?>

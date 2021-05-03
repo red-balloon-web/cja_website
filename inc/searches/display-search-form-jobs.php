@@ -41,6 +41,12 @@ if ($_GET['edit-search']) {
             <p><input type="checkbox" name="show_applied" <?php if ($cja_jobsearch->show_applied) { echo 'checked'; } ?>> Include jobs I have already applied for</p>
 
             <h2 class="form_section_heading">About the Job</h2>
+            <p class="label">Paid / Unpaid</p>
+            <select name="salary_type" id="salary_type">
+                <option value="">-- Any --</option>
+                <option value="paid" <?php if ($cja_jobsearch->salary_type == 'paid') { echo 'selected'; } ?>>Paid</option>
+                <option value="unpaid_we_training" <?php if ($cja_jobsearch->salary_type == 'unpaid_we_training') { echo 'selected'; } ?>>Unpaid Work Experience or Training</option>
+            </select>
             <p class="label">Minimum Salary</p>
             <input type="text" name="salary_numeric" value="£<?php echo ($cja_jobsearch->salary_numeric); ?>">
             <select name="salary_per" form="edit_search_form">

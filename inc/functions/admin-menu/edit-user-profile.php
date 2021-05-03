@@ -49,7 +49,7 @@ function display_admin_user_custom_cja_fields( $user ) {
                 <p class="label">Company Description</p>
                 <textarea name="company_description" cols="30" rows="10"><?php echo $cja_current_user_obj->pending_description; ?></textarea>
                 <p style="margin-top: 0; color: #A00">Your profile is pending approval by our admin team. You will be notified by email when it is approved.</p><?php
-            } else {
+            } else { 
                 $cja_current_user_obj->display_form_field('company_description'); 
             } ?>
             
@@ -70,9 +70,12 @@ function display_admin_user_custom_cja_fields( $user ) {
             <p style="color: #666">Date Registered: <?php echo $cja_current_user_obj->date_registered; ?></p>
 
             <h2 class="form_section_heading">Profile Status</h2>
-            <p class="label">Set your profile status to "Not Currently Available" if you are not currently looking for work or education and do not want to be included in searches</p>
-            <?php $cja_current_user_obj->display_form_field('profile_status'); ?>
-
+            <div class="form_flexbox_2">
+            
+                <div><?php $cja_current_user_obj->display_form_field('profile_status'); ?></div>
+                <div><?php $cja_current_user_obj->display_form_field('pre_trained'); ?></div>
+            </div>
+            
             <h2 class="form_section_heading">About You</h2>
 
         <!-- role management - select courses/jobs. JS updates UI and hidden is_jobseeker and is_courseseeker fields on click -->
@@ -120,6 +123,7 @@ function display_admin_user_custom_cja_fields( $user ) {
                 <div><?php $cja_current_user_obj->display_form_field('town_city'); ?></div>
                 <div><?php $cja_current_user_obj->display_form_field('phone'); ?></div>
             </div>
+            <?php $cja_current_user_obj->display_form_field('receive_updates'); ?>
 
             
             <h2 class="form_section_heading mb-0">Photo</h2>
@@ -208,8 +212,11 @@ function display_admin_user_custom_cja_fields( $user ) {
             <div class="form_flexbox_2">
                 <div><?php $cja_current_user_obj->display_form_field('functional_maths'); ?></div>
                 <div><?php $cja_current_user_obj->display_form_field('functional_english'); ?></div>
-            </div><?php
-            $cja_current_user_obj->display_form_field('highest_qualification'); ?>
+            </div>
+            <div class="form_flexbox_2">
+                <div><?php $cja_current_user_obj->display_form_field('highest_qualification'); ?></div>
+                <div><?php $cja_current_user_obj->display_form_field('upskill_status'); ?></div>
+            </div>
             <h2 class="form_section_heading">Some More About You</h2>
             <div class="form_flexbox_2">
                 <div><?php $cja_current_user_obj->display_form_field('age_category'); ?></div>

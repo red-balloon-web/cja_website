@@ -220,6 +220,9 @@ get_header(); ?>
                                     if ($cja_current_result->is_new()) {
                                         echo ' <span class="new-item">NEW</span>';
                                     }
+                                    if ($cja_current_result->is_pre_trained()) {
+                                        echo ' <span class="new-item">PRE-TRAINED</span>';
+                                    }
                                 } else {
                                     echo ('User #' . $cja_current_result->id);
                                 } ?>

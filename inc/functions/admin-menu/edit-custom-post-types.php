@@ -153,7 +153,6 @@ function display_admin_custom_post_edit_form() {
                     jQuery('#enter_advertiser_id').val('');
                     jQuery('#enter_advertiser_id_feedback').html('');
                 });
-
             }); 
         </script><?php
     }

@@ -23,6 +23,7 @@ $array_row = array(
     'Email Address',
     'Town/City',
     'Profile Status',
+    'Pre-Trained',
     'Date Registered',
     $distance_header,
     'GCSE Maths',
@@ -30,6 +31,7 @@ $array_row = array(
     'Functional Skills Maths',
     'Functional Skills English',
     'Highest Qualification',
+    'Upskilling and CPD Status',
     'Opportunities Sought',
     'Jobs FT/PT',
     'Preferred Job Role(s)',
@@ -60,6 +62,7 @@ foreach($cja_results_array as $cja_result) {
     $array_row[] = $current_user->email;
     $array_row[] = $current_user->town_city;
     $array_row[] = $current_user->return_field('profile_status');
+    $array_row[] = $current_user->return_field('pre_trained');
     $array_row[] = $current_user->date_registered;
     if ($cja_result['distance'] != -1) {
         $array_row[] = $cja_result['distance'];
@@ -71,6 +74,7 @@ foreach($cja_results_array as $cja_result) {
     $array_row[] = $current_user->return_field('functional_maths');
     $array_row[] = $current_user->return_field('functional_english');
     $array_row[] = $current_user->return_field('highest_qualification');
+    $array_row[] = $current_user->return_field('upskill_status');
     $array_row[] = $current_user->return_field('opportunity_required');
     $array_row[] = $current_user->return_field('job_time');
     $array_row[] = $current_user->return_field('job_role');

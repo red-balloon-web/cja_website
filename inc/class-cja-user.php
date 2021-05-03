@@ -29,6 +29,8 @@ class CJA_User {
     public $company_details_complete;
     public $is_jobseeker;
     public $is_student;
+    public $upskill_status;
+    public $pre_trained;
 
     public $files_array = array();
     public $pending_files_array = array();
@@ -812,6 +814,7 @@ class CJA_User {
         "profile_status" => array(
             "meta_field" => true,
             "meta_label" => "profile_status",
+            "label" => "Profile Status",
             "type" => "select",
             "options" => array(
                 array(
@@ -821,6 +824,74 @@ class CJA_User {
                 array(
                     "label" => "Not Currently Available",
                     "value" => "not_available"
+                )
+            )
+        ),
+        "upskill_status" => array(
+            "meta_field" => true,
+            "label" => "Upskilling and CPD Status",
+            "meta_label" => "upskill_status",
+            "type" => "select",
+            "options" => array(
+                array(
+                    "label" => "Recently did CPD Training Course",
+                    "value" => "recent_cpd"
+                ),
+                array(
+                    "label" => "Recently did a qualification at Entry 2 or 3",
+                    "value" => "recent_2_3"
+                ),
+                array(
+                    "label" => "Recently did a qualification at level 1",
+                    "value" => "recent_1"
+                ),
+                array(
+                    "label" => "Recently did a qualification at level 2",
+                    "value" => "recent_2"
+                ),
+                array(
+                    "label" => "Recently did a qualification from level 3 and above",
+                    "value" => "recent_3"
+                ),
+                array(
+                    "label" => "Recently did some work experience",
+                    "value" => "recent_work_experience"
+                )
+            )
+        ),
+        "pre_trained" => array(
+            "meta_field" => true,
+            "label" => "Pre Trained",
+            "meta_label" => "pre_trained",
+            "type" => "select",
+            "options" => array(
+                array(
+                    "label" => "Yes",
+                    "value" => "yes"
+                ),
+                array(
+                    "label" => "No",
+                    "value" => "no"
+                )
+            )
+        ),
+        "receive_updates" => array(
+            "meta_field" => true,
+            "label" => "Receive email updates with new opportunities",
+            "meta_label" => "receive_updates",
+            "type" => "select",
+            "options" => array(
+                array(
+                    "label" => "None",
+                    "value" => "none"
+                ),
+                array(
+                    "label" => "Weekly",
+                    "value" => "weekly"
+                ),
+                array(
+                    "label" => "Daily",
+                    "value" => "daily"
                 )
             )
         )
@@ -957,6 +1028,15 @@ class CJA_User {
 
         // Compare to option and return
         if ($days_old <= get_option('cja_user_days_still_new')) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // Return whether use is pre-trained
+    public function is_pre_trained() {
+        if ($this->pre_trained == 'yes') {
             return true;
         } else {
             return false;
@@ -1284,6 +1364,12 @@ class CJA_User {
         }
         if ($this->highest_qualification) {
             $meta_query = $this->add_query_item($meta_query, 'highest_qualification', 'rank');
+        }
+        if ($this->upskill_status) {
+            $meta_query = $this->add_query_item($meta_query, 'upskill_status', 'select');
+        }
+        if ($this->pre_trained) {
+            $meta_query = $this->add_query_item($meta_query, 'pre_trained', 'select');
         }
 
         // more about you

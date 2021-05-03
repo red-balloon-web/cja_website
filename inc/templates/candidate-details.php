@@ -35,6 +35,10 @@
             <td>Date Registered</td>
             <td><?php echo $cja_current_applicant->date_registered; ?></td>
         </tr>
+        <tr>
+            <td>Pre-Trained</td>
+            <td><?php echo $cja_current_applicant->display_field('pre_trained'); ?></td>
+        </tr>
     </table>
 
     <h2 class="form_section_heading">Education</h2>
@@ -58,6 +62,10 @@
         <tr>
             <td>Highest Qualification</td>
             <td><?php echo $cja_current_applicant->display_field('highest_qualification'); ?></td>
+        </tr>
+        <tr>
+            <td>Upskilling and CPD Status</td>
+            <td><?php echo $cja_current_applicant->display_field('upskill_status'); ?></td>
         </tr>
     </table>
 

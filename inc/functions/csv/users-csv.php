@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * FUNCTIONS TO EXPORT LIST OF USERS FROM ADMIN SCREEN AS CSV
+ */
+
+
+// ADD EXPORT AS CSV FORM CONTAINING ALL GET DATA SENT TO THE PAGE
 add_action( 'admin_notices', 'users_csv_button' );
 function users_csv_button() {
 
@@ -22,7 +28,7 @@ function users_csv_button() {
     }
 }
 
-
+// CREATE AND EXPORT THE CSV FILE
 add_action( 'admin_post_users-csv', 'users_csv');
 function users_csv() {
 
@@ -36,12 +42,14 @@ function users_csv() {
         'Email Address',
         'Town/City',
         'Profile Status',
+        'Pre-Trained',
         'Date Registered',
         'GCSE Maths',
         'GCSE English',
         'Functional Skills Maths',
         'Functional Skills English',
         'Highest Qualification',
+        'Upskilling and CPD Status',
         'Opportunities Sought',
         'Jobs FT/PT',
         'Preferred Job Role(s)',
@@ -83,12 +91,14 @@ function users_csv() {
         $array_row[] = $current_user->email;
         $array_row[] = $current_user->town_city;
         $array_row[] = $current_user->return_field('profile_status');
+        $array_row[] = $current_user->return_field('pre_trained');
         $array_row[] = $current_user->date_registered;
         $array_row[] = $current_user->return_field('gcse_maths');
         $array_row[] = $current_user->return_field('gcse_english');
         $array_row[] = $current_user->return_field('functional_maths');
         $array_row[] = $current_user->return_field('functional_english');
         $array_row[] = $current_user->return_field('highest_qualification');
+        $array_row[] = $current_user->return_field('upskill_status');
         $array_row[] = $current_user->return_field('opportunity_required');
         $array_row[] = $current_user->return_field('job_time');
         $array_row[] = $current_user->return_field('job_role');

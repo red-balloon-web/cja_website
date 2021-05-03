@@ -34,6 +34,7 @@ $array_row = array(
     'Advertiser Code',
     'Advertiser',
     $distance_header,
+    'Paid / Unpaid',
     'Salary',
     'Salary per',
     'Payment Frequency',
@@ -69,6 +70,7 @@ foreach($cja_results_array as $cja_result) {
     } else {
         $array_row[] = '';
     }
+    $array_row[] = $current_job->return_human('salary_type');
     $array_row[] = $current_job->salary_numeric;
     $array_row[] = $current_job->salary_per;
     $array_row[] = $current_job->payment_frequency;
@@ -84,7 +86,7 @@ foreach($cja_results_array as $cja_result) {
     $array_row[] = $current_job->return_human('location_options');
     $array_row[] = $current_job->more_information;
     $array_row[] = $current_job->return_human('employer_type');
-    $array_row[] = $current_job->postcde;
+    $array_row[] = $current_job->postcode;
     $array_row[] = $current_job->contact_person;
     $array_row[] = $current_job->contact_phone_number;
     $csv_data_array[] = $array_row;

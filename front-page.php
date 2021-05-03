@@ -17,23 +17,22 @@
                 </div>--> <?php
 
             // Otherwise display the login box
-            } else { ?><!--
+            } else { ?>
                 <div class="splash_login_box">
 
                     <h4 class="account_create">Create an Account</h4>
                     <form action="<?php echo get_site_url() . '/' . $cja_config['user-details-page-slug']; ?>" method="post" class="cja_home_create">
                         <div class="topbox">
                             <div class="username">
-                                <p class="label">Username</p>
-                                <input type="text" name="username">
+                                <p class="label">Email Address</p>
+                                <input type="text" name="email">
                             </div>
                             <div class="password">
                                 <p class="label">Password</p>
                                 <input type="password" name="password">
                             </div>
                         </div>
-                        <p class="label">Email Address</p>
-                        <input type="text" name="email">
+                        
                         <div class="rolebox">
                             <div class="role_option">
                                 <input type="radio" name="role" value="jobseeker" checked> I am looking for a job or course</input>
@@ -45,7 +44,7 @@
                         <input type="hidden" name="createaccount" value="true">
                         <p class="input-right"><input class="cja_button cja_button--home_login" type="submit" value="Create Free Account"></p>
                     </form>
-                </div> --><?php
+                </div><?php
             }
         } ?>
     </div>
@@ -61,7 +60,6 @@
             <h2>Course Providers</h2>
             <ul class="fa-ul">
                 <li><span class="fa-li"><i class="fas fa-check"></i></span>Advertise your Jobs and Courses</li>
-                <li><span class="fa-li"><i class="fas fa-check"></i></span>Applicants apply online or directly to you</li>
                 <li><span class="fa-li"><i class="fas fa-check"></i></span>Search jobseekers with CV Search</li>
                 <li><span class="fa-li"><i class="fas fa-check"></i></span>Search students with Student Search</li>
                 <li><span class="fa-li"><i class="fas fa-check"></i></span>Place Classified Ads</li>
@@ -75,7 +73,6 @@
             <ul class="fa-ul">
                 <li><span class="fa-li"><i class="fas fa-check"></i></span>Search for the right job or course for you</li>
                 <li><span class="fa-li"><i class="fas fa-check"></i></span>Upload your CV and profile</li>
-                <li><span class="fa-li"><i class="fas fa-check"></i></span>Apply directly for jobs and courses online</li>
                 <li><span class="fa-li"><i class="fas fa-check"></i></span>Appear in CV and Student searches</li>
                 <li><span class="fa-li"><i class="fas fa-check"></i></span>Place Classified Ads</li>
             </ul>

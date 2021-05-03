@@ -23,6 +23,7 @@ class CJA_Advert {
     
     // Form fields
     public $title;
+    public $salary_type;
     public $salary_numeric;
     public $salary_per;
     public $content; // job description
@@ -76,6 +77,7 @@ class CJA_Advert {
             // Form Fields
             $this->title = get_the_title($id);
             $this->salary_numeric = (float) filter_var( get_post_meta($id, 'cja_salary_numeric', true), FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION );
+            $this->salary_type = get_post_meta($id, 'cja_salary_type', true);
             $this->salary_per = get_post_meta($id, 'cja_salary_per', true);
             $this->content = get_the_content(null, false, $id);
             $this->job_type = get_post_meta($id, 'cja_job_type', true);
@@ -116,6 +118,22 @@ class CJA_Advert {
             "meta_label" => "cja_can_apply_online",
             "type" => "checkbox",
             "value" => "true"
+        ),
+        "salary_type" => array(
+            "meta_field" => true,
+            "label" => "Paid / Unpaid",
+            "meta_label" => "cja_salary_type",
+            "type" => "select",
+            "options" => array(
+                array(
+                    "label" => "Paid",
+                    "value" => "paid"
+                ),
+                array(
+                    "label" => "Unpaid Work Experience or Training",
+                    "value" => "unpaid_we_training"
+                )
+            )
         ),
         "salary_per" => array(
             "meta_field" => true,
@@ -1149,7 +1167,7 @@ class CJA_Advert {
             $meta_query[] = $meta_item;
         } 
 
-        $fields = array( 'job_type', 'sector', 'career_level', 'employer_type', 'dbs_required', 'payment_frequency', 'shift_work', 'location_options');
+        $fields = array( 'job_type', 'sector', 'career_level', 'employer_type', 'dbs_required', 'payment_frequency', 'shift_work', 'location_options', 'salary_type');
 
         foreach($fields as $field) {
             if ($this->$field) {
@@ -1311,6 +1329,14 @@ class CJA_Advert {
 
         if ($field == 'deadline') {
             return date("j F Y", strtotime($this->deadline));
+        }
+
+        if ($field == 'salary_type') {
+            foreach ($this->form_fields['salary_type']['options'] as $option) {
+                if ($this->salary_type == $option['value']) {
+                    return $option['label'];
+                }
+            }
         }
     }
 

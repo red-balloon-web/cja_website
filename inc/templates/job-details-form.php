@@ -42,11 +42,19 @@ $cja_current_user = new CJA_User;
 <?php } ?>
 
 <h2 class="form_section_heading">Salary</h2>
+<p class="label">Paid / Unpaid</p>
+<select name="salary_type" id="salary_type">
+    <option value="">-- Select --</option>
+    <option value="paid" <?php if ($cja_edit_ad->salary_type == 'paid') { echo 'selected'; } ?>>Paid</option>
+    <option value="unpaid_we_training" <?php if ($cja_edit_ad->salary_type == 'unpaid_we_training') { echo 'selected'; } ?>>Unpaid Work Experience or Training</option>
+</select>
 
-<p class="label">Salary</p>
-<input type="text" name="salary_numeric" value="£<?php echo ($cja_edit_ad->salary_numeric); ?>">
-<?php $cja_edit_ad->display_form_field('salary_per', false); ?>
-<?php $cja_edit_ad->display_form_field('payment_frequency'); ?>
+<div id="salary_box">
+    <p class="label">Salary</p>
+    <input type="text" name="salary_numeric" value="£<?php echo ($cja_edit_ad->salary_numeric); ?>">
+    <?php $cja_edit_ad->display_form_field('salary_per', false); ?>
+    <?php $cja_edit_ad->display_form_field('payment_frequency'); ?>
+</div>
 
 <h2 class="form_section_heading">About The Job</h2>
 
@@ -154,4 +162,23 @@ $cja_current_user = new CJA_User;
 <h2 class="form_section_heading mb-0">More Information</h2>
 <p class="muted">Any more information you would like to add</p>
 <?php $cja_edit_ad->display_form_field('more_information', false); ?>
+
+<script>
+    jQuery(document).ready(function() {
+        // show and hide salary section on load
+        if ( jQuery('#salary_type').val() != 'paid') {
+            jQuery('#salary_box').hide();
+        }
+
+        // show and hide salary section on change
+        jQuery('#salary_type').on('change', function(e) {
+            if (jQuery('#salary_type').val() == 'paid') {
+                jQuery('#salary_box').slideDown();
+            } else {
+                jQuery('#salary_box').slideUp();
+            }
+        });
+        
+    });
+</script>
 

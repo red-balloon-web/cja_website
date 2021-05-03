@@ -21,7 +21,7 @@
 						<a href="<?php echo get_site_url(); ?>/terms-and-conditions">Terms and Conditions</a><br>
 						<a href="<?php echo get_site_url(); ?>/privacy-policy">Privacy Policy</a><br>
 						<a href="<?php echo get_site_url(); ?>/cookie-policy">Cookie Policy</a><br><br>
-						<a href="<?php echo get_site_url(); ?>/contact">Contact Us</a>
+						<!--<a href="<?php echo get_site_url(); ?>/contact">Contact Us</a>-->
 					</p>
 				</div> <?php
 			} 
@@ -30,7 +30,7 @@
 		</div>
 
 		<div class="col-full copyright">
-			<p>&#169 2020 Courses and Jobs Ltd. Registered in England and Wales, Reg Number 11958672. All rights reserved.</p>
+			<p>&#169 2019 Courses and Jobs Ltd. Registered in England and Wales, Reg Number 11958672. All rights reserved.</p>
 		</div>
 	</footer>
 

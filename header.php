@@ -83,7 +83,7 @@
 				} ?>
 			</div>
 			<div class="logo-title">
-				<img src="<?php echo get_stylesheet_directory_uri(); ?>/images/logo2.jpg" class="logo"><h2 class="cja_site_title">Courses and Jobs Advertiser</h2>
+				<img src="<?php echo get_stylesheet_directory_uri(); ?>/images/logo3.jpg" class="logo"><h2 class="cja_site_title">Courses and Jobs Advertiser</h2>
 			</div>
 		</div>
 		<div class="col-full">

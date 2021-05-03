@@ -78,8 +78,18 @@ if ($_GET['edit-search']) {
             </div>
         </div>
         <!-- Highest Qualification -->
-        <p class="label">Minimum current highest qualification</p>
-        <?php $cja_usersearch->display_form_field('highest_qualification', false, true); ?>
+        <div class="form_flexbox_2">
+            <div>
+                <p class="label">Minimum current highest qualification</p>
+                <?php $cja_usersearch->display_form_field('highest_qualification', false, true); ?>
+            </div>
+            <div>
+                <p class="label">Upskilling and CPD Status</p>
+                <?php $cja_usersearch->display_form_field('upskill_status', false, true); ?>
+            </div>
+        </div>
+        <p class="label">Pre Trained</p>
+        <?php $cja_usersearch->display_form_field('pre_trained', false, true); ?>
 
 
         <h2 class="form_section_heading">Other Details</h2>
