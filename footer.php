@@ -1,22 +1,20 @@
-		</div><!-- .col-full -->
+</div><!-- .col-full -->
 	</div><!-- #content -->
 
 	<?php do_action( 'storefront_before_footer' ); ?>
 
 	<footer id="colophon" class="site-footer" role="contentinfo">
 		<div class="col-full">
-
-			<div class="address">
-				<p>3 Oakfield House<br>
-				Ilford<br>
-				Essex<br>
-				IG1 1EF<br>
-				020 3475 9775</p>
-			</div> <?php
-
+			<?php $sidebars_widgets  = wp_get_sidebars_widgets(); ?>
+			<?php if(! empty( $sidebars_widgets[ 'footer-1' ] )) { ?>
+				<div class="address">
+					<?php dynamic_sidebar('footer-1'); ?>
+				</div> 
+			<?php } ?>
+			<?php
 			// Only display footer menu if enabled in admin
-			if (get_option('cja_display_footer_menu')) { ?>
-				<div class="links">
+			/*if (get_option('cja_display_footer_menu')) { ?>
+				<div class="address links">
 					<p>
 						<a href="<?php echo get_site_url(); ?>/terms-and-conditions">Terms and Conditions</a><br>
 						<a href="<?php echo get_site_url(); ?>/privacy-policy">Privacy Policy</a><br>
@@ -24,14 +22,34 @@
 						<!--<a href="<?php echo get_site_url(); ?>/contact">Contact Us</a>-->
 					</p>
 				</div> <?php
-			} 
+			}*/ 
 		
 			// do_action( 'storefront_footer' ); ?>
-		</div>
+			
+			<?php if(! empty( $sidebars_widgets[ 'footer-2' ] )) { ?>
+				<div class="address">
+					<?php dynamic_sidebar('footer-2'); ?>
+				</div> 
+			<?php } ?>
+			
+			<?php if(! empty( $sidebars_widgets[ 'footer-3' ] )) { ?>
+				<div class="address">
+					<?php dynamic_sidebar('footer-3'); ?>
+				</div> 
+			<?php } ?>
 
-		<div class="col-full copyright">
-			<p>&#169 2019 Courses and Jobs Ltd. Registered in England and Wales, Reg Number 11958672. All rights reserved.</p>
+			<?php if(! empty( $sidebars_widgets[ 'footer-4' ] )) { ?>
+				<div class="address">
+					<?php dynamic_sidebar('footer-4'); ?>
+				</div> 
+			<?php } ?>
 		</div>
+		
+		<?php if(! empty( $sidebars_widgets[ 'footer-5' ] )) { ?>
+			<div class="col-full copyright">
+				<?php dynamic_sidebar('footer-5'); ?>
+			</div> 
+		<?php } ?>
 	</footer>
 
 	<?php do_action( 'storefront_after_footer' ); ?>
