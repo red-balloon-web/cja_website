@@ -54,6 +54,8 @@
 
 	<?php do_action( 'storefront_after_footer' ); ?>
 
+	<!-- Chris added a comment in here -->
+
 </div><!-- #page -->
 
 <?php wp_footer(); ?>
